@@ -16,7 +16,7 @@ type Topic = {
   title: string;
   rubrique: string;
   authorName: string;
-  authorFloor: number;
+  authorFloor: number | null;
   replyCount: number;
   createdAt: string;
 };

@@ -18,7 +18,7 @@ type Listing = {
   title: string;
   category: string;
   authorName: string;
-  authorFloor: number;
+  authorFloor: number | null;
 };
 
 export default function EntraideClient({ listings: initialListings }: { listings: Listing[] }) {
@@ -116,7 +116,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
               </span>
               <div>
                 <p style={{ fontWeight: 300, marginBottom: 2 }}>{item.title}</p>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>{item.authorName}, {item.authorFloor}e</p>
+                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>{item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""}</p>
               </div>
             </div>
             <button className="btn btn-outline" style={{ fontSize: "0.875rem", padding: "8px 16px" }}>

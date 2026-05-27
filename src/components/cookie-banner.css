@@ -59,6 +59,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
+  overscroll-behavior: contain;
 }
 
 .cookie-overlay.open {
@@ -72,8 +73,10 @@
   padding: 40px;
   max-width: 520px;
   width: 90vw;
-  max-height: 80vh;
+  max-height: 85dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 16px;
 }
 
 .cookie-modal h2 {
@@ -181,9 +184,23 @@
 
   .cookie-modal {
     padding: 24px;
+    max-height: 90dvh;
+    width: calc(100vw - 32px);
+    margin: 12px;
+    border-radius: var(--radius-md);
   }
 
   .cookie-modal-actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 420px) {
+  .cookie-modal {
+    padding: 20px;
+    width: calc(100vw - 16px);
+    margin: 8px;
+    max-height: 94dvh;
+    border-radius: 8px;
   }
 }

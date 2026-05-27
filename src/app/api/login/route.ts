@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   const db = getDb();
   const user = db.select().from(users).where(eq(users.email, email)).get();
 
-  if (!user || !compareSync(password, user.passwordHash)) {
+  if (!user || !user.passwordHash || !compareSync(password, user.passwordHash)) {
     return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });
   }
 
