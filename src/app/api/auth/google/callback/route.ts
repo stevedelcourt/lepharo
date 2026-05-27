@@ -52,7 +52,10 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/connexion?error=google_no_email", request.url));
   }
 
-  const db = getDb()!;
+  const db = getDb();
+  if (!db) {
+    return NextResponse.redirect(new URL("/connexion?error=db_unavailable", request.url));
+  }
 
   let user = db.select().from(users).where(eq(users.email, email)).get();
 

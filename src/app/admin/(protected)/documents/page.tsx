@@ -4,13 +4,14 @@ import { getDb } from "@/lib/db";
 import { documents } from "@/lib/schema";
 import { desc } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackDocuments } from "@/lib/fallback-data";
 
 export default async function AdminDocumentsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const docs = db.select().from(documents).orderBy(desc(documents.date)).all();
+  const db = getDb();
+  const docs = db ? db.select().from(documents).orderBy(desc(documents.date)).all() : fallbackDocuments;
 
   return (
     <>
@@ -19,7 +20,7 @@ export default async function AdminDocumentsPage() {
         <thead>
           <tr>
             <th>Titre</th>
-            <th>Catégorie</th>
+            <th>Categorie</th>
             <th>Pages</th>
             <th>Date</th>
             <th>Action</th>

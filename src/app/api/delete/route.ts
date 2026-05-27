@@ -30,7 +30,10 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Invalid params" }, { status: 400 });
   }
 
-  const db = getDb()!;
+  const db = getDb();
+  if (!db) {
+    return NextResponse.json({ error: "Database not available" }, { status: 503 });
+  }
   db.delete(tableMap[table]).where(eq(tableMap[table].id, id)).run();
 
   return NextResponse.json({ success: true });

@@ -4,13 +4,14 @@ import { getDb } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { asc } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackAdminUsers } from "@/lib/fallback-data";
 
 export default async function AdminUsersPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const allUsers = db.select().from(users).orderBy(asc(users.floor)).all();
+  const db = getDb();
+  const allUsers = db ? db.select().from(users).orderBy(asc(users.floor)).all() : fallbackAdminUsers;
 
   return (
     <>
@@ -20,9 +21,9 @@ export default async function AdminUsersPage() {
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Étage</th>
-            <th>Rôle</th>
-            <th>Vérifié</th>
+            <th>Etage</th>
+            <th>Role</th>
+            <th>Verifie</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -34,7 +35,7 @@ export default async function AdminUsersPage() {
               <td>{user.floor}e</td>
               <td>
                 <span className={`badge ${user.role === "admin" ? "badgeAdmin" : ""}`}>
-                  {user.role === "admin" ? "Admin" : "Résident"}
+                  {user.role === "admin" ? "Admin" : "Resident"}
                 </span>
               </td>
               <td>{user.verified ? "Oui" : "Non"}</td>

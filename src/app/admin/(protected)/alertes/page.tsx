@@ -4,13 +4,14 @@ import { getDb } from "@/lib/db";
 import { alerts, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackAdminAlerts } from "@/lib/fallback-data";
 
 export default async function AdminAlertsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const allAlerts = db.select({
+  const db = getDb();
+  const allAlerts = db ? db.select({
     id: alerts.id,
     message: alerts.message,
     type: alerts.type,
@@ -18,7 +19,7 @@ export default async function AdminAlertsPage() {
     authorName: users.firstName,
     createdAt: alerts.createdAt,
   }).from(alerts).innerJoin(users, eq(alerts.createdBy, users.id))
-    .orderBy(desc(alerts.createdAt)).all();
+    .orderBy(desc(alerts.createdAt)).all() : fallbackAdminAlerts;
 
   return (
     <>
@@ -29,7 +30,7 @@ export default async function AdminAlertsPage() {
             <th>Message</th>
             <th>Type</th>
             <th>Active</th>
-            <th>Créé par</th>
+            <th>Cree par</th>
             <th>Date</th>
             <th>Action</th>
           </tr>

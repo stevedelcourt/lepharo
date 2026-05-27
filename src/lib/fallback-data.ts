@@ -50,3 +50,49 @@ export const fallbackUsers = [
   { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr" },
   { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr" },
 ];
+
+export const fallbackAdminUsers = fallbackUsers.map((u) => ({
+  ...u,
+  role: u.id === 1 ? "admin" : "resident",
+  verified: true,
+  passwordHash: "",
+  googleId: null as string | null,
+  createdAt: "2026-05-27",
+}));
+
+export const fallbackAdminForumTopics = fallbackForumTopics.map((t) => ({
+  id: t.id,
+  title: t.title,
+  rubrique: t.rubrique,
+  authorName: t.authorName,
+  authorFloor: t.authorFloor,
+  pinned: false,
+  createdAt: t.createdAt,
+}));
+
+export const fallbackAdminListings = fallbackListings.map((l) => ({
+  id: l.id,
+  type: l.type,
+  title: l.title,
+  category: l.category,
+  authorName: l.authorName,
+  authorFloor: l.authorFloor,
+  createdAt: l.createdAt,
+}));
+
+export const fallbackAdminEvents = fallbackEvents.map((e) => ({
+  id: e.id,
+  title: e.title,
+  type: e.type,
+  date: e.date,
+  authorName: "Admin",
+}));
+
+export const fallbackAdminAlerts = fallbackAlerts.map((a) => ({
+  id: a.id,
+  message: a.message,
+  type: a.type,
+  active: a.active,
+  authorName: "Admin",
+  createdAt: a.createdAt,
+}));

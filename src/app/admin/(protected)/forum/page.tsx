@@ -4,13 +4,14 @@ import { getDb } from "@/lib/db";
 import { forumTopics, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackAdminForumTopics } from "@/lib/fallback-data";
 
 export default async function AdminForumPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const topics = db.select({
+  const db = getDb();
+  const topics = db ? db.select({
     id: forumTopics.id,
     title: forumTopics.title,
     rubrique: forumTopics.rubrique,
@@ -19,7 +20,7 @@ export default async function AdminForumPage() {
     pinned: forumTopics.pinned,
     createdAt: forumTopics.createdAt,
   }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
-    .orderBy(desc(forumTopics.createdAt)).all();
+    .orderBy(desc(forumTopics.createdAt)).all() : fallbackAdminForumTopics;
 
   return (
     <>
@@ -37,7 +38,7 @@ export default async function AdminForumPage() {
         <tbody>
           {topics.map((t) => (
             <tr key={t.id}>
-              <td>{t.title}{t.pinned ? " 📌" : ""}</td>
+              <td>{t.title}{t.pinned ? " P" : ""}</td>
               <td><span className="badge">{t.rubrique}</span></td>
               <td>{t.authorName} ({t.authorFloor}e)</td>
               <td>{t.createdAt}</td>

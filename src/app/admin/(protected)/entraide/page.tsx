@@ -4,13 +4,14 @@ import { getDb } from "@/lib/db";
 import { entraideListings, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackAdminListings } from "@/lib/fallback-data";
 
 export default async function AdminEntraidePage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const listings = db.select({
+  const db = getDb();
+  const listings = db ? db.select({
     id: entraideListings.id,
     type: entraideListings.type,
     title: entraideListings.title,
@@ -19,7 +20,7 @@ export default async function AdminEntraidePage() {
     authorFloor: users.floor,
     createdAt: entraideListings.createdAt,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
-    .orderBy(desc(entraideListings.createdAt)).all();
+    .orderBy(desc(entraideListings.createdAt)).all() : fallbackAdminListings;
 
   return (
     <>
@@ -29,7 +30,7 @@ export default async function AdminEntraidePage() {
           <tr>
             <th>Titre</th>
             <th>Type</th>
-            <th>Catégorie</th>
+            <th>Categorie</th>
             <th>Auteur</th>
             <th>Date</th>
             <th>Action</th>

@@ -4,24 +4,25 @@ import { getDb } from "@/lib/db";
 import { events, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
+import { fallbackAdminEvents } from "@/lib/fallback-data";
 
 export default async function AdminEventsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb()!;
-  const allEvents = db.select({
+  const db = getDb();
+  const allEvents = db ? db.select({
     id: events.id,
     title: events.title,
     type: events.type,
     date: events.date,
     authorName: users.firstName,
   }).from(events).innerJoin(users, eq(events.authorId, users.id))
-    .orderBy(desc(events.date)).all();
+    .orderBy(desc(events.date)).all() : fallbackAdminEvents;
 
   return (
     <>
-      <h1>Événements ({allEvents.length})</h1>
+      <h1>Evenements ({allEvents.length})</h1>
       <table className="table">
         <thead>
           <tr>
