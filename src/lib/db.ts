@@ -1,18 +1,23 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema";
-import path from "path";
 
-const dbPath = path.join(process.cwd(), "data", "lepharo.db");
+let db: BetterSQLite3Database<typeof schema> | null = null;
 
-let db: ReturnType<typeof drizzle<typeof schema>>;
+export function getDb(): BetterSQLite3Database<typeof schema> | null {
+  if (db !== null) return db;
+  if (process.env.VERCEL) return null;
 
-export function getDb() {
-  if (!db) {
+  try {
+    const Database = require("better-sqlite3");
+    const path = require("path");
+    const { drizzle } = require("drizzle-orm/better-sqlite3");
+    const dbPath = path.join(process.cwd(), "data", "lepharo.db");
     const sqlite = new Database(dbPath);
     sqlite.pragma("journal_mode = WAL");
     sqlite.pragma("foreign_keys = ON");
     db = drizzle(sqlite, { schema });
+    return db;
+  } catch {
+    return null;
   }
-  return db;
 }

@@ -9,7 +9,7 @@ export default async function AdminDocumentsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const docs = db.select().from(documents).orderBy(desc(documents.date)).all();
 
   return (

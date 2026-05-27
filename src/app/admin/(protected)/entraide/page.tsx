@@ -9,7 +9,7 @@ export default async function AdminEntraidePage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const listings = db.select({
     id: entraideListings.id,
     type: entraideListings.type,

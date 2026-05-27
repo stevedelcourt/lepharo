@@ -1,61 +1,73 @@
 import { getDb } from "@/lib/db";
 import { alerts, forumTopics, entraideListings, users, events } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
+import { fallbackAlerts, fallbackForumTopics, fallbackListings, fallbackEvents } from "@/lib/fallback-data";
 
 export default async function DashboardPage() {
   const db = getDb();
 
-  const activeAlerts = db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
+  let activeAlerts: typeof fallbackAlerts = [];
+  let activityFeed: { type: "forum" | "entraide" | "calendrier"; title: string; author: string; time: string }[] = [];
 
-  const recentForum = db.select({
-    id: forumTopics.id,
-    title: forumTopics.title,
-    rubrique: forumTopics.rubrique,
-    authorName: users.firstName,
-    authorFloor: users.floor,
-    createdAt: forumTopics.createdAt,
-    _type: forumTopics.id,
-  }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
-    .orderBy(desc(forumTopics.createdAt)).limit(3).all();
+  if (db) {
+    activeAlerts = db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
 
-  const recentListings = db.select({
-    id: entraideListings.id,
-    title: entraideListings.title,
-    type: entraideListings.type,
-    authorName: users.firstName,
-    authorFloor: users.floor,
-    createdAt: entraideListings.createdAt,
-    _type: entraideListings.id,
-  }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
-    .orderBy(desc(entraideListings.createdAt)).limit(3).all();
+    const recentForum = db.select({
+      id: forumTopics.id,
+      title: forumTopics.title,
+      authorName: users.firstName,
+      authorFloor: users.floor,
+      createdAt: forumTopics.createdAt,
+    }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
+      .orderBy(desc(forumTopics.createdAt)).limit(3).all();
 
-  const recentEvents = db.select({
-    id: events.id,
-    title: events.title,
-    date: events.date,
-    _type: events.id,
-  }).from(events).orderBy(desc(events.date)).limit(3).all();
+    const recentListings = db.select({
+      id: entraideListings.id,
+      title: entraideListings.title,
+      type: entraideListings.type,
+      authorName: users.firstName,
+      authorFloor: users.floor,
+      createdAt: entraideListings.createdAt,
+    }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
+      .orderBy(desc(entraideListings.createdAt)).limit(3).all();
 
-  const activityFeed = [
-    ...recentForum.map((t) => ({
-      type: "forum" as const,
-      title: t.title,
-      author: `${t.authorName}, ${t.authorFloor}e`,
-      time: t.createdAt || "",
-    })),
-    ...recentListings.map((l) => ({
-      type: l.type === "propose" ? "entraide" as const : "entraide" as const,
-      title: l.title,
-      author: `${l.authorName}, ${l.authorFloor}e`,
-      time: l.createdAt || "",
-    })),
-    ...recentEvents.map((e) => ({
-      type: "calendrier" as const,
-      title: e.title,
-      author: e.date,
-      time: "",
-    })),
-  ].sort(() => Math.random() - 0.5).slice(0, 5);
+    const recentEvents = db.select({
+      id: events.id,
+      title: events.title,
+      date: events.date,
+    }).from(events).orderBy(desc(events.date)).limit(3).all();
+
+    activityFeed = [
+      ...recentForum.map((t) => ({
+        type: "forum" as const, title: t.title,
+        author: `${t.authorName}, ${t.authorFloor}e`, time: t.createdAt || "",
+      })),
+      ...recentListings.map((l) => ({
+        type: "entraide" as const, title: l.title,
+        author: `${l.authorName}, ${l.authorFloor}e`, time: l.createdAt || "",
+      })),
+      ...recentEvents.map((e) => ({
+        type: "calendrier" as const, title: e.title,
+        author: e.date, time: "",
+      })),
+    ].sort(() => Math.random() - 0.5).slice(0, 5);
+  } else {
+    activeAlerts = fallbackAlerts;
+    activityFeed = [
+      ...fallbackForumTopics.slice(0, 3).map((t) => ({
+        type: "forum" as const, title: t.title,
+        author: `${t.authorName}, ${t.authorFloor}e`, time: t.createdAt,
+      })),
+      ...fallbackListings.slice(0, 3).map((l) => ({
+        type: "entraide" as const, title: l.title,
+        author: `${l.authorName}, ${l.authorFloor}e`, time: l.createdAt,
+      })),
+      ...fallbackEvents.slice(0, 3).map((e) => ({
+        type: "calendrier" as const, title: e.title,
+        author: e.date, time: "",
+      })),
+    ].sort(() => Math.random() - 0.5).slice(0, 5);
+  }
 
   const shortcuts = [
     { label: "Entraide", path: "/entraide" },
@@ -101,7 +113,7 @@ export default async function DashboardPage() {
                 <div>
                   <p style={{ fontWeight: 300, marginBottom: 4 }}>{item.title}</p>
                   <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-                    {item.author}{item.time ? ` · ${item.time}` : ""}
+                    {item.author}{item.time ? ` \u00b7 ${item.time}` : ""}
                   </p>
                 </div>
                 <span className="tag" style={{ whiteSpace: "nowrap" }}>{item.type}</span>

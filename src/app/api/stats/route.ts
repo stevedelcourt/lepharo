@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const db = getDb();
+  const db = getDb()!;
 
   const userCount = db.select({ value: count() }).from(users).get()!;
   const topicCount = db.select({ value: count() }).from(forumTopics).get()!;

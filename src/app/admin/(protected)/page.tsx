@@ -8,7 +8,7 @@ export default async function AdminDashboard() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const u = db.select({ value: count() }).from(users).get()!;
   const t = db.select({ value: count() }).from(forumTopics).get()!;
   const l = db.select({ value: count() }).from(entraideListings).get()!;

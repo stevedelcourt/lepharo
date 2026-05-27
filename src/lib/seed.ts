@@ -2,7 +2,7 @@ import { getDb } from "./db";
 import { users, forumTopics, forumReplies, entraideListings, documents, events, alerts } from "./schema";
 import { hashSync } from "bcryptjs";
 
-const db = getDb();
+const db = getDb()!;
 
 // Clean tables
 db.delete(alerts).run();

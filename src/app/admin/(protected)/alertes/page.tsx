@@ -9,7 +9,7 @@ export default async function AdminAlertsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const allAlerts = db.select({
     id: alerts.id,
     message: alerts.message,

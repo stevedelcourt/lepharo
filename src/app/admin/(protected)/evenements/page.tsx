@@ -9,7 +9,7 @@ export default async function AdminEventsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const allEvents = db.select({
     id: events.id,
     title: events.title,

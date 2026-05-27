@@ -2,31 +2,37 @@ import { getDb } from "@/lib/db";
 import { forumTopics, forumReplies, users } from "@/lib/schema";
 import { desc, eq, sql } from "drizzle-orm";
 import ForumClient from "./forum-client";
+import { fallbackForumTopics } from "@/lib/fallback-data";
 
 export default async function ForumPage() {
   const db = getDb();
+  let topicsWithReplies: (typeof fallbackForumTopics[0])[];
 
-  const replyCounts = db.select({
-    topicId: forumReplies.topicId,
-    count: sql<number>`count(*)`.as("count"),
-  }).from(forumReplies).groupBy(forumReplies.topicId).all();
+  if (db) {
+    const replyCounts = db.select({
+      topicId: forumReplies.topicId,
+      count: sql<number>`count(*)`.as("count"),
+    }).from(forumReplies).groupBy(forumReplies.topicId).all();
 
-  const replyCountMap = new Map(replyCounts.map((r) => [r.topicId, r.count]));
+    const replyCountMap = new Map(replyCounts.map((r) => [r.topicId, r.count]));
 
-  const topics = db.select({
-    id: forumTopics.id,
-    title: forumTopics.title,
-    rubrique: forumTopics.rubrique,
-    authorName: users.firstName,
-    authorFloor: users.floor,
-    createdAt: forumTopics.createdAt,
-  }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
-    .orderBy(desc(forumTopics.createdAt)).all();
+    const topics = db.select({
+      id: forumTopics.id,
+      title: forumTopics.title,
+      rubrique: forumTopics.rubrique,
+      authorName: users.firstName,
+      authorFloor: users.floor,
+      createdAt: forumTopics.createdAt,
+    }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
+      .orderBy(desc(forumTopics.createdAt)).all();
 
-  const topicsWithReplies = topics.map((t) => ({
-    ...t,
-    replyCount: replyCountMap.get(t.id) || 0,
-  }));
+    topicsWithReplies = topics.map((t) => ({
+      ...t,
+      replyCount: replyCountMap.get(t.id) || 0,
+    }));
+  } else {
+    topicsWithReplies = fallbackForumTopics;
+  }
 
   return <ForumClient topics={topicsWithReplies} />;
 }

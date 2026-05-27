@@ -9,7 +9,7 @@ export default async function AdminForumPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
-  const db = getDb();
+  const db = getDb()!;
   const topics = db.select({
     id: forumTopics.id,
     title: forumTopics.title,

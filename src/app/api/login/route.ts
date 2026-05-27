@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 export async function POST(request: Request) {
   const { email, password } = await request.json();
 
-  const db = getDb();
+  const db = getDb()!;
   const user = db.select().from(users).where(eq(users.email, email)).get();
 
   if (!user || !user.passwordHash || !compareSync(password, user.passwordHash)) {

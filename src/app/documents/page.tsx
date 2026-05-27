@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { documents } from "@/lib/schema";
 import { desc } from "drizzle-orm";
+import { fallbackDocuments } from "@/lib/fallback-data";
 
 const categoryMeta: Record<string, { name: string; icon: string }> = {
   "assemblees-generales": { name: "Assemblees generales", icon: "T" },
@@ -13,7 +14,7 @@ const categoryMeta: Record<string, { name: string; icon: string }> = {
 
 export default async function DocumentsPage() {
   const db = getDb();
-  const allDocs = db.select().from(documents).orderBy(desc(documents.date)).all();
+  const allDocs = db ? db.select().from(documents).orderBy(desc(documents.date)).all() : fallbackDocuments;
 
   const grouped: Record<string, typeof allDocs> = {};
   for (const doc of allDocs) {
