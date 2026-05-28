@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout } from "@/components/icons";
 import "../admin.css";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -11,19 +12,21 @@ export default async function ProtectedLayout({ children }: { children: React.Re
   }
 
   const navLinks = [
-    { href: "/admin", label: "Tableau de bord" },
-    { href: "/admin/utilisateurs", label: "Utilisateurs" },
-    { href: "/admin/forum", label: "Forum" },
-    { href: "/admin/entraide", label: "Entraide" },
-    { href: "/admin/documents", label: "Documents" },
-    { href: "/admin/evenements", label: "Événements" },
-    { href: "/admin/alertes", label: "Alertes" },
+    { href: "/admin", label: "Tableau de bord", icon: IconDashboard },
+    { href: "/admin/utilisateurs", label: "Utilisateurs", icon: IconUsers },
+    { href: "/admin/forum", label: "Forum", icon: IconForum },
+    { href: "/admin/entraide", label: "Entraide", icon: IconHandshake },
+    { href: "/admin/documents", label: "Documents", icon: IconFolder },
+    { href: "/admin/evenements", label: "Événements", icon: IconCalendar },
+    { href: "/admin/alertes", label: "Alertes", icon: IconBell },
   ];
 
   return (
     <div>
-      <nav>
-        <Link href="/admin">Admin Le Pharo</Link>
+      <div className="admin-header">
+        <Link href="/admin" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconDashboard size={20} /> Admin Le Pharo
+        </Link>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ fontSize: "0.85rem", opacity: 0.8 }}>
             {session.firstName} {session.lastName}
@@ -32,20 +35,25 @@ export default async function ProtectedLayout({ children }: { children: React.Re
             <button type="submit" style={{
               background: "none", border: "1px solid rgba(255,255,255,0.5)",
               color: "#fff", padding: "0.3rem 0.75rem", borderRadius: 4,
-              cursor: "pointer", fontSize: "0.8rem", fontWeight: 300,
+              cursor: "pointer", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: 4,
             }}>
-              Déconnexion
+              <IconLogout size={16} /> Déconnexion
             </button>
           </form>
         </div>
-      </nav>
-      <div className="layout">
-        <aside className="sidebar">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href}>{link.label}</Link>
-          ))}
+      </div>
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link key={link.href} href={link.href}>
+                <Icon size={18} /> {link.label}
+              </Link>
+            );
+          })}
         </aside>
-        <main className="main">{children}</main>
+        <main className="admin-main">{children}</main>
       </div>
     </div>
   );

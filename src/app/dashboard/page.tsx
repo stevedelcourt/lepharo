@@ -2,6 +2,10 @@ import { getDb } from "@/lib/db";
 import { alerts, forumTopics, entraideListings, users, events } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import { fallbackAlerts, fallbackForumTopics, fallbackListings, fallbackEvents } from "@/lib/fallback-data";
+import { IconBell, IconHandshake, IconForum as IconForumIcon, IconCalendar, IconUsers, IconFolder, IconMail, IconDashboard as IconDashboardIcon } from "@/components/icons";
+import { formatDate } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const db = getDb();
@@ -10,9 +14,9 @@ export default async function DashboardPage() {
   let activityFeed: { type: "forum" | "entraide" | "calendrier"; title: string; author: string; time: string }[] = [];
 
   if (db) {
-    activeAlerts = db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
+    activeAlerts = await db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
 
-    const recentForum = db.select({
+    const recentForum = await db.select({
       id: forumTopics.id,
       title: forumTopics.title,
       authorName: users.firstName,
@@ -21,7 +25,7 @@ export default async function DashboardPage() {
     }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
       .orderBy(desc(forumTopics.createdAt)).limit(3).all();
 
-    const recentListings = db.select({
+    const recentListings = await db.select({
       id: entraideListings.id,
       title: entraideListings.title,
       type: entraideListings.type,
@@ -31,7 +35,7 @@ export default async function DashboardPage() {
     }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
       .orderBy(desc(entraideListings.createdAt)).limit(3).all();
 
-    const recentEvents = db.select({
+    const recentEvents = await db.select({
       id: events.id,
       title: events.title,
       date: events.date,
@@ -70,26 +74,29 @@ export default async function DashboardPage() {
   }
 
   const shortcuts = [
-    { label: "Entraide", path: "/entraide" },
-    { label: "Forum", path: "/forum" },
-    { label: "Documents", path: "/documents" },
-    { label: "Calendrier", path: "/calendrier" },
-    { label: "Annuaire", path: "/annuaire" },
-    { label: "Messagerie", path: "/messagerie" },
+    { label: "Entraide", path: "/entraide", icon: IconHandshake },
+    { label: "Forum", path: "/forum", icon: IconForumIcon },
+    { label: "Documents", path: "/documents", icon: IconFolder },
+    { label: "Calendrier", path: "/calendrier", icon: IconCalendar },
+    { label: "Annuaire", path: "/annuaire", icon: IconUsers },
+    { label: "Messagerie", path: "/messagerie", icon: IconMail },
   ];
 
   return (
     <div className="container" style={{ padding: "40px 24px" }}>
-      <h1 style={{ marginBottom: 32 }}>Bonjour</h1>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+        <IconDashboardIcon size={32} />
+        <h1 style={{ margin: 0 }}>Bonjour</h1>
+      </div>
 
       {activeAlerts.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 40 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 40 }}>
           {activeAlerts.map((alert) => (
             <div
               key={alert.id}
               className="card"
               style={{
-                padding: "14px 20px",
+                padding: "12px 20px",
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
@@ -97,7 +104,7 @@ export default async function DashboardPage() {
                 background: alert.type === "warning" ? "var(--color-warning-light)" : "var(--color-primary-light)",
               }}
             >
-              <span style={{ fontSize: "1.25rem" }}>{alert.type === "warning" ? "!" : "i"}</span>
+              <IconBell size={20} />
               <p style={{ fontSize: "0.9375rem", margin: 0 }}>{alert.message}</p>
             </div>
           ))}
@@ -106,17 +113,17 @@ export default async function DashboardPage() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32, alignItems: "start" }}>
         <div>
-          <h3 style={{ marginBottom: 16, fontSize: "1.125rem" }}>Fil d actualite</h3>
+          <h3 style={{ marginBottom: 16, fontSize: "1.125rem" }}>Fil d&apos;actualité</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {activityFeed.map((item, i) => (
-              <div key={i} className="card" style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center" }}>
+              <div key={i} className="card" style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center" }}>
                 <div>
-                  <p style={{ fontWeight: 300, marginBottom: 4 }}>{item.title}</p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-                    {item.author}{item.time ? ` \u00b7 ${item.time}` : ""}
+                  <p style={{ marginBottom: 2 }}>{item.title}</p>
+                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
+                    {item.author}{item.time ? ` · ${formatDate(item.time)}` : ""}
                   </p>
                 </div>
-                <span className="tag" style={{ whiteSpace: "nowrap" }}>{item.type}</span>
+                <span className={`tag tag-${item.type === "forum" ? "info" : item.type === "entraide" ? "propose" : "ag"}`} style={{ textTransform: "capitalize" }}>{item.type}</span>
               </div>
             ))}
           </div>
@@ -125,27 +132,29 @@ export default async function DashboardPage() {
         <div>
           <h3 style={{ marginBottom: 16, fontSize: "1.125rem" }}>Raccourcis</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {shortcuts.map((s) => (
-              <a
-                key={s.path}
-                href={s.path}
-                className="card"
-                style={{
-                  padding: "14px 20px",
-                  fontWeight: 300,
-                  fontSize: "0.9375rem",
-                  textDecoration: "none",
-                  color: "var(--color-text)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  transition: "border-color 0.15s",
-                }}
-              >
-                <span style={{ color: "var(--color-primary)" }}>→</span>
-                {s.label}
-              </a>
-            ))}
+            {shortcuts.map((s) => {
+              const Icon = s.icon;
+              return (
+                <a
+                  key={s.path}
+                  href={s.path}
+                  className="card"
+                  style={{
+                    padding: "12px 20px",
+                    fontSize: "0.9375rem",
+                    textDecoration: "none",
+                    color: "var(--color-text)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    transition: "border-color 0.15s",
+                  }}
+                >
+                  <Icon size={20} />
+                  {s.label}
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -39,16 +39,16 @@ export const fallbackEvents = [
 ];
 
 export const fallbackUsers = [
-  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr" },
-  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr" },
-  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr" },
-  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr" },
-  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr" },
-  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr" },
-  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr" },
-  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr" },
-  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr" },
-  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr" },
+  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: null, phone: null, bio: "Passionnee de jardinage et de cuisine" },
+  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: null, phone: null, bio: "Prof d anglais, adore les chats" },
+  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: null, phone: null, bio: "Bricoleur du dimanche" },
+  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: null, phone: null, bio: null },
+  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: null, phone: null, bio: null },
 ];
 
 export const fallbackAdminUsers = fallbackUsers.map((u) => ({

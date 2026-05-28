@@ -1,6 +1,6 @@
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
-const REDIRECT_URI = `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/auth/google/callback`;
+const REDIRECT_URI = `${process.env.NEXT_PUBLIC_URL || `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL || "lepharo.vercel.app"}`}/api/auth/google/callback`;
 
 export function getGoogleAuthURL(state: string): string {
   const params = new URLSearchParams({

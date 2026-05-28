@@ -1,8 +1,15 @@
-import { getDb } from "./db";
-import { users, forumTopics, forumReplies, entraideListings, documents, events, alerts } from "./schema";
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import * as schema from "./schema";
 import { hashSync } from "bcryptjs";
+import path from "path";
 
-const db = getDb()!;
+const {
+  users, forumTopics, forumReplies, entraideListings, documents, events, alerts,
+} = schema;
+
+const sqlite = new Database(path.join(process.cwd(), "data", "lepharo.db"));
+const db = drizzle(sqlite, { schema });
 
 // Clean tables
 db.delete(alerts).run();
@@ -61,9 +68,9 @@ for (const t of topics) {
 }
 
 // Replies
-db.insert(forumReplies).values({ topicId: 1, authorId: 2, content: "Bonne idée. Je note qu'il faut demander les devis avant l'AG.", createdAt: "2026-05-25 14:30:00" }).run();
-db.insert(forumReplies).values({ topicId: 1, authorId: 7, content: "Exact. J'ai téléchargé les documents dans l'espace documents.", createdAt: "2026-05-25 16:00:00" }).run();
-db.insert(forumReplies).values({ topicId: 2, authorId: 6, content: "Tu peux contacter le conseil syndical pour médiation.", createdAt: "2026-05-26 09:15:00" }).run();
+db.insert(forumReplies).values({ topicId: 1, authorId: 2, content: "Bonne idée. Je note qu'il faut demander les devis avant l'AG.", createdAt: "2025-05-25 14:30:00" }).run();
+db.insert(forumReplies).values({ topicId: 1, authorId: 7, content: "Exact. J'ai téléchargé les documents dans l'espace documents.", createdAt: "2025-05-25 16:00:00" }).run();
+db.insert(forumReplies).values({ topicId: 2, authorId: 6, content: "Tu peux contacter le conseil syndical pour médiation.", createdAt: "2025-05-26 09:15:00" }).run();
 
 // Entraide
 db.insert(entraideListings).values({

@@ -1,0 +1,106 @@
+.histoire {
+  padding: 48px 0 80px;
+}
+
+.histoire-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.histoire-header {
+  margin-bottom: 40px;
+}
+
+.histoire-kicker {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+}
+
+.histoire-header h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.histoire-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.histoire-hero-image {
+  margin-bottom: 48px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.histoire-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.histoire-body h2 {
+  font-size: 1.5rem;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.histoire-body p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+.histoire-body sup {
+  font-size: 0.6875rem;
+}
+
+.histoire-sources {
+  margin-top: 64px;
+  padding: 24px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+}
+
+.histoire-sources h3 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8px;
+}
+
+.histoire-sources p {
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .histoire {
+    padding: 24px 0 48px;
+  }
+
+  .histoire-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .histoire-subtitle {
+    font-size: 1rem;
+  }
+
+  .histoire-body h2 {
+    font-size: 1.25rem;
+    margin-top: 32px;
+  }
+}

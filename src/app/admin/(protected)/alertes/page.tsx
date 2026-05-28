@@ -5,13 +5,14 @@ import { alerts, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
 import { fallbackAdminAlerts } from "@/lib/fallback-data";
+import { IconBell } from "@/components/icons";
 
 export default async function AdminAlertsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const allAlerts = db ? db.select({
+  const allAlerts = db ? await db.select({
     id: alerts.id,
     message: alerts.message,
     type: alerts.type,
@@ -23,14 +24,14 @@ export default async function AdminAlertsPage() {
 
   return (
     <>
-      <h1>Alertes ({allAlerts.length})</h1>
-      <table className="table">
+      <h1><IconBell size={24} /> Alertes ({allAlerts.length})</h1>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Message</th>
             <th>Type</th>
             <th>Active</th>
-            <th>Cree par</th>
+            <th>Créé par</th>
             <th>Date</th>
             <th>Action</th>
           </tr>
@@ -38,9 +39,9 @@ export default async function AdminAlertsPage() {
         <tbody>
           {allAlerts.map((a) => (
             <tr key={a.id}>
-              <td>{a.message}</td>
+              <td style={{ fontWeight: 600 }}>{a.message}</td>
               <td>
-                <span className={`badge ${a.type === "warning" ? "badgeWarning" : ""}`}>
+                <span className={`tag ${a.type === "warning" ? "tag-warning" : ""}`}>
                   {a.type}
                 </span>
               </td>

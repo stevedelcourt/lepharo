@@ -10,6 +10,9 @@ export const users = sqliteTable("users", {
   googleId: text("google_id").unique(),
   role: text("role").notNull().default("resident"),
   verified: integer("verified", { mode: "boolean" }).notNull().default(false),
+  avatarUrl: text("avatar_url"),
+  phone: text("phone"),
+  bio: text("bio"),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 
@@ -38,6 +41,15 @@ export const entraideListings = sqliteTable("entraide_listings", {
   description: text("description").notNull(),
   category: text("category").notNull(),
   authorId: integer("author_id").notNull().references(() => users.id),
+  status: text("status").notNull().default("open"),
+  createdAt: text("created_at").notNull().default("(datetime('now'))"),
+});
+
+export const listingMessages = sqliteTable("listing_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  listingId: integer("listing_id").notNull().references(() => entraideListings.id),
+  authorId: integer("author_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 

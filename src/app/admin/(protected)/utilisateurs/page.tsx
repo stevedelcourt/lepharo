@@ -5,38 +5,43 @@ import { users } from "@/lib/schema";
 import { asc } from "drizzle-orm";
 import DeleteButton from "../delete-button";
 import { fallbackAdminUsers } from "@/lib/fallback-data";
+import { IconUsers, IconShield } from "@/components/icons";
 
 export default async function AdminUsersPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const allUsers = db ? db.select().from(users).orderBy(asc(users.floor)).all() : fallbackAdminUsers;
+  const allUsers = db ? await db.select().from(users).orderBy(asc(users.floor)).all() : fallbackAdminUsers;
 
   return (
     <>
-      <h1>Utilisateurs ({allUsers.length})</h1>
-      <table className="table">
+      <h1><IconUsers size={24} /> Utilisateurs ({allUsers.length})</h1>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Etage</th>
-            <th>Role</th>
-            <th>Verifie</th>
+            <th>Étage</th>
+            <th>Rôle</th>
+            <th>Vérifié</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {allUsers.map((user) => (
             <tr key={user.id}>
-              <td>{user.firstName} {user.lastName}</td>
+              <td style={{ fontWeight: 600 }}>{user.firstName} {user.lastName}</td>
               <td>{user.email}</td>
               <td>{user.floor}e</td>
               <td>
-                <span className={`badge ${user.role === "admin" ? "badgeAdmin" : ""}`}>
-                  {user.role === "admin" ? "Admin" : "Resident"}
-                </span>
+                {user.role === "admin" ? (
+                  <span className="tag" style={{ background: "var(--color-primary-light)", color: "var(--color-primary)" }}>
+                    <IconShield size={14} /> Admin
+                  </span>
+                ) : (
+                  <span className="tag">Résident</span>
+                )}
               </td>
               <td>{user.verified ? "Oui" : "Non"}</td>
               <td>

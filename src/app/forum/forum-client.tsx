@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { IconForum, IconSearch, IconStar, IconChevronRight, IconSort } from "@/components/icons";
+import { formatDate } from "@/lib/utils";
 
 const rubriquesMeta = [
-  { id: "vie-quotidienne", label: "Vie quotidienne dans l immeuble", desc: "Bruit, propreté, animaux, tri sélectif, stationnement…" },
+  { id: "vie-quotidienne", label: "Vie quotidienne", desc: "Bruit, propreté, animaux, tri sélectif, stationnement…" },
   { id: "travaux", label: "Travaux et entretien", desc: "Ravalement, ascenseurs, chauffage, isolation, devis…" },
   { id: "nuisibles", label: "Nuisibles et problèmes sanitaires", desc: "Punaises de lit, cafards, rongeurs, signalements…" },
   { id: "syndic", label: "Syndic et gouvernance", desc: "Préparation des AG, PV, comptes, mise en concurrence." },
@@ -23,14 +25,21 @@ type Topic = {
 
 export default function ForumClient({ topics }: { topics: Topic[] }) {
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "replies" | "rubrique">("date");
+
+  const sorted = [...topics].sort((a, b) => {
+    if (sortBy === "replies") return b.replyCount - a.replyCount;
+    if (sortBy === "rubrique") return a.rubrique.localeCompare(b.rubrique);
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 
   const rubriques = rubriquesMeta.map((r) => {
     const rubriqueTopics = topics.filter((t) => t.rubrique === r.id);
-    const lastTopic = rubriqueTopics.sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+    const lastTopic = [...rubriqueTopics].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
     return {
       ...r,
       topics: rubriqueTopics.length,
-      last: lastTopic ? lastTopic.createdAt : "Aucun sujet",
+      last: lastTopic ? lastTopic.createdAt : null,
     };
   });
 
@@ -41,33 +50,45 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
 
   return (
     <div className="container" style={{ padding: "40px 24px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, gap: 24, flexWrap: "wrap" }}>
-        <div>
-          <h1 style={{ marginBottom: 8 }}>Forum</h1>
-          <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", margin: 0 }}>
-            Discutez avec vos voisins, posez vos questions, partagez.
-          </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, gap: 24, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <IconForum size={28} />
+          <div>
+            <h1 style={{ margin: 0, marginBottom: 4 }}>Forum</h1>
+            <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", margin: 0 }}>
+              Discutez avec vos voisins, posez vos questions, partagez.
+            </p>
+          </div>
         </div>
-        <button className="btn btn-primary">Nouveau sujet</button>
+        <a href="/forum/nouveau" className="btn btn-primary btn-sm">Nouveau sujet</a>
       </div>
 
-      <input
-        type="search"
-        placeholder="Rechercher dans le forum…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{
-          width: "100%",
-          maxWidth: 400,
-          padding: "10px 14px",
-          border: "1.5px solid var(--color-border)",
-          borderRadius: "var(--radius-md)",
-          fontSize: "0.9375rem",
-          background: "var(--color-bg)",
-          outline: "none",
-          marginBottom: 32,
-        }}
-      />
+      <div className="input-group" style={{ marginBottom: 24 }}>
+        <div style={{ position: "relative", flex: 1, maxWidth: 360 }}>
+          <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
+          <input
+            type="search"
+            placeholder="Rechercher dans le forum…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input"
+            style={{ paddingLeft: 40, width: "100%" }}
+          />
+        </div>
+        <div className="input-group" style={{ gap: 4 }}>
+          <IconSort size={18} />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as "date" | "replies" | "rubrique")}
+            className="input"
+            style={{ padding: "6px 10px", fontSize: "0.8125rem", width: "auto" }}
+          >
+            <option value="date">Plus récent</option>
+            <option value="replies">Plus de réponses</option>
+            <option value="rubrique">Rubrique</option>
+          </select>
+        </div>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32, alignItems: "start" }}>
         <div>
@@ -79,36 +100,42 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
                 href={`/forum/${r.id}`}
                 className="card"
                 style={{
-                  padding: "18px 24px",
+                  padding: "16px 20px",
                   textDecoration: "none",
                   color: "var(--color-text)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 16,
+                  gap: 14,
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontWeight: 300, marginBottom: 4 }}>{r.label}</p>
+                  <p style={{ marginBottom: 2 }}>{r.label}</p>
                   <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>{r.desc}</p>
                 </div>
                 <div style={{ textAlign: "right", flexShrink: 0 }}>
-                  <p style={{ fontSize: "0.875rem", fontWeight: 300 }}>{r.topics} sujets</p>
-                  <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{r.last}</p>
+                  <p style={{ fontSize: "0.875rem" }}>{r.topics} sujets</p>
+                  <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
+                    {r.last ? formatDate(r.last) : "Aucun sujet"}
+                  </p>
                 </div>
+                <IconChevronRight size={18} />
               </a>
             ))}
           </div>
         </div>
 
         <div>
-          <h3 style={{ fontSize: "1.125rem", marginBottom: 16 }}>Sujets chauds</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <IconStar size={20} />
+            <h3 style={{ fontSize: "1.125rem", margin: 0 }}>Sujets chauds</h3>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {hotTopics.map((t) => (
-              <div key={t.id} className="card" style={{ padding: "16px 20px" }}>
-                <p style={{ fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>{t.title}</p>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-                  <span>{t.rubrique}</span>
-                  <span>{t.replyCount} réponses · {t.createdAt}</span>
+              <div key={t.id} className="card" style={{ padding: "14px 18px" }}>
+                <p style={{ marginBottom: 6, fontSize: "0.9375rem" }}>{t.title}</p>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
+                  <span className="tag" style={{ textTransform: "capitalize" }}>{t.rubrique}</span>
+                  <span>{t.replyCount} réponses · {formatDate(t.createdAt)}</span>
                 </div>
               </div>
             ))}

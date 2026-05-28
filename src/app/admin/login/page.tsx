@@ -35,10 +35,10 @@ export default function AdminLogin() {
         background: "#fff", padding: "2.5rem", borderRadius: 8,
         border: "1px solid var(--color-border)", width: "100%", maxWidth: 380,
       }}>
-        <h1 style={{ fontSize: "1.3rem", fontWeight: 300, marginBottom: "0.5rem" }}>
+        <h1 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>
           Admin Le Pharo
         </h1>
-        <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", marginBottom: "1.5rem" }}>
+        <p style={{ fontSize: "0.85rem", color: "var(--color-text-secondary)", marginBottom: "1.5rem" }}>
           Connectez-vous pour accéder au panneau d&apos;administration
         </p>
 
@@ -48,43 +48,33 @@ export default function AdminLogin() {
           </p>
         )}
 
-        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 300, marginBottom: "0.25rem", color: "var(--color-text-muted)" }}>
+        <label style={{ display: "block", fontSize: "0.85rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
           Email
         </label>
         <input
           type="email" value={email} onChange={(e) => setEmail(e.target.value)}
           required
-          style={{
-            width: "100%", padding: "0.5rem 0.75rem", border: "1px solid var(--color-border)",
-            borderRadius: 4, fontSize: "0.9rem", fontWeight: 300, marginBottom: "1rem",
-            fontFamily: "Inter, sans-serif", boxSizing: "border-box",
-          }}
+          className="input"
+          style={{ marginBottom: "1rem" }}
         />
 
-        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 300, marginBottom: "0.25rem", color: "var(--color-text-muted)" }}>
+        <label style={{ display: "block", fontSize: "0.85rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
           Mot de passe
         </label>
         <input
           type="password" value={password} onChange={(e) => setPassword(e.target.value)}
           required
-          style={{
-            width: "100%", padding: "0.5rem 0.75rem", border: "1px solid var(--color-border)",
-            borderRadius: 4, fontSize: "0.9rem", fontWeight: 300, marginBottom: "1.5rem",
-            fontFamily: "Inter, sans-serif", boxSizing: "border-box",
-          }}
+          className="input"
+          style={{ marginBottom: "1.5rem" }}
         />
 
-        <button type="submit" style={{
-          width: "100%", padding: "0.6rem", background: "var(--color-accent)",
-          color: "#fff", border: "none", borderRadius: 4, cursor: "pointer",
-          fontSize: "0.9rem", fontWeight: 300,
-        }}>
+        <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
           Se connecter
         </button>
 
         <a href="/" style={{
           display: "block", textAlign: "center", marginTop: "1rem",
-          fontSize: "0.8rem", color: "var(--color-text-muted)", textDecoration: "none",
+          fontSize: "0.8rem", color: "var(--color-text-tertiary)", textDecoration: "none",
         }}>
           Retour au site
         </a>

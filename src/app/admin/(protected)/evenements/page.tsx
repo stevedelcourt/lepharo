@@ -5,13 +5,14 @@ import { events, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
 import { fallbackAdminEvents } from "@/lib/fallback-data";
+import { IconCalendar } from "@/components/icons";
 
 export default async function AdminEventsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const allEvents = db ? db.select({
+  const allEvents = db ? await db.select({
     id: events.id,
     title: events.title,
     type: events.type,
@@ -22,8 +23,8 @@ export default async function AdminEventsPage() {
 
   return (
     <>
-      <h1>Evenements ({allEvents.length})</h1>
-      <table className="table">
+      <h1><IconCalendar size={24} /> Événements ({allEvents.length})</h1>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Titre</th>
@@ -36,8 +37,8 @@ export default async function AdminEventsPage() {
         <tbody>
           {allEvents.map((e) => (
             <tr key={e.id}>
-              <td>{e.title}</td>
-              <td><span className="badge">{e.type}</span></td>
+              <td style={{ fontWeight: 600 }}>{e.title}</td>
+              <td><span className="tag">{e.type}</span></td>
               <td>{e.date}</td>
               <td>{e.authorName}</td>
               <td>

@@ -5,13 +5,14 @@ import { entraideListings, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
 import { fallbackAdminListings } from "@/lib/fallback-data";
+import { IconHandshake } from "@/components/icons";
 
 export default async function AdminEntraidePage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const listings = db ? db.select({
+  const listings = db ? await db.select({
     id: entraideListings.id,
     type: entraideListings.type,
     title: entraideListings.title,
@@ -24,13 +25,13 @@ export default async function AdminEntraidePage() {
 
   return (
     <>
-      <h1>Entraide ({listings.length} annonces)</h1>
-      <table className="table">
+      <h1><IconHandshake size={24} /> Entraide ({listings.length} annonces)</h1>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Titre</th>
             <th>Type</th>
-            <th>Categorie</th>
+            <th>Catégorie</th>
             <th>Auteur</th>
             <th>Date</th>
             <th>Action</th>
@@ -39,9 +40,9 @@ export default async function AdminEntraidePage() {
         <tbody>
           {listings.map((l) => (
             <tr key={l.id}>
-              <td>{l.title}</td>
+              <td style={{ fontWeight: 600 }}>{l.title}</td>
               <td>
-                <span className={`badge ${l.type === "propose" ? "badgeInfo" : "badgeWarning"}`}>
+                <span className={`tag ${l.type === "propose" ? "tag-propose" : "tag-cherche"}`}>
                   {l.type === "propose" ? "Propose" : "Cherche"}
                 </span>
               </td>

@@ -1,13 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
+import { IconHandshake, IconForum, IconFolder, IconCalendar, IconUsers, IconMail } from "@/components/icons";
 import "./home.css";
 
 const categories = [
-  { label: "Entraide", icon: "🤝", path: "/entraide" },
-  { label: "Forum", icon: "💬", path: "/forum" },
-  { label: "Documents", icon: "📄", path: "/documents" },
-  { label: "Calendrier", icon: "📅", path: "/calendrier" },
-  { label: "Annuaire", icon: "👥", path: "/annuaire" },
-  { label: "Messagerie", icon: "✉️", path: "/messagerie" },
+  { label: "Entraide", icon: IconHandshake, path: "/entraide" },
+  { label: "Forum", icon: IconForum, path: "/forum" },
+  { label: "Documents", icon: IconFolder, path: "/documents" },
+  { label: "Calendrier", icon: IconCalendar, path: "/calendrier" },
+  { label: "Annuaire", icon: IconUsers, path: "/annuaire" },
+  { label: "Messagerie", icon: IconMail, path: "/messagerie" },
 ];
 
 const feed = [
@@ -22,8 +24,8 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <div className="container">
-          <div style={{ maxWidth: 680 }}>
+        <div className="container hero-inner">
+          <div className="hero-content">
             <h1>
               Le Pharo<br />
               <em>Communauté</em>
@@ -44,6 +46,16 @@ export default function Home() {
               <Link href="/a-propos">En savoir plus sur le projet</Link>
             </div>
           </div>
+          <div className="hero-image">
+            <Image
+              src="/pharo-tour.webp"
+              alt="La Tour de la Résidence du Pharo"
+              width={800}
+              height={473}
+              className="hero-img"
+              priority
+            />
+          </div>
         </div>
       </section>
 
@@ -51,12 +63,15 @@ export default function Home() {
         <div className="container">
           <h2>Les espaces de la communauté</h2>
           <div className="categories-grid">
-            {categories.map((cat) => (
-              <div key={cat.label} className="category-card">
-                <div className="category-icon">{cat.icon}</div>
-                <span>{cat.label}</span>
-              </div>
-            ))}
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <Link key={cat.label} href={cat.path} className="category-card">
+                  <Icon />
+                  <span>{cat.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

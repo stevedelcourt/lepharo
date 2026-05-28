@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import { Work_Sans } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
 import CookiesLink from "@/components/CookiesLink";
+import { NavItem } from "@/components/SidebarNav";
+import { getSession } from "@/lib/auth";
+import {
+  IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
+  IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
+  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar,
+} from "@/components/icons";
 import "./globals.css";
-import "./header.css";
+import "./sidebar.css";
 import "./footer.css";
 
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-work-sans",
 });
 
 export const metadata: Metadata = {
@@ -18,82 +25,99 @@ export const metadata: Metadata = {
   description: "Le site communautaire de la Résidence du Pharo, 75 boulevard Charles Livon, Marseille",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
   return (
-    <html lang="fr" className={inter.variable}>
+    <html lang="fr" className={workSans.variable}>
       <body>
-        <Header />
-        <main style={{ flex: 1 }}>{children}</main>
-        <Footer />
+        <div className="layout">
+          <Sidebar session={session} />
+          <div className="main-area">
+            <main className="main-content">{children}</main>
+            <FooterBar />
+          </div>
+        </div>
         <CookieBanner />
       </body>
     </html>
   );
 }
 
-function Header() {
+function Sidebar({ session }: { session: { id: number; email: string; role: string; firstName: string; lastName: string } | null }) {
   return (
-    <header className="header">
-      <div className="container header-inner">
-        <a href="/" className="header-logo">
+    <aside className="sidebar">
+      <div className="sidebar-logo">
+        <a href="/">
           <Image
-            src="/pharo-logo.webp"
-            alt="Le Pharo Communauté"
-            width={44}
-            height={44}
-            style={{ borderRadius: "var(--radius-sm)", flexShrink: 0 }}
+            src="/lepharo.svg"
+            alt="Le Pharo"
+            width={144}
+            height={176}
+            className="sidebar-building-icon"
           />
-          <span>Le Pharo</span>
         </a>
-        <nav className="header-nav">
-          <a href="/" className="header-nav-link">Accueil</a>
-          <a href="/a-propos" className="header-nav-link">À propos</a>
-          <a href="/contact" className="header-nav-link">Contact</a>
-        </nav>
-        <div className="header-actions">
-          <a href="/connexion" className="btn btn-ghost">Se connecter</a>
-          <a href="/inscription" className="btn btn-primary">Rejoindre</a>
-        </div>
       </div>
-    </header>
+
+      <nav className="sidebar-nav">
+        {session ? (
+          <>
+            <div className="sidebar-section-label">Navigation</div>
+            <NavItem href="/dashboard" icon={<IconDashboard />} label="Dashboard" />
+            <NavItem href="/annuaire" icon={<IconUsers />} label="Annuaire" />
+            <NavItem href="/forum" icon={<IconForum />} label="Forum" />
+            <NavItem href="/entraide" icon={<IconHandshake />} label="Entraide" />
+            <NavItem href="/calendrier" icon={<IconCalendar />} label="Calendrier" />
+            <NavItem href="/documents" icon={<IconFolder />} label="Documents" />
+            <NavItem href="/mes-annonces" icon={<IconClipboard />} label="Mes annonces" />
+
+            <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>
+            <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />
+            {session.role === "admin" && (
+              <NavItem href="/admin" icon={<IconShield />} label="Admin" />
+            )}
+          </>
+        ) : (
+          <>
+            <div className="sidebar-section-label">Menu</div>
+            <NavItem href="/" icon={<IconHome />} label="Accueil" />
+            <NavItem href="/a-propos" icon={<IconInfo />} label="A propos" />
+            <NavItem href="/histoire" icon={<IconBook />} label="Histoire" />
+            <NavItem href="/contact" icon={<IconSend />} label="Contact" />
+          </>
+        )}
+      </nav>
+
+      <div className="sidebar-bottom">
+        {session ? (
+          <NavItem href="/api/logout" icon={<IconLogout />} label="Déconnexion" />
+        ) : (
+          <>
+            <NavItem href="/connexion" icon={<IconLogin />} label="Se connecter" />
+            <a href="/inscription" className="btn btn-primary" style={{ marginTop: 8, width: "100%", justifyContent: "center" }}>
+              Rejoindre
+            </a>
+          </>
+        )}
+      </div>
+    </aside>
   );
 }
 
-function Footer() {
+function FooterBar() {
   return (
-    <footer className="footer">
-      <div className="container footer-inner">
-        <div className="footer-brand">
-          <span className="footer-logo" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Image
-              src="/pharo-logo.webp"
-              alt=""
-              width={36}
-              height={36}
-              style={{ borderRadius: 6, flexShrink: 0 }}
-            />
-            Le Pharo Communauté
-          </span>
-          <p className="footer-text">
-            Résidence du Pharo, 75 boulevard Charles Livon, 13007 Marseille
-          </p>
-        </div>
-        <nav className="footer-nav">
-          <a href="/a-propos" className="footer-link">À propos</a>
-          <a href="/charte" className="footer-link">Charte</a>
-          <a href="/confidentialite" className="footer-link">Confidentialité</a>
-          <a href="/mentions-legales" className="footer-link">Mentions légales</a>
-          <a href="/contact" className="footer-link">Contact</a>
-          <CookiesLink />
-        </nav>
-      </div>
-      <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} Association des résidents du Pharo</span>
-      </div>
-    </footer>
+    <div className="footer-bar">
+      <a href="/a-propos" className="footer-bar-link">A propos</a>
+      <a href="/histoire" className="footer-bar-link">Histoire</a>
+      <a href="/charte" className="footer-bar-link">Charte</a>
+      <a href="/confidentialite" className="footer-bar-link">Confidentialité</a>
+      <a href="/mentions-legales" className="footer-bar-link">Mentions légales</a>
+      <a href="/contact" className="footer-bar-link">Contact</a>
+      <CookiesLink className="footer-bar-link" />
+      <span className="footer-bar-copyright">&copy; 2026 L&rsquo;amicale du Pharo</span>
+    </div>
   );
 }

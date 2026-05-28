@@ -57,14 +57,14 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/connexion?error=db_unavailable", request.url));
   }
 
-  let user = db.select().from(users).where(eq(users.email, email)).get();
+  let user = await db.select().from(users).where(eq(users.email, email)).get();
 
   if (user) {
     if (!user.googleId) {
-      db.update(users).set({ googleId }).where(eq(users.id, user.id)).run();
+      await db.update(users).set({ googleId }).where(eq(users.id, user.id)).run();
     }
   } else {
-    const result = db.insert(users).values({
+    const result = await db.insert(users).values({
       firstName: given_name || email.split("@")[0],
       lastName: family_name || "",
       email,

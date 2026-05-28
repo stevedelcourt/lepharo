@@ -34,7 +34,7 @@ export async function DELETE(request: Request) {
   if (!db) {
     return NextResponse.json({ error: "Database not available" }, { status: 503 });
   }
-  db.delete(tableMap[table]).where(eq(tableMap[table].id, id)).run();
+  await db.delete(tableMap[table]).where(eq(tableMap[table].id, id)).run();
 
   return NextResponse.json({ success: true });
 }

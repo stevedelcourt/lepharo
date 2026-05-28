@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   if (!db) {
     return NextResponse.json({ error: "Base de donnees non disponible" }, { status: 503 });
   }
-  const user = db.select().from(users).where(eq(users.email, email)).get();
+  const user = await db.select().from(users).where(eq(users.email, email)).get();
 
   if (!user || !user.passwordHash || !compareSync(password, user.passwordHash)) {
     return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });

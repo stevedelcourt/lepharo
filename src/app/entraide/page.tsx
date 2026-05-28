@@ -4,15 +4,18 @@ import { desc, eq } from "drizzle-orm";
 import EntraideClient from "./entraide-client";
 import { fallbackListings } from "@/lib/fallback-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function EntraidePage() {
   const db = getDb();
-  const listings = db ? db.select({
+  const listings = db ? await db.select({
     id: entraideListings.id,
     type: entraideListings.type,
     title: entraideListings.title,
     category: entraideListings.category,
     authorName: users.firstName,
     authorFloor: users.floor,
+    createdAt: entraideListings.createdAt,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
     .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings;
 

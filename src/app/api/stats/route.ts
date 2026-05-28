@@ -15,12 +15,12 @@ export async function GET() {
     return NextResponse.json({ error: "Database not available" }, { status: 503 });
   }
 
-  const userCount = db.select({ value: count() }).from(users).get()!;
-  const topicCount = db.select({ value: count() }).from(forumTopics).get()!;
-  const listingCount = db.select({ value: count() }).from(entraideListings).get()!;
-  const docCount = db.select({ value: count() }).from(documents).get()!;
-  const eventCount = db.select({ value: count() }).from(events).get()!;
-  const alertCount = db.select({ value: count() }).from(alerts).get()!;
+  const userCount = (await db.select({ value: count() }).from(users).get())!;
+  const topicCount = (await db.select({ value: count() }).from(forumTopics).get())!;
+  const listingCount = (await db.select({ value: count() }).from(entraideListings).get())!;
+  const docCount = (await db.select({ value: count() }).from(documents).get())!;
+  const eventCount = (await db.select({ value: count() }).from(events).get())!;
+  const alertCount = (await db.select({ value: count() }).from(alerts).get())!;
 
   return NextResponse.json({
     users: userCount.value,

@@ -2,12 +2,12 @@
 
 import { openCookieSettings } from "./CookieBanner";
 
-export default function CookiesLink() {
+export default function CookiesLink({ className }: { className?: string }) {
   return (
     <a
       href="#"
       onClick={(e) => { e.preventDefault(); openCookieSettings(); }}
-      className="footer-link"
+      className={className}
     >
       Cookies
     </a>

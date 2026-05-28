@@ -5,13 +5,14 @@ import { forumTopics, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import DeleteButton from "../delete-button";
 import { fallbackAdminForumTopics } from "@/lib/fallback-data";
+import { IconForum, IconPin } from "@/components/icons";
 
 export default async function AdminForumPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const topics = db ? db.select({
+  const topics = db ? await db.select({
     id: forumTopics.id,
     title: forumTopics.title,
     rubrique: forumTopics.rubrique,
@@ -24,8 +25,8 @@ export default async function AdminForumPage() {
 
   return (
     <>
-      <h1>Forum ({topics.length} sujets)</h1>
-      <table className="table">
+      <h1><IconForum size={24} /> Forum ({topics.length} sujets)</h1>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Titre</th>
@@ -38,8 +39,11 @@ export default async function AdminForumPage() {
         <tbody>
           {topics.map((t) => (
             <tr key={t.id}>
-              <td>{t.title}{t.pinned ? " P" : ""}</td>
-              <td><span className="badge">{t.rubrique}</span></td>
+              <td style={{ fontWeight: 600 }}>
+                {t.title}
+                {t.pinned && <span style={{ marginLeft: 6, verticalAlign: "middle", color: "var(--color-primary)" }}><IconPin size={14} /></span>}
+              </td>
+              <td><span className="tag">{t.rubrique}</span></td>
               <td>{t.authorName} ({t.authorFloor}e)</td>
               <td>{t.createdAt}</td>
               <td>
