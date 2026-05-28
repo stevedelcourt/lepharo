@@ -6,10 +6,15 @@ import { asc } from "drizzle-orm";
 import { fallbackAdminUsers } from "@/lib/fallback-data";
 import { IconUsers, IconShield } from "@/components/icons";
 import { DeleteButton, EditButton, WarnButton, ModerateButton } from "../admin-actions";
+import { PromoteAdminButton } from "../promote-admin";
+
+const roleLabels: Record<string, string> = { superadmin: "Super Admin", moderator: "Modérateur", editor: "Éditeur" };
+const roleColors: Record<string, string> = { superadmin: "#dc2626", moderator: "#0891b2", editor: "#7c3aed" };
 
 export default async function AdminUsersPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
+  const isSuper = (session as any).adminRole === "superadmin" || !(session as any).adminRole;
 
   const db = getDb();
   const allUsers = db ? await db.select().from(users).orderBy(asc(users.floor)).all() : fallbackAdminUsers;
@@ -29,38 +34,46 @@ export default async function AdminUsersPage() {
           </tr>
         </thead>
         <tbody>
-          {allUsers.map((user) => (
-            <tr key={user.id}>
-              <td style={{ fontWeight: 600 }}>{user.firstName} {user.lastName}</td>
-              <td>{user.email}</td>
-              <td>{user.floor}e</td>
-              <td>
-                {user.role === "admin" ? (
-                  <span className="tag" style={{ background: "var(--color-primary-light)", color: "var(--color-primary)" }}>
-                    <IconShield size={14} /> Admin
-                  </span>
-                ) : (
-                  <span className="tag">Résident</span>
-                )}
-              </td>
-              <td>{user.verified ? "Oui" : "Non"}</td>
-              <td>
-                <div className="input-group" style={{ gap: 4 }}>
-                  <EditButton table="users" id={user.id} fields={[
-                    { label: "Prénom", key: "first_name", type: "text", default: user.firstName },
-                    { label: "Nom", key: "last_name", type: "text", default: user.lastName },
-                    { label: "Email", key: "email", type: "text", default: user.email },
-                    { label: "Étage", key: "floor", type: "number", default: user.floor },
-                    { label: "Rôle", key: "role", type: "select", options: [{ value: "resident", label: "Résident" }, { value: "admin", label: "Admin" }], default: user.role },
-                    { label: "Vérifié", key: "verified", type: "boolean", default: user.verified },
-                  ]} />
-                  {user.role !== "admin" && <WarnButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} />}
-                  <ModerateButton table="users" id={user.id} field="verified" label={user.verified ? "Marquer comme non vérifié" : "Marquer comme vérifié"} value={user.verified} />
-                  <DeleteButton table="users" id={user.id} />
-                </div>
-              </td>
-            </tr>
-          ))}
+          {allUsers.map((user) => {
+            const adminRole = (user as any).adminRole;
+            return (
+              <tr key={user.id}>
+                <td style={{ fontWeight: 600 }}>{user.firstName} {user.lastName}</td>
+                <td>{user.email}</td>
+                <td>{user.floor}e</td>
+                <td>
+                  {adminRole ? (
+                    <span className="tag" style={{ background: `${roleColors[adminRole] || "var(--color-primary)"}20`, color: roleColors[adminRole] || "var(--color-primary)" }}>
+                      <IconShield size={14} /> {roleLabels[adminRole] || adminRole}
+                    </span>
+                  ) : user.role === "admin" ? (
+                    <span className="tag" style={{ background: "var(--color-primary-light)", color: "var(--color-primary)" }}>
+                      <IconShield size={14} /> Admin
+                    </span>
+                  ) : (
+                    <span className="tag">Résident</span>
+                  )}
+                </td>
+                <td>{user.verified ? "Oui" : "Non"}</td>
+                <td>
+                  <div className="input-group" style={{ gap: 4 }}>
+                    <EditButton table="users" id={user.id} fields={[
+                      { label: "Prénom", key: "first_name", type: "text", default: user.firstName },
+                      { label: "Nom", key: "last_name", type: "text", default: user.lastName },
+                      { label: "Email", key: "email", type: "text", default: user.email },
+                      { label: "Étage", key: "floor", type: "number", default: user.floor },
+                      { label: "Rôle", key: "role", type: "select", options: [{ value: "resident", label: "Résident" }, { value: "admin", label: "Admin" }], default: user.role },
+                      { label: "Vérifié", key: "verified", type: "boolean", default: user.verified },
+                    ]} />
+                    {isSuper && <PromoteAdminButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} currentRole={adminRole} />}
+                    {!adminRole && <WarnButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} />}
+                    <ModerateButton table="users" id={user.id} field="verified" label={user.verified ? "Marquer non vérifié" : "Marquer vérifié"} value={user.verified} />
+                    <DeleteButton table="users" id={user.id} />
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </>

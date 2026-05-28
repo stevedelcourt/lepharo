@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role,
+    adminRole: user.adminRole,
   });
 
   return NextResponse.json({ success: true, role: user.role });

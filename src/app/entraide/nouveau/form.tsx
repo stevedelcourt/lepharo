@@ -24,6 +24,7 @@ export default function NouveauListingForm() {
   const [category, setCategory] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [publishedId, setPublishedId] = useState<number | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -65,7 +66,7 @@ export default function NouveauListingForm() {
     try {
       let urls: string[] = [];
       if (imageFiles.length > 0) {
-        urls = await uploadImages();
+        try { urls = await uploadImages(); } catch {}
       }
 
       const res = await fetch("/api/listings", {
@@ -73,16 +74,33 @@ export default function NouveauListingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, title, description, category, images: urls }),
       });
-      const data = await res.json();
-      if (data.success) {
-        router.push(`/entraide/${data.id}`);
+      const body = await res.text();
+      let data: any;
+      try { data = JSON.parse(body); } catch { data = {}; }
+      if (data?.success && data?.id) {
+        setPublishedId(data.id);
       } else {
-        setError(data.error || "Erreur lors de la publication");
+        setError(data?.error || "Erreur lors de la publication");
       }
     } catch {
       setError("Erreur lors de la publication");
     }
     setSaving(false);
+  }
+
+  if (publishedId) {
+    return (
+      <div className="card" style={{ padding: "32px 24px", textAlign: "center" }}>
+        <p style={{ fontSize: "1.125rem", fontWeight: 700, marginBottom: 12 }}>Annonce publiée avec succès !</p>
+        <p style={{ color: "var(--color-text-secondary)", marginBottom: 24, fontSize: "0.9375rem" }}>
+          Votre annonce est désormais visible par tous les résidents.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          <a href={`/entraide/${publishedId}`} className="btn btn-primary">Voir mon annonce</a>
+          <a href="/entraide/nouveau" className="btn btn-ghost">Publier une autre</a>
+        </div>
+      </div>
+    );
   }
 
   return (

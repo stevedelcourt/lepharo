@@ -47,8 +47,13 @@ function MessageButton({ residentId }: { residentId: number }) {
   return (
     <a
       href={`/messagerie?to=${residentId}`}
-      className="btn btn-ghost btn-sm"
-      style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", fontSize: "0.8125rem" }}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 4,
+        padding: "6px 16px", borderRadius: 999,
+        background: "var(--color-primary)", color: "#000",
+        fontSize: "0.8125rem", fontWeight: 600,
+        textDecoration: "none", lineHeight: 1,
+      }}
     >
       <IconSend size={14} />
       Message

@@ -137,9 +137,9 @@ export default function EntraideClient({ listings: initialListings }: { listings
                   {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
                 </span>
                 <CatIcon size={20} />
-                <div>
-                  <p style={{ marginBottom: 2 }}>
-                    {item.title}
+                  <div>
+                    <p style={{ marginBottom: 2, fontWeight: 700, color: "var(--color-text)" }}>
+                      {item.title}
                     {hasImages(item.images) && (
                       <span style={{ marginLeft: 8, fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
                         +{JSON.parse(item.images).length} photo{JSON.parse(item.images).length > 1 ? "s" : ""}

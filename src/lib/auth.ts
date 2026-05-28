@@ -13,6 +13,7 @@ export type SessionUser = {
   firstName: string;
   lastName: string;
   role: string;
+  adminRole?: string | null;
 };
 
 export async function createSession(user: SessionUser) {

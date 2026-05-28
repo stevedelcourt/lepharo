@@ -1,26 +1,28 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout, IconBook } from "@/components/icons";
+import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout, IconBook, IconShield } from "@/components/icons";
 import "../admin.css";
+
+const roleHierarchy: Record<string, number> = { superadmin: 3, moderator: 2, editor: 1 };
+const allNavLinks = [
+  { href: "/admin", label: "Tableau de bord", icon: IconDashboard },
+  { href: "/admin/utilisateurs", label: "Utilisateurs", icon: IconUsers, minRole: "superadmin" },
+  { href: "/admin/forum", label: "Forum", icon: IconForum, minRole: "moderator" },
+  { href: "/admin/rubriques", label: "Rubriques", icon: IconBook, minRole: "superadmin" },
+  { href: "/admin/entraide", label: "Entraide", icon: IconHandshake, minRole: "moderator" },
+  { href: "/admin/documents", label: "Documents", icon: IconFolder, minRole: "editor" },
+  { href: "/admin/evenements", label: "Événements", icon: IconCalendar, minRole: "editor" },
+  { href: "/admin/alertes", label: "Alertes", icon: IconBell, minRole: "editor" },
+];
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
+  if (!session || session.role !== "admin") redirect("/admin/login");
 
-  if (!session || session.role !== "admin") {
-    redirect("/admin/login");
-  }
-
-  const navLinks = [
-    { href: "/admin", label: "Tableau de bord", icon: IconDashboard },
-    { href: "/admin/utilisateurs", label: "Utilisateurs", icon: IconUsers },
-    { href: "/admin/forum", label: "Forum", icon: IconForum },
-    { href: "/admin/rubriques", label: "Rubriques", icon: IconBook },
-    { href: "/admin/entraide", label: "Entraide", icon: IconHandshake },
-    { href: "/admin/documents", label: "Documents", icon: IconFolder },
-    { href: "/admin/evenements", label: "Événements", icon: IconCalendar },
-    { href: "/admin/alertes", label: "Alertes", icon: IconBell },
-  ];
+  const adminRole = (session as any).adminRole || "superadmin";
+  const level = roleHierarchy[adminRole] || 0;
+  const navLinks = allNavLinks.filter((l) => !l.minRole || (roleHierarchy[l.minRole] || 99) <= level);
 
   return (
     <div>
@@ -29,8 +31,8 @@ export default async function ProtectedLayout({ children }: { children: React.Re
           <IconDashboard size={20} /> Admin Le Pharo
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontSize: "0.85rem", opacity: 0.8 }}>
-            {session.firstName} {session.lastName}
+          <span style={{ fontSize: "0.85rem", opacity: 0.8, display: "flex", alignItems: "center", gap: 4 }}>
+            <IconShield size={14} /> {adminRole === "superadmin" ? "Super Admin" : adminRole === "moderator" ? "Modérateur" : "Éditeur"} — {session.firstName}
           </span>
           <form action="/api/logout" method="POST">
             <button type="submit" style={{

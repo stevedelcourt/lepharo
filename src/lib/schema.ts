@@ -10,6 +10,7 @@ export const users = sqliteTable("users", {
   passwordHash: text("password_hash"),
   googleId: text("google_id").unique(),
   role: text("role").notNull().default("resident"),
+  adminRole: text("admin_role"),
   verified: integer("verified", { mode: "boolean" }).notNull().default(false),
   avatarUrl: text("avatar_url"),
   phone: text("phone"),
