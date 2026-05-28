@@ -9,7 +9,7 @@ import NotifBell from "@/components/notif-bell";
 import {
   IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
   IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
-  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar, IconMessage,
+  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar, IconMessage, IconHelp,
 } from "@/components/icons";
 import "./globals.css";
 import "./sidebar.css";
@@ -68,11 +68,12 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
           <>
             <div className="sidebar-section-label">Navigation</div>
             <NavItem href="/dashboard" icon={<IconDashboard />} label="Dashboard" />
+            <NavItem href="/entraide" icon={<IconHandshake />} label="Entraide" className="sidebar-link-entraide" />
             <NavItem href="/annuaire" icon={<IconUsers />} label="Annuaire" />
             <NavItem href="/forum" icon={<IconForum />} label="Forum" />
-            <NavItem href="/entraide" icon={<IconHandshake />} label="Entraide" />
             <NavItem href="/calendrier" icon={<IconCalendar />} label="Calendrier" />
             <NavItem href="/documents" icon={<IconFolder />} label="Documents" />
+            <NavItem href="/aide" icon={<IconHelp />} label="Aide" />
 
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>
             <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />

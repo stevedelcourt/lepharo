@@ -2,11 +2,11 @@
 
 import { usePathname } from "next/navigation";
 
-export function NavItem({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+export function NavItem({ href, icon, label, className }: { href: string; icon: React.ReactNode; label: string; className?: string }) {
   const pathname = usePathname();
   const isActive = pathname === href || pathname.startsWith(href + "/");
   return (
-    <a href={href} className={`sidebar-link${isActive ? " active" : ""}`}>
+    <a href={href} className={`sidebar-link${isActive ? " active" : ""}${className ? " " + className : ""}`}>
       <span className="sidebar-link-icon">{icon}</span>
       {label}
     </a>
