@@ -12,6 +12,7 @@ type Resident = {
   avatarUrl: string | null;
   phone: string | null;
   bio: string | null;
+  senior: boolean;
 };
 
 export default function AnnuaireClient({ residents: initialResidents }: { residents: Resident[] }) {
@@ -50,6 +51,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
           <input
             type="search"
+            autoComplete="off"
             placeholder="Rechercher…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -111,7 +113,10 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <h4 style={{ margin: 0, fontSize: "1rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
-                  <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
+                    <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
+                  </div>
                 </div>
                 <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: "2px 0 0" }}>
                   {r.floor ? `Résident au ${r.floor}e étage` : "Résident"}

@@ -94,6 +94,7 @@ export default function MessageriePage() {
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
             <input
               type="search"
+              autoComplete="off"
               placeholder="Rechercher…"
               className="input"
               style={{ width: "100%" }}

@@ -21,6 +21,7 @@ export default async function ProfilPage() {
     phone: string | null;
     bio: string | null;
     avatarUrl: string | null;
+    senior: boolean;
     hasPassword: boolean;
   };
 
@@ -34,6 +35,7 @@ export default async function ProfilPage() {
       phone: users.phone,
       bio: users.bio,
       avatarUrl: users.avatarUrl,
+      senior: users.senior,
       passwordHash: users.passwordHash,
     }).from(users).where(eq(users.id, session.id)).get();
 
@@ -48,6 +50,7 @@ export default async function ProfilPage() {
       phone: u.phone,
       bio: u.bio,
       avatarUrl: u.avatarUrl,
+      senior: u.senior,
       hasPassword: !!u.passwordHash,
     };
   } else {
@@ -60,6 +63,7 @@ export default async function ProfilPage() {
       phone: null,
       bio: null,
       avatarUrl: null,
+      senior: false,
       hasPassword: true,
     };
   }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { forumReplies, forumTopics } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     topicId,
     content,
     authorId: session.id,
+    createdAt: sql`(datetime('now'))`,
   }).returning({ id: forumReplies.id });
 
   return NextResponse.json({ id: result[0].id });

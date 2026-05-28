@@ -9,11 +9,18 @@ let migrated = false;
 const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "001_images", sql: `ALTER TABLE entraide_listings ADD COLUMN images text DEFAULT '[]' NOT NULL` },
   { id: "002_locked", sql: `ALTER TABLE forum_topics ADD COLUMN locked integer DEFAULT false NOT NULL` },
-  { id: "003_rubriques", sql: `CREATE TABLE IF NOT EXISTS forum_rubriques (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text NOT NULL UNIQUE, slug text NOT NULL UNIQUE, description text, created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
+  { id: "003_rubriques", sql: `CREATE TABLE IF NOT EXISTS forum_rubriques (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text NOT NULL UNIQUE, slug text NOT NULL UNIQUE, description text, created_at text DEFAULT (datetime('now')) NOT NULL)` },
   { id: "004_rubriques_seed", sql: `INSERT OR IGNORE INTO forum_rubriques (name, slug, description) VALUES ('Vie quotidienne', 'vie-quotidienne', 'Bruit, propreté, animaux, tri sélectif, stationnement…'), ('Travaux et entretien', 'travaux', 'Ravalement, ascenseurs, chauffage, isolation, devis…'), ('Nuisibles et problèmes sanitaires', 'nuisibles', 'Punaises de lit, cafards, rongeurs, signalements…'), ('Syndic et gouvernance', 'syndic', 'Préparation des AG, PV, comptes, mise en concurrence.'), ('Le quartier du Pharo', 'quartier', 'Actualités, événements, commerces de proximité.'), ('Le Bistrot', 'bistrot', 'Pour parler de tout et de rien. Photos de la vue, recommandations…')` },
-  { id: "005_private_messages", sql: `CREATE TABLE IF NOT EXISTS private_messages (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, sender_id integer NOT NULL REFERENCES users(id), receiver_id integer NOT NULL REFERENCES users(id), content text NOT NULL, read integer DEFAULT false NOT NULL, created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
-  { id: "006_admin_warnings", sql: `CREATE TABLE IF NOT EXISTS admin_warnings (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, user_id integer NOT NULL REFERENCES users(id), message text NOT NULL, created_by integer NOT NULL REFERENCES users(id), created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
+  { id: "005_private_messages", sql: `CREATE TABLE IF NOT EXISTS private_messages (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, sender_id integer NOT NULL REFERENCES users(id), receiver_id integer NOT NULL REFERENCES users(id), content text NOT NULL, read integer DEFAULT false NOT NULL, created_at text DEFAULT (datetime('now')) NOT NULL)` },
+  { id: "006_admin_warnings", sql: `CREATE TABLE IF NOT EXISTS admin_warnings (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, user_id integer NOT NULL REFERENCES users(id), message text NOT NULL, created_by integer NOT NULL REFERENCES users(id), created_at text DEFAULT (datetime('now')) NOT NULL)` },
   { id: "007_listing_messages_read", sql: `ALTER TABLE listing_messages ADD COLUMN read integer DEFAULT false NOT NULL` },
+  { id: "008_fix_dates_listings", sql: `UPDATE entraide_listings SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "009_fix_dates_topics", sql: `UPDATE forum_topics SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "010_fix_dates_replies", sql: `UPDATE forum_replies SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "011_fix_dates_users", sql: `UPDATE users SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "012_fix_dates_events", sql: `UPDATE events SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "013_fix_dates_alerts", sql: `UPDATE alerts SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
+  { id: "014_users_senior", sql: `ALTER TABLE users ADD COLUMN senior integer DEFAULT false NOT NULL` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {

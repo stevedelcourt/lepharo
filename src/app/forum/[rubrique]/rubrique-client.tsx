@@ -69,6 +69,7 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
           <input
             type="search"
+            autoComplete="off"
             placeholder="Rechercher dans cette rubrique…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

@@ -68,6 +68,7 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
           <input
             type="search"
+            autoComplete="off"
             placeholder="Rechercher dans le forum…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

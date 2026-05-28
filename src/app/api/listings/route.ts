@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { entraideListings } from "@/lib/schema";
+import { sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
     images: imagesJson,
     authorId: session.id,
     status: "open",
+    createdAt: sql`(datetime('now'))`,
   }).run();
 
   return NextResponse.json({ success: true, id: result.lastInsertRowid });

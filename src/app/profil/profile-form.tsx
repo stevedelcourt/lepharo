@@ -13,6 +13,7 @@ type Props = {
     bio: string | null;
     avatarUrl: string | null;
     hasPassword: boolean;
+    senior: boolean;
   };
 };
 
@@ -22,6 +23,7 @@ export default function ProfileForm({ user }: Props) {
   const [floor, setFloor] = useState(user.floor?.toString() || "");
   const [phone, setPhone] = useState(user.phone || "");
   const [bio, setBio] = useState(user.bio || "");
+  const [senior, setSenior] = useState(user.senior);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -47,6 +49,7 @@ export default function ProfileForm({ user }: Props) {
           floor: floor ? parseInt(floor, 10) : null,
           phone,
           bio,
+          senior,
         }),
       });
       const data = await res.json();
@@ -265,6 +268,32 @@ export default function ProfileForm({ user }: Props) {
               rows={4}
               style={{ width: "100%", resize: "vertical", fontFamily: "inherit" }}
             />
+          </div>
+
+          <div style={{ marginTop: 8, padding: "16px 20px", background: senior ? "var(--color-warning-light)" : "var(--color-bg-alt)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <button
+                type="button"
+                onClick={() => setSenior(!senior)}
+                style={{
+                  width: 44, height: 24, borderRadius: 12, border: "none", cursor: "pointer",
+                  background: senior ? "var(--color-primary)" : "var(--color-border)",
+                  position: "relative", transition: "background 0.2s", flexShrink: 0, marginTop: 2,
+                }}
+              >
+                <span style={{
+                  position: "absolute", top: 2, width: 20, height: 20, borderRadius: "50%",
+                  background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                  left: senior ? 22 : 2,
+                }} />
+              </button>
+              <div>
+                <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: 4 }}>Senior</p>
+                <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
+                  Je suis senior et parfait, j&apos;aurais vraiment besoin d&apos;aide, je souhaite signaler ça dans mon profil public.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -17,6 +17,7 @@ export default async function AnnuairePage() {
     avatarUrl: users.avatarUrl,
     phone: users.phone,
     bio: users.bio,
+    senior: users.senior,
   }).from(users).orderBy(asc(users.floor)).all() : fallbackUsers;
 
   return <AnnuaireClient residents={residents} />;
