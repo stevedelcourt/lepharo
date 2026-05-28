@@ -5,10 +5,11 @@ import CookieBanner from "@/components/CookieBanner";
 import CookiesLink from "@/components/CookiesLink";
 import { NavItem } from "@/components/SidebarNav";
 import { getSession } from "@/lib/auth";
+import NotifBell from "@/components/notif-bell";
 import {
   IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
   IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
-  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar,
+  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar, IconMessage,
 } from "@/components/icons";
 import "./globals.css";
 import "./sidebar.css";
@@ -76,6 +77,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
 
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>
             <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />
+            <NavItem href="/messagerie" icon={<IconMessage />} label="Messagerie" />
             {session.role === "admin" && (
               <NavItem href="/admin" icon={<IconShield />} label="Admin" />
             )}
@@ -93,7 +95,15 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
 
       <div className="sidebar-bottom">
         {session ? (
-          <NavItem href="/api/logout" icon={<IconLogout />} label="Déconnexion" />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, width: "100%" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0" }}>
+              <span style={{ fontSize: "0.8125rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {session.firstName}
+              </span>
+              <NotifBell />
+            </div>
+            <NavItem href="/api/logout" icon={<IconLogout />} label="Déconnexion" />
+          </div>
         ) : (
           <>
             <NavItem href="/connexion" icon={<IconLogin />} label="Se connecter" />

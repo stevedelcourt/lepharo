@@ -60,6 +60,7 @@ export const listingMessages = sqliteTable("listing_messages", {
   listingId: integer("listing_id").notNull().references(() => entraideListings.id),
   authorId: integer("author_id").notNull().references(() => users.id),
   content: text("content").notNull(),
+  read: integer("read", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 

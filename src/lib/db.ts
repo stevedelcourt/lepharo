@@ -4,6 +4,55 @@ import * as schema from "./schema";
 type Database = BaseSQLiteDatabase<"sync" | "async", any, typeof schema>;
 
 let db: Database | null = null;
+let migrated = false;
+
+const MIGRATIONS: { id: string; sql: string }[] = [
+  { id: "001_images", sql: `ALTER TABLE entraide_listings ADD COLUMN images text DEFAULT '[]' NOT NULL` },
+  { id: "002_locked", sql: `ALTER TABLE forum_topics ADD COLUMN locked integer DEFAULT false NOT NULL` },
+  { id: "003_rubriques", sql: `CREATE TABLE IF NOT EXISTS forum_rubriques (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text NOT NULL UNIQUE, slug text NOT NULL UNIQUE, description text, created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
+  { id: "004_rubriques_seed", sql: `INSERT OR IGNORE INTO forum_rubriques (name, slug, description) VALUES ('Vie quotidienne', 'vie-quotidienne', 'Bruit, propreté, animaux, tri sélectif, stationnement…'), ('Travaux et entretien', 'travaux', 'Ravalement, ascenseurs, chauffage, isolation, devis…'), ('Nuisibles et problèmes sanitaires', 'nuisibles', 'Punaises de lit, cafards, rongeurs, signalements…'), ('Syndic et gouvernance', 'syndic', 'Préparation des AG, PV, comptes, mise en concurrence.'), ('Le quartier du Pharo', 'quartier', 'Actualités, événements, commerces de proximité.'), ('Le Bistrot', 'bistrot', 'Pour parler de tout et de rien. Photos de la vue, recommandations…')` },
+  { id: "005_private_messages", sql: `CREATE TABLE IF NOT EXISTS private_messages (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, sender_id integer NOT NULL REFERENCES users(id), receiver_id integer NOT NULL REFERENCES users(id), content text NOT NULL, read integer DEFAULT false NOT NULL, created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
+  { id: "006_admin_warnings", sql: `CREATE TABLE IF NOT EXISTS admin_warnings (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, user_id integer NOT NULL REFERENCES users(id), message text NOT NULL, created_by integer NOT NULL REFERENCES users(id), created_at text DEFAULT "(datetime('now'))" NOT NULL)` },
+  { id: "007_listing_messages_read", sql: `ALTER TABLE listing_messages ADD COLUMN read integer DEFAULT false NOT NULL` },
+];
+
+function migrateBetterSqlite(sqlite: any) {
+  if (migrated) return;
+  migrated = true;
+  sqlite.exec(`CREATE TABLE IF NOT EXISTS _migrations (id text PRIMARY KEY, run_at text NOT NULL)`);
+  const done = new Set((sqlite.prepare(`SELECT id FROM _migrations`).all() as any[]).map((r: any) => r.id));
+  for (const m of MIGRATIONS) {
+    if (done.has(m.id)) continue;
+    try {
+      // Column may already exist — catch duplicate column errors
+      sqlite.exec(m.sql);
+      sqlite.prepare(`INSERT INTO _migrations (id, run_at) VALUES (?, datetime('now'))`).run(m.id);
+    } catch (e: any) {
+      if (!e.message?.includes("duplicate column")) throw e;
+    }
+  }
+}
+
+async function migrateLibsql(client: any) {
+  if (migrated) return;
+  migrated = true;
+  try {
+    await client.execute({ sql: `CREATE TABLE IF NOT EXISTS _migrations (id text NOT NULL, run_at text NOT NULL)` });
+  } catch { return; }
+  try {
+    const result = await client.execute({ sql: `SELECT id FROM _migrations` });
+    const done = new Set(Array.from(result.rows || []).map((r: any) => String(r.id ?? r[0])));
+    for (const m of MIGRATIONS) {
+      if (done.has(m.id)) continue;
+      try {
+        await client.execute({ sql: m.sql });
+        await client.execute({ sql: `INSERT INTO _migrations (id, run_at) VALUES (?, datetime('now'))`, args: [m.id] });
+      } catch (e: any) {
+        if (!e.message?.includes("duplicate column")) throw e;
+      }
+    }
+  } catch {}
+}
 
 export function getDb(): Database | null {
   if (db !== null) return db;
@@ -17,6 +66,7 @@ export function getDb(): Database | null {
         authToken: process.env.TURSO_DB_TOKEN,
       });
       db = drizzle(client, { schema }) as unknown as Database;
+      migrateLibsql(client).catch(() => {});
       return db;
     } catch {
       return null;
@@ -31,6 +81,7 @@ export function getDb(): Database | null {
     sqlite.pragma("journal_mode = WAL");
     sqlite.pragma("foreign_keys = ON");
     db = drizzle(sqlite, { schema }) as unknown as Database;
+    migrateBetterSqlite(sqlite);
     return db;
   } catch {
     return null;
