@@ -42,16 +42,18 @@ export async function GET() {
   }
 
   const idArr = [...partnerIds];
-  const partners = await db.select({ id: users.id, firstName: users.firstName, lastName: users.lastName, floor: users.floor })
+  const partners = await db.select({ id: users.id, firstName: users.firstName, lastName: users.lastName, floor: users.floor, avatarUrl: users.avatarUrl })
     .from(users).where(inArray(users.id, idArr)).all();
 
   const partnerNameMap = new Map(partners.map((p) => [p.id, `${p.firstName} ${p.lastName.charAt(0)}.`]));
   const partnerFloorMap = new Map(partners.map((p) => [p.id, p.floor]));
+  const partnerAvatarMap = new Map(partners.map((p) => [p.id, p.avatarUrl]));
 
   const conversations = [...partnerMap.values()].map((c) => ({
     id: c.id,
     name: partnerNameMap.get(c.id) || "Inconnu",
     floor: partnerFloorMap.get(c.id) || null,
+    avatarUrl: partnerAvatarMap.get(c.id) || null,
     lastMessage: c.lastMessage,
     time: c.time,
     unread: c.unread,

@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconSend, IconMail } from "@/components/icons";
+import { formatDate } from "@/lib/utils";
 
 type Conversation = {
   id: number;
   name: string;
   floor: number | null;
+  avatarUrl: string | null;
   lastMessage: string;
   time: string;
   unread: number;
@@ -49,6 +51,16 @@ export default function MessageriePage() {
         }
         setLoading(false);
       });
+    if (toParam) {
+      const target = parseInt(toParam, 10);
+      if (!isNaN(target)) {
+        fetch(`/api/users/${target}`).then((r) => r.json()).then((u) => {
+          if (u.firstName && !conversations.some((c) => c.id === target)) {
+            setConversations((prev) => [...prev, { id: target, name: `${u.firstName} ${(u.lastName || "").charAt(0)}.`, floor: u.floor ?? null, avatarUrl: u.avatarUrl ?? null, lastMessage: "", time: "", unread: 0 }]);
+          }
+        }).catch(() => {});
+      }
+    }
   }, [toParam]);
 
   useEffect(() => {
@@ -90,7 +102,7 @@ export default function MessageriePage() {
     setSending(false);
   }
 
-  const current = conversations.find((c) => c.id === activeConv) || (activeConv ? { id: activeConv, name: `Résident #${activeConv}`, floor: null, lastMessage: "", time: "", unread: 0 } as Conversation : null);
+  const current = conversations.find((c) => c.id === activeConv) || (activeConv ? { id: activeConv, name: `Résident #${activeConv}`, floor: null, avatarUrl: null, lastMessage: "", time: "", unread: 0 } as Conversation : null);
 
   return (
     <div className="container" style={{ padding: "40px 24px" }}>
@@ -133,15 +145,15 @@ export default function MessageriePage() {
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 999, background: "var(--color-bg-alt)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "0.875rem", flexShrink: 0,
+                  overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "0.875rem", color: "var(--color-text-secondary)",
                 }}>
-                  {conv.name.charAt(0)}
+                  {conv.avatarUrl ? <img src={conv.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : conv.name.charAt(0)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                     <span style={{ fontSize: "0.875rem" }}>{conv.name}</span>
-                    <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{conv.time}</span>
+                    <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{formatDate(conv.time)}</span>
                   </div>
                   <p style={{
                     fontSize: "0.8125rem", color: "var(--color-text-secondary)",
@@ -168,11 +180,11 @@ export default function MessageriePage() {
             <>
               <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{
-                  width: 36, height: 36, borderRadius: 999, background: "var(--color-bg-alt)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "0.8125rem", flexShrink: 0,
+                  width: 44, height: 44, borderRadius: 999, background: "var(--color-bg-alt)",
+                  overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "1rem", color: "var(--color-text-secondary)",
                 }}>
-                  {current.name.charAt(0)}
+                  {current.avatarUrl ? <img src={current.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : current.name.charAt(0)}
                 </div>
                 <div>
                   <p style={{ fontSize: "0.9375rem", marginBottom: 2 }}>{current.name}</p>
