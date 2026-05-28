@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const session = await getSession();
-  if (true) {
+  if (!session || session.role !== "admin") {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
