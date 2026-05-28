@@ -49,14 +49,7 @@ export default function ResidentModal({ userId, onClose }: { userId: number; onC
               </div>
             </div>
 
-            {data.user.bio && (
-              <div style={{ marginBottom: 20, padding: "12px 16px", background: "var(--color-bg-alt)", borderRadius: "var(--radius-sm)", fontSize: "0.9375rem", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                {data.user.bio}
-              </div>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
-              <h3 style={{ fontSize: "0.9375rem", marginBottom: 4 }}>Activité récente</h3>
+            <h3 style={{ fontSize: "0.9375rem", marginBottom: 4 }}>Activité récente</h3>
               {data.lastListing && (
                 <a href={`/entraide/${data.lastListing.id}`} className="card" style={{ padding: "10px 14px", textDecoration: "none", color: "var(--color-text)", display: "flex", alignItems: "center", gap: 10, fontSize: "0.875rem" }}>
                   <IconHandshake size={16} style={{ flexShrink: 0, color: "var(--color-text-tertiary)" }} />
@@ -87,7 +80,11 @@ export default function ResidentModal({ userId, onClose }: { userId: number; onC
               {!data.lastListing && !data.lastReply && !data.lastPoll && (
                 <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>Aucune activité publique récente.</p>
               )}
-            </div>
+            {data.user.bio && (
+              <div style={{ marginBottom: 20, padding: "12px 16px", background: "var(--color-bg-alt)", borderRadius: "var(--radius-sm)", fontSize: "0.9375rem", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                {data.user.bio}
+              </div>
+            )}
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <a href={`/messagerie?to=${userId}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 24px", borderRadius: 999, background: "var(--color-primary)", color: "#000", fontSize: "0.9375rem", fontWeight: 600, textDecoration: "none" }}>
