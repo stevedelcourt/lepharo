@@ -167,6 +167,10 @@
   gap: 8px;
 }
 
+.top-bar-logo {
+  display: none;
+}
+
 .burger-btn {
   display: none;
   align-items: center;
@@ -199,28 +203,39 @@
 @media (max-width: 768px) {
   .burger-btn {
     display: flex;
+    flex-shrink: 0;
+  }
+
+  .top-bar-logo {
+    display: block;
   }
 
   .sidebar {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 280px;
+    left: 0;
+    width: 100%;
     height: 100vh;
     z-index: 200;
-    transition: left 0.25s ease;
+    transition: transform 0.25s ease, opacity 0.25s ease;
     display: flex;
+    transform: translateX(100%);
+    opacity: 0;
+    border: none;
+    border-radius: 0;
+    padding: 60px 24px 24px;
   }
 
   .sidebar.open {
-    left: 0;
+    transform: translateX(0);
+    opacity: 1;
   }
 
   .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: var(--color-bg);
     z-index: 199;
   }
 
@@ -233,7 +248,7 @@
   }
 
   .sidebar-logo {
-    padding: 12px;
+    display: none;
   }
 
   .sidebar-building-icon {

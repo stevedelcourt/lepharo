@@ -74,6 +74,7 @@ export const documents = sqliteTable("documents", {
   category: text("category").notNull(),
   pages: integer("pages").notNull().default(1),
   date: text("date").notNull(),
+  fileUrl: text("file_url"),
   uploadedBy: integer("uploaded_by").notNull().references(() => users.id),
 });
 

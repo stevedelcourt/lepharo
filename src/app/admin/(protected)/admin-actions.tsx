@@ -26,7 +26,9 @@ export function EditButton({ table, id, fields }: { table: string; id: number; f
 
   function init() {
     const initVals: Record<string, any> = {};
-    fields.forEach((f) => { initVals[f.key] = f.default ?? ""; });
+    fields.forEach((f) => {
+      initVals[f.key] = f.default !== undefined && f.default !== null ? String(f.default) : "";
+    });
     setValues(initVals);
     setOpen(true);
   }
@@ -35,10 +37,13 @@ export function EditButton({ table, id, fields }: { table: string; id: number; f
     setSaving(true);
     const data: Record<string, any> = {};
     fields.forEach((f) => {
+      const val = values[f.key];
       if (f.type === "boolean") {
-        data[f.key] = values[f.key] === true || values[f.key] === "1" ? 1 : 0;
+        data[f.key] = val === true || val === "1" ? 1 : 0;
+      } else if (f.type === "number") {
+        data[f.key] = val === "" || val === null || val === undefined ? null : Number(val);
       } else {
-        data[f.key] = values[f.key];
+        data[f.key] = val;
       }
     });
     try {
@@ -47,16 +52,18 @@ export function EditButton({ table, id, fields }: { table: string; id: number; f
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "update", table, id, data }),
       });
-      const result = await res.json();
-      if (result.success) {
+      const text = await res.text();
+      let result;
+      try { result = JSON.parse(text); } catch { result = {}; }
+      if (res.ok && result.success) {
         setOpen(false);
         window.location.reload();
       } else {
-        alert(result.error || "Erreur");
+        alert("Erreur " + res.status + ": " + (result.error || text.slice(0, 200)));
         setSaving(false);
       }
-    } catch {
-      alert("Erreur réseau");
+    } catch (e) {
+      alert("Erreur: " + (e instanceof Error ? e.message : "inconnue"));
       setSaving(false);
     }
   }
