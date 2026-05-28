@@ -43,17 +43,17 @@ export default function MessageriePage() {
 
   useEffect(() => {
     if (!activeConv) return;
-    fetch(`/api/messagerie/messages?with=${activeConv}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setMessages(data);
-        if (data.length > 0) setCurrentUserId(data[0].senderId);
-        // derive currentUserId from a profile endpoint
-      });
-    fetch("/api/profile")
-      .then((r) => r.json())
-      .then((data) => { if (data.id) setCurrentUserId(data.id); })
-      .catch(() => {});
+    fetch("/api/profile").then((r) => r.json()).then((data) => {
+      if (data.id) {
+        setCurrentUserId(data.id);
+        fetch(`/api/messagerie/messages?with=${activeConv}`).then((r) => r.json()).then(setMessages).catch(() => {});
+        fetch("/api/messages/read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "private", otherId: activeConv }),
+        }).catch(() => {});
+      }
+    }).catch(() => {});
   }, [activeConv]);
 
   useEffect(() => {

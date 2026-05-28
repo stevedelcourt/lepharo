@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { IconBell } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
@@ -23,9 +23,17 @@ export default function NotifBell() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const refreshCount = useCallback(() => {
     fetch("/api/notifications/count").then((r) => r.json()).then((d) => setCount(d.count)).catch(() => {});
   }, []);
+
+  useEffect(() => { refreshCount(); const id = setInterval(refreshCount, 30000); return () => clearInterval(id); }, [refreshCount]);
+
+  useEffect(() => {
+    const onFocus = () => refreshCount();
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refreshCount]);
 
   useEffect(() => {
     if (!open) return;

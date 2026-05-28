@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconForum, IconSearch, IconSort, IconChevronLeft, IconMessage } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+
+const PAGE_SIZE = 15;
 
 type Topic = {
   id: number;
@@ -17,6 +19,7 @@ type Topic = {
 export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rubrique: string; rubriqueName: string; topics: Topic[] }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "replies">("date");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = topics
     .filter((t) => !search || t.title.toLowerCase().includes(search.toLowerCase()))
@@ -24,6 +27,11 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
       if (sortBy === "replies") return b.replyCount - a.replyCount;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
+
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, sortBy]);
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   return (
     <div className="container" style={{ padding: "40px 24px", maxWidth: 800 }}>
@@ -88,7 +96,7 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {filtered.map((t) => (
+          {visible.map((t) => (
             <a
               key={t.id}
               href={`/forum/sujet/${t.id}`}
@@ -114,6 +122,13 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
               </div>
             </a>
           ))}
+        </div>
+      )}
+      {hasMore && (
+        <div style={{ textAlign: "center", marginTop: 16 }}>
+          <button onClick={() => setVisibleCount((c) => c + PAGE_SIZE)} className="btn btn-ghost btn-sm">
+            Voir plus ({filtered.length - visibleCount} restants)
+          </button>
         </div>
       )}
     </div>

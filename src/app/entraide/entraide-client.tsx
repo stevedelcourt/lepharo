@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   IconHandshake, IconBaby, IconUsersHeart, IconCart, IconMonitor,
   IconWrench, IconBox, IconCar, IconDots, IconTag,
@@ -31,11 +31,16 @@ type Listing = {
   images: string;
 };
 
+const PAGE_SIZE = 10;
+
 export default function EntraideClient({ listings: initialListings }: { listings: Listing[] }) {
   const [listings] = useState(initialListings);
   const [activeTab, setActiveTab] = useState<"all" | "propose" | "cherche">("all");
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTab, activeCat, sortBy]);
 
   const sorted = [...listings].sort((a, b) => {
     if (sortBy === "date") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -46,6 +51,9 @@ export default function EntraideClient({ listings: initialListings }: { listings
   const filtered = sorted
     .filter((l) => activeTab === "all" || l.type === activeTab)
     .filter((l) => !activeCat || l.category === activeCat);
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   const getCategoryIcon = (catId: string) => {
     const cat = categories.find((c) => c.id === catId);
@@ -119,7 +127,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {filtered.map((item) => {
+        {visible.map((item) => {
           const CatIcon = getCategoryIcon(item.category);
           return (
             <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, textDecoration: "none" }}>
@@ -147,6 +155,14 @@ export default function EntraideClient({ listings: initialListings }: { listings
           );
         })}
       </div>
+
+      {hasMore && (
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          <button onClick={() => setVisibleCount((c) => c + PAGE_SIZE)} className="btn btn-ghost btn-sm">
+            Voir plus ({filtered.length - visibleCount} restantes)
+          </button>
+        </div>
+      )}
 
       <div className="card" style={{ marginTop: 32, padding: 16, background: "var(--color-warning-light)", borderLeft: "4px solid var(--color-warning)" }}>
         <p style={{ fontSize: "0.875rem", color: "var(--color-text)", margin: 0 }}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IconChevronLeft, IconTag } from "@/components/icons";
 
@@ -90,6 +90,16 @@ export default function ListingDetailClient({
   }
 
   const isOwner = listing.authorId === currentUserId;
+
+  useEffect(() => {
+    if (isOwner) {
+      fetch("/api/messages/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "listing", listingId: listing.id }),
+      }).catch(() => {});
+    }
+  }, []);
 
   return (
     <div className="container" style={{ padding: "40px 24px", maxWidth: 760, margin: "0 auto" }}>
