@@ -130,8 +130,8 @@ export default function ProfileForm({ user }: Props) {
             padding: "12px 16px",
             borderRadius: "var(--radius-md)",
             fontSize: "0.9375rem",
-            background: message.type === "success" ? "#e8f5e9" : "#fce4ec",
-            color: message.type === "success" ? "#2e7d32" : "#c62828",
+            background: message.type === "success" ? "var(--color-success-light)" : "var(--color-error-light)",
+            color: message.type === "success" ? "var(--color-success)" : "var(--color-error)",
           }}
         >
           {message.text}

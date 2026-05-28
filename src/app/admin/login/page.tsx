@@ -32,7 +32,7 @@ export default function AdminLogin() {
       justifyContent: "center", background: "var(--color-bg)",
     }}>
       <form onSubmit={handleSubmit} style={{
-        background: "#fff", padding: "2.5rem", borderRadius: 8,
+        background: "var(--color-bg-card)", padding: "2.5rem", borderRadius: 8,
         border: "1px solid var(--color-border)", width: "100%", maxWidth: 380,
       }}>
         <h1 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>

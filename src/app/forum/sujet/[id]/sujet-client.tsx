@@ -90,7 +90,7 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
             </span>
           )}
           {topic.locked && (
-            <span className="tag" style={{ background: "#dc2626", color: "#fff" }}>
+            <span className="tag" style={{ background: "var(--color-error)", color: "#fff" }}>
               <IconLock size={14} style={{ marginRight: 4 }} />Verrouillé
             </span>
           )}

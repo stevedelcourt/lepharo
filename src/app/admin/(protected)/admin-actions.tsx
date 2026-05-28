@@ -75,7 +75,7 @@ export function EditButton({ table, id, fields }: { table: string; id: number; f
       </button>
       {open && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setOpen(false)}>
-          <div style={{ background: "#fff", borderRadius: 12, padding: "24px 28px", minWidth: 400, maxWidth: 520, maxHeight: "80vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ background: "var(--color-bg-card)", borderRadius: 12, padding: "24px 28px", minWidth: 400, maxWidth: 520, maxHeight: "80vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
             <h3 style={{ marginBottom: 20 }}>Modifier</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {fields.map((f) => (
@@ -137,7 +137,7 @@ export function WarnButton({ userId, userName }: { userId: number; userName: str
       </button>
       {open && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setOpen(false)}>
-          <div style={{ background: "#fff", borderRadius: 12, padding: "24px 28px", minWidth: 400, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ background: "var(--color-bg-card)", borderRadius: 12, padding: "24px 28px", minWidth: 400, maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
             <h3 style={{ marginBottom: 8 }}>Avertir {userName}</h3>
             <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 16 }}>
               L&apos;utilisateur recevra cette notification.

@@ -171,6 +171,10 @@
   display: none;
 }
 
+.dark .top-bar-logo {
+  filter: invert(1) brightness(1.5);
+}
+
 .burger-btn {
   display: none;
   align-items: center;
