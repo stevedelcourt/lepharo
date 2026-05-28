@@ -30,6 +30,60 @@
   --header-height: 64px;
 }
 
+.dark {
+  --color-bg: #1a1a2e;
+  --color-bg-alt: #16213e;
+  --color-bg-card: #0f3460;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0b0;
+  --color-text-tertiary: #707080;
+  --color-primary: #FF8C38;
+  --color-primary-hover: #FF7A1A;
+  --color-primary-light: #2a1f0e;
+  --color-accent: #FF8C38;
+  --color-accent-hover: #FF7A1A;
+  --color-accent-light: #2a1f0e;
+  --color-border: #2a2a4a;
+  --color-border-light: #222244;
+  --color-success: #22C55E;
+  --color-success-light: #1a2e1a;
+  --color-warning: #F59E0B;
+  --color-warning-light: #2e261a;
+  --color-error: #EF4444;
+  --color-error-light: #2e1a1a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-bg: #1a1a2e;
+    --color-bg-alt: #16213e;
+    --color-bg-card: #0f3460;
+    --color-text: #e0e0e0;
+    --color-text-secondary: #a0a0b0;
+    --color-text-tertiary: #707080;
+    --color-primary: #FF8C38;
+    --color-primary-hover: #FF7A1A;
+    --color-primary-light: #2a1f0e;
+    --color-accent: #FF8C38;
+    --color-accent-hover: #FF7A1A;
+    --color-accent-light: #2a1f0e;
+    --color-border: #2a2a4a;
+    --color-border-light: #222244;
+    --color-success: #22C55E;
+    --color-success-light: #1a2e1a;
+    --color-warning: #F59E0B;
+    --color-warning-light: #2e261a;
+    --color-error: #EF4444;
+    --color-error-light: #2e1a1a;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -186,8 +240,13 @@ p:last-child { margin-bottom: 0; }
   border-radius: var(--radius-md);
   font-size: 0.9375rem;
   background: var(--color-bg);
+  color: var(--color-text);
   outline: none;
   transition: border-color 0.15s;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
 }
 
 .input:focus {

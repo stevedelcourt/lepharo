@@ -46,10 +46,16 @@ export default function AboutPage() {
         factuels. Pas de place pour la diffamation ou l&apos;invective.
       </p>
 
-      <h2 style={{ marginBottom: 8, marginTop: 32 }}>L&apos;équipe</h2>
+      <h2 style={{ marginBottom: 8, marginTop: 32 }}>Indépendance</h2>
+      <p>
+        Le Pharo Communauté est une initiative strictement privée et indépendante.
+        Elle n&apos;est aucunement affiliée au syndic de copropriété, aux cabinets
+        de gestion, aux entreprises intervenant dans l&apos;immeuble, ni à aucune
+        autre personne morale ou physique extérieure à la résidence.
+      </p>
       <p>
         Le site est administré par des résidents bénévoles. Aucune structure
-        associative formelle pour le moment -  juste des voisins qui ont
+        associative formelle pour le moment — juste des voisins qui ont
         décidé de prendre les choses en main.
       </p>
       <p>

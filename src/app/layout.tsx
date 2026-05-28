@@ -6,6 +6,7 @@ import CookiesLink from "@/components/CookiesLink";
 import { NavItem } from "@/components/SidebarNav";
 import { getSession } from "@/lib/auth";
 import NotifBell from "@/components/notif-bell";
+import ThemeToggle from "@/components/theme-toggle";
 import {
   IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
   IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
@@ -33,11 +34,17 @@ export default async function RootLayout({
 }>) {
   const session = await getSession();
   return (
-    <html lang="fr" className={workSans.variable}>
+    <html lang="fr" className={workSans.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark");else document.documentElement.classList.add("light")}catch(e){}})()`,
+        }} />
+      </head>
       <body>
         <div className="layout">
           <Sidebar session={session} />
           <div className="main-area">
+            <TopBar />
             <main className="main-content">{children}</main>
             <FooterBar />
           </div>
@@ -45,6 +52,17 @@ export default async function RootLayout({
         <CookieBanner />
       </body>
     </html>
+  );
+}
+
+function TopBar() {
+  return (
+    <div className="top-bar">
+      <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }}>
+        <ThemeToggle />
+        <NotifBell />
+      </div>
+    </div>
   );
 }
 
