@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { alerts, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
-import DeleteButton from "../delete-button";
 import { fallbackAdminAlerts } from "@/lib/fallback-data";
 import { IconBell } from "@/components/icons";
+import { DeleteButton, EditButton, ModerateButton } from "../admin-actions";
 
 export default async function AdminAlertsPage() {
   const session = await getSession();
@@ -33,7 +33,7 @@ export default async function AdminAlertsPage() {
             <th>Active</th>
             <th>Créé par</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -49,7 +49,15 @@ export default async function AdminAlertsPage() {
               <td>{a.authorName}</td>
               <td>{a.createdAt}</td>
               <td>
-                <DeleteButton table="alerts" id={a.id} />
+                <div className="input-group" style={{ gap: 4 }}>
+                  <EditButton table="alerts" id={a.id} fields={[
+                    { label: "Message", key: "message", type: "text", default: a.message },
+                    { label: "Type", key: "type", type: "select", options: [{ value: "info", label: "Info" }, { value: "warning", label: "Warning" }], default: a.type },
+                    { label: "Active", key: "active", type: "boolean", default: a.active },
+                  ]} />
+                  <ModerateButton table="alerts" id={a.id} field="active" label={a.active ? "Désactiver" : "Activer"} value={a.active} />
+                  <DeleteButton table="alerts" id={a.id} />
+                </div>
               </td>
             </tr>
           ))}

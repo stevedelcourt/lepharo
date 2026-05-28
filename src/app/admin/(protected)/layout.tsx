@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout } from "@/components/icons";
+import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout, IconBook } from "@/components/icons";
 import "../admin.css";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -15,6 +15,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
     { href: "/admin", label: "Tableau de bord", icon: IconDashboard },
     { href: "/admin/utilisateurs", label: "Utilisateurs", icon: IconUsers },
     { href: "/admin/forum", label: "Forum", icon: IconForum },
+    { href: "/admin/rubriques", label: "Rubriques", icon: IconBook },
     { href: "/admin/entraide", label: "Entraide", icon: IconHandshake },
     { href: "/admin/documents", label: "Documents", icon: IconFolder },
     { href: "/admin/evenements", label: "Événements", icon: IconCalendar },

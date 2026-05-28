@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import {
-  users, forumTopics, forumReplies, entraideListings, documents, events, alerts,
+  users, forumTopics, forumReplies, forumRubriques, entraideListings, documents, events, alerts,
 } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
@@ -10,6 +10,7 @@ const tableMap: Record<string, any> = {
   users,
   forum_topics: forumTopics,
   forum_replies: forumReplies,
+  forum_rubriques: forumRubriques,
   entraide_listings: entraideListings,
   documents,
   events,

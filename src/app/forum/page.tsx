@@ -21,6 +21,7 @@ export default async function ForumPage() {
     const topics = await db.select({
       id: forumTopics.id,
       title: forumTopics.title,
+      content: forumTopics.content,
       rubrique: forumTopics.rubrique,
       authorName: users.firstName,
       authorFloor: users.floor,

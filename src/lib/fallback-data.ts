@@ -3,21 +3,21 @@ export const fallbackAlerts = [
   { id: 2, message: "Intervention ascenseur prevue le 3 juin (9h-17h)", type: "warning", active: true, createdBy: 1, createdAt: "2026-05-26" },
 ];
 
-export const fallbackForumTopics: { id: number; title: string; rubrique: string; authorName: string; authorFloor: number | null; replyCount: number; createdAt: string }[] = [
-  { id: 1, title: "Preparation AG juin 2026 - analyse resolution 5", rubrique: "syndic", authorName: "Paul", authorFloor: 15, replyCount: 3, createdAt: "2026-05-27" },
-  { id: 2, title: "Bruit repete appartement 12e - que faire ?", rubrique: "vie-quotidienne", authorName: "Jean-Pierre", authorFloor: 12, replyCount: 1, createdAt: "2026-05-26" },
-  { id: 3, title: "Partage de photos - vue depuis le 16e au coucher du soleil", rubrique: "bistrot", authorName: "Camille", authorFloor: 11, replyCount: 2, createdAt: "2026-05-25" },
-  { id: 4, title: "Etat des canalisations - retour d experience", rubrique: "travaux", authorName: "Marie", authorFloor: 7, replyCount: 0, createdAt: "2026-05-24" },
-  { id: 5, title: "Nouveau restaurant pres du Palais du Pharo", rubrique: "quartier", authorName: "Lucas", authorFloor: 3, replyCount: 0, createdAt: "2026-05-23" },
+export const fallbackForumTopics: { id: number; title: string; content: string; rubrique: string; authorName: string; authorFloor: number | null; replyCount: number; createdAt: string }[] = [
+  { id: 1, title: "Preparation AG juin 2026 - analyse resolution 5", content: "Contenu du sujet", rubrique: "syndic", authorName: "Paul", authorFloor: 15, replyCount: 3, createdAt: "2026-05-27" },
+  { id: 2, title: "Bruit repete appartement 12e - que faire ?", content: "Contenu du sujet", rubrique: "vie-quotidienne", authorName: "Jean-Pierre", authorFloor: 12, replyCount: 1, createdAt: "2026-05-26" },
+  { id: 3, title: "Partage de photos - vue depuis le 16e au coucher du soleil", content: "Contenu du sujet", rubrique: "bistrot", authorName: "Camille", authorFloor: 11, replyCount: 2, createdAt: "2026-05-25" },
+  { id: 4, title: "Etat des canalisations - retour d experience", content: "Contenu du sujet", rubrique: "travaux", authorName: "Marie", authorFloor: 7, replyCount: 0, createdAt: "2026-05-24" },
+  { id: 5, title: "Nouveau restaurant pres du Palais du Pharo", content: "Contenu du sujet", rubrique: "quartier", authorName: "Lucas", authorFloor: 3, replyCount: 0, createdAt: "2026-05-23" },
 ];
 
 export const fallbackListings = [
-  { id: 1, type: "propose", title: "Cours d anglais pour enfants", category: "garde", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
-  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", category: "compagnie", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
-  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", category: "courses", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
-  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", category: "pret", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
-  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", category: "bricolage", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
-  { id: 6, type: "propose", title: "Baby-sitting samedi soir", category: "garde", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
+  { id: 1, type: "propose", title: "Cours d anglais pour enfants", description: "Je donne des cours d anglais aux enfants du residence", category: "garde", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
+  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", description: "J ai besoin d etre accompagnee chez le medecin", category: "compagnie", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
+  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", description: "Je propose de faire vos courses", category: "courses", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
+  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", description: "Je prete mes outils de bricolage", category: "pret", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
+  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", description: "Je cherche quelqu un pour m aider", category: "bricolage", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
+  { id: 6, type: "propose", title: "Baby-sitting samedi soir", description: "Je propose de garder vos enfants", category: "garde", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
 ];
 
 export const fallbackDocuments = [
@@ -63,10 +63,12 @@ export const fallbackAdminUsers = fallbackUsers.map((u) => ({
 export const fallbackAdminForumTopics = fallbackForumTopics.map((t) => ({
   id: t.id,
   title: t.title,
+  content: t.content || "",
   rubrique: t.rubrique,
   authorName: t.authorName,
   authorFloor: t.authorFloor,
   pinned: false,
+  locked: false,
   createdAt: t.createdAt,
 }));
 
@@ -74,6 +76,7 @@ export const fallbackAdminListings = fallbackListings.map((l) => ({
   id: l.id,
   type: l.type,
   title: l.title,
+  description: l.description,
   category: l.category,
   authorName: l.authorName,
   authorFloor: l.authorFloor,

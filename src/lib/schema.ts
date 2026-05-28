@@ -16,6 +16,14 @@ export const users = sqliteTable("users", {
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 
+export const forumRubriques = sqliteTable("forum_rubriques", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull().unique(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  createdAt: text("created_at").notNull().default("(datetime('now'))"),
+});
+
 export const forumTopics = sqliteTable("forum_topics", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
@@ -23,6 +31,7 @@ export const forumTopics = sqliteTable("forum_topics", {
   rubrique: text("rubrique").notNull(),
   authorId: integer("author_id").notNull().references(() => users.id),
   pinned: integer("pinned", { mode: "boolean" }).notNull().default(false),
+  locked: integer("locked", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 
@@ -70,6 +79,23 @@ export const events = sqliteTable("events", {
   date: text("date").notNull(),
   type: text("type").notNull(),
   authorId: integer("author_id").notNull().references(() => users.id),
+  createdAt: text("created_at").notNull().default("(datetime('now'))"),
+});
+
+export const privateMessages = sqliteTable("private_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  senderId: integer("sender_id").notNull().references(() => users.id),
+  receiverId: integer("receiver_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  read: integer("read", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default("(datetime('now'))"),
+});
+
+export const adminWarnings = sqliteTable("admin_warnings", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id").notNull().references(() => users.id),
+  message: text("message").notNull(),
+  createdBy: integer("created_by").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),
 });
 

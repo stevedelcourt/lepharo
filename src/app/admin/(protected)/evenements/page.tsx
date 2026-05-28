@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { events, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
-import DeleteButton from "../delete-button";
 import { fallbackAdminEvents } from "@/lib/fallback-data";
 import { IconCalendar } from "@/components/icons";
+import { DeleteButton, EditButton } from "../admin-actions";
 
 export default async function AdminEventsPage() {
   const session = await getSession();
@@ -31,7 +31,7 @@ export default async function AdminEventsPage() {
             <th>Type</th>
             <th>Date</th>
             <th>Auteur</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -42,7 +42,14 @@ export default async function AdminEventsPage() {
               <td>{e.date}</td>
               <td>{e.authorName}</td>
               <td>
-                <DeleteButton table="events" id={e.id} />
+                <div className="input-group" style={{ gap: 4 }}>
+                  <EditButton table="events" id={e.id} fields={[
+                    { label: "Titre", key: "title", type: "text", default: e.title },
+                    { label: "Date", key: "date", type: "text", default: e.date },
+                    { label: "Type", key: "type", type: "text", default: e.type },
+                  ]} />
+                  <DeleteButton table="events" id={e.id} />
+                </div>
               </td>
             </tr>
           ))}

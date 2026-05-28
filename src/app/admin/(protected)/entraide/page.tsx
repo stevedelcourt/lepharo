@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { entraideListings, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
-import DeleteButton from "../delete-button";
 import { fallbackAdminListings } from "@/lib/fallback-data";
 import { IconHandshake } from "@/components/icons";
+import { DeleteButton, EditButton, ModerateButton } from "../admin-actions";
 
 export default async function AdminEntraidePage() {
   const session = await getSession();
@@ -17,9 +17,11 @@ export default async function AdminEntraidePage() {
     type: entraideListings.type,
     title: entraideListings.title,
     category: entraideListings.category,
+    description: entraideListings.description,
     authorName: users.firstName,
     authorFloor: users.floor,
     createdAt: entraideListings.createdAt,
+    images: entraideListings.images,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
     .orderBy(desc(entraideListings.createdAt)).all() : fallbackAdminListings;
 
@@ -34,7 +36,7 @@ export default async function AdminEntraidePage() {
             <th>Catégorie</th>
             <th>Auteur</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +52,16 @@ export default async function AdminEntraidePage() {
               <td>{l.authorName} ({l.authorFloor}e)</td>
               <td>{l.createdAt}</td>
               <td>
-                <DeleteButton table="entraide_listings" id={l.id} />
+                <div className="input-group" style={{ gap: 4 }}>
+                  <EditButton table="entraide_listings" id={l.id} fields={[
+                    { label: "Titre", key: "title", type: "text", default: l.title },
+                    { label: "Description", key: "description", type: "textarea", default: l.description },
+                    { label: "Type", key: "type", type: "select", options: [{ value: "propose", label: "Propose" }, { value: "cherche", label: "Cherche" }], default: l.type },
+                    { label: "Catégorie", key: "category", type: "text", default: l.category },
+                  ]} />
+                  <ModerateButton table="entraide_listings" id={l.id} field="status" label="Fermer/Rouvrir" value={l.createdAt} />
+                  <DeleteButton table="entraide_listings" id={l.id} />
+                </div>
               </td>
             </tr>
           ))}

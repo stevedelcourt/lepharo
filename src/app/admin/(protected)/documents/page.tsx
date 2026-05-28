@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { documents } from "@/lib/schema";
 import { desc } from "drizzle-orm";
-import DeleteButton from "../delete-button";
 import { fallbackDocuments } from "@/lib/fallback-data";
 import { IconFolder } from "@/components/icons";
+import { DeleteButton, EditButton } from "../admin-actions";
 
 export default async function AdminDocumentsPage() {
   const session = await getSession();
@@ -24,7 +24,7 @@ export default async function AdminDocumentsPage() {
             <th>Catégorie</th>
             <th>Pages</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -35,7 +35,15 @@ export default async function AdminDocumentsPage() {
               <td>{d.pages}</td>
               <td>{d.date}</td>
               <td>
-                <DeleteButton table="documents" id={d.id} />
+                <div className="input-group" style={{ gap: 4 }}>
+                  <EditButton table="documents" id={d.id} fields={[
+                    { label: "Titre", key: "title", type: "text", default: d.title },
+                    { label: "Catégorie", key: "category", type: "text", default: d.category },
+                    { label: "Pages", key: "pages", type: "number", default: d.pages },
+                    { label: "Date", key: "date", type: "text", default: d.date },
+                  ]} />
+                  <DeleteButton table="documents" id={d.id} />
+                </div>
               </td>
             </tr>
           ))}
