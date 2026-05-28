@@ -45,11 +45,6 @@ function Avatar({ r, size }: { r: Resident; size: number }) {
   );
 }
 
-function truncate(text: string, max: number): { short: string; isLong: boolean } {
-  if (text.length <= max) return { short: text, isLong: false };
-  return { short: text.slice(0, max).trimEnd() + "…", isLong: true };
-}
-
 export default function AnnuaireClient({ residents: initialResidents }: { residents: Resident[] }) {
   const [residents] = useState(initialResidents);
   const [search, setSearch] = useState("");
@@ -109,30 +104,19 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
       {viewMode === "grid" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
           {filtered.map((r) => {
-            const t = r.bio ? truncate(r.bio, 200) : null;
             return (
               <div key={r.id} className="card" style={{ padding: "20px 24px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
                   <Avatar r={r} size={PHOTO_SIZE} />
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h4 style={{ margin: 0, fontSize: "1.0625rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
+                      <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1.0625rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.lastName.charAt(0)}.</button>
                     </div>
                     <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
                       <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
                     </div>
                     {r.tagline && <p style={{ fontSize: "0.8125rem", color: "var(--color-text)", margin: "2px 0 0", fontWeight: 500 }}>{r.tagline}</p>}
-                    {t && (
-                      <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: "4px 0 0", lineHeight: 1.4 }}>
-                        {t.short}
-                        {t.isLong && (
-                          <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-primary)", fontSize: "0.8125rem", padding: 0, marginLeft: 2 }}>
-                            plus
-                          </button>
-                        )}
-                      </p>
-                    )}
                   </div>
                 </div>
                 <a
@@ -153,26 +137,16 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {filtered.map((r) => {
-            const t = r.bio ? truncate(r.bio, 400) : null;
             return (
               <div key={r.id} className="card" style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <Avatar r={r} size={PHOTO_SIZE} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <h4 style={{ margin: 0, fontSize: "1rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
+                    <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.lastName.charAt(0)}.</button>
                     {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
                     <span className="tag" style={{ fontSize: "0.75rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
                   </div>
-                  {t && (
-                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.4 }}>
-                      {t.short}
-                      {t.isLong && (
-                        <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-primary)", fontSize: "0.8125rem", padding: 0, marginLeft: 2 }}>
-                          plus
-                        </button>
-                      )}
-                    </p>
-                  )}
+
                 </div>
                 <a
                   href={`/messagerie?to=${r.id}`}
