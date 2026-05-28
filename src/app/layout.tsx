@@ -124,7 +124,6 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
               <span style={{ fontSize: "0.8125rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {session.firstName}
               </span>
-              <NotifBell />
             </div>
             <NavItem href="/api/logout" icon={<IconLogout />} label="Déconnexion" />
           </div>

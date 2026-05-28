@@ -23,6 +23,7 @@ export default async function ProfilPage() {
     tagline: string | null;
     avatarUrl: string | null;
     senior: boolean;
+    showFullName: boolean;
     hasPassword: boolean;
   };
 
@@ -40,6 +41,7 @@ export default async function ProfilPage() {
       tagline: users.tagline,
         avatarUrl: users.avatarUrl,
         senior: users.senior,
+      showFullName: users.showFullName,
         passwordHash: users.passwordHash,
       }).from(users).where(eq(users.id, session.id)).get();
     } catch {
@@ -69,7 +71,8 @@ export default async function ProfilPage() {
       bio: u.bio,
       tagline: u.tagline,
       avatarUrl: u.avatarUrl,
-      senior: u.senior ?? false,
+      senior: u.senior,
+      showFullName: u.showFullName ?? false,
       hasPassword: !!u.passwordHash,
     };
   } else {
@@ -84,6 +87,7 @@ export default async function ProfilPage() {
       tagline: null,
       avatarUrl: null,
       senior: false,
+      showFullName: false,
       hasPassword: true,
     };
   }

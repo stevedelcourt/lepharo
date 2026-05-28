@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { privateMessages, listingMessages, entraideListings, users } from "@/lib/schema";
+import { privateMessages, listingMessages, entraideListings, adminWarnings, users } from "@/lib/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +36,22 @@ export async function GET(req: Request) {
     .orderBy(desc(privateMessages.createdAt))
     .all();
 
+  // Admin warnings for the current user
+  const wRows = await db.select({
+    type: sql<string>`'warning'`.as("type"),
+    id: adminWarnings.id,
+    content: adminWarnings.message,
+    createdAt: adminWarnings.createdAt,
+    read: sql<boolean>`1`.as("read"),
+    authorName: sql<string | null>`NULL`.as("authorName"),
+    otherId: sql<number | null>`NULL`.as("otherId"),
+    listingTitle: sql<string | null>`'Avertissement'`.as("listingTitle"),
+    listingId: sql<number | null>`NULL`.as("listingId"),
+  }).from(adminWarnings)
+    .where(and(eq(adminWarnings.userId, uid), eq(adminWarnings.dismissed, false)))
+    .orderBy(desc(adminWarnings.createdAt))
+    .all();
+
   // Listing messages where user owns the listing
   const lmRows = await db.select({
     type: sql<string>`'listing'`.as("type"),
@@ -54,7 +70,7 @@ export async function GET(req: Request) {
     .orderBy(desc(listingMessages.createdAt))
     .all();
 
-  const combined = [...pmRows, ...lmRows]
+  const combined = [...pmRows, ...lmRows, ...wRows]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const page = combined.slice(offset, offset + limit);

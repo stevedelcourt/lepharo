@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IconPoll, IconCheck, IconChevronLeft } from "@/components/icons";
+import ReportButton from "@/components/report-button";
 import { formatDate } from "@/lib/utils";
 
 export default function SondageDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -54,6 +55,9 @@ export default function SondageDetail({ params }: { params: Promise<{ id: string
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <IconPoll size={28} />
         <h1 style={{ margin: 0, fontSize: "1.5rem" }}>{poll.question}</h1>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        <ReportButton targetType="poll" targetId={poll.id} />
       </div>
       <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 32 }}>
         Par {poll.authorName}{poll.authorFloor ? ` (${poll.authorFloor}e)` : ""} · {formatDate(poll.createdAt)} · {poll.totalVotes} vote{poll.totalVotes > 1 ? "s" : ""}

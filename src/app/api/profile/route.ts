@@ -26,7 +26,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Base de donnees non disponible" }, { status: 503 });
   }
 
-  const { firstName, lastName, floor, phone, bio, senior } = await request.json();
+  const { firstName, lastName, floor, phone, bio, senior, showFullName } = await request.json();
 
   const updates: Record<string, unknown> = {};
   if (firstName !== undefined) updates.firstName = firstName;
@@ -34,6 +34,7 @@ export async function PUT(request: Request) {
   if (floor !== undefined) updates.floor = floor;
   if (phone !== undefined) updates.phone = phone;
   if (bio !== undefined) updates.bio = bio;
+  if (showFullName !== undefined) updates.showFullName = showFullName;
   if (senior !== undefined) updates.senior = senior;
 
   if (Object.keys(updates).length === 0) {

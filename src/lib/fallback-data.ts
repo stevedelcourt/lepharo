@@ -47,23 +47,27 @@ export const fallbackDocuments = [
 ];
 
 export const fallbackEvents = [
-  { id: 1, title: "Intervention ascenseur", description: "Maintenance annuelle - coupure de 9h a 17h", date: "3 juin 2026", type: "travaux", authorId: 1, createdAt: "2026-05-27" },
-  { id: 2, title: "Assemblee generale ordinaire", description: "Salle commune - ordre du jour disponible", date: "15 juin 2026", type: "ag", authorId: 1, createdAt: "2026-05-27" },
-  { id: 3, title: "Apero des voisins", description: "Terrasse collective - apportez de quoi grignoter", date: "31 mai 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
-  { id: 4, title: "Atelier cuisine collective", description: "Inscriptions en ligne - limite a 12 personnes", date: "12 juillet 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
+  { id: 1, title: "Apéro des voisins", description: "Terrasse collective - apportez de quoi grignoter et à boire. Tous les résidents bienvenus !", date: "31 mai 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
+  { id: 2, title: "Intervention ascenseur", description: "Maintenance technique annuelle - coupure de 9h à 17h. Veuillez prendre vos dispositions.", date: "3 juin 2026", type: "travaux", authorId: 1, createdAt: "2026-05-27" },
+  { id: 3, title: "Atelier compost collectif", description: "Initiation au compostage sur la terrasse. Distribution de bioseaux. Inscription recommandée.", date: "8 juin 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
+  { id: 4, title: "Assemblée générale ordinaire", description: "Salle commune au rez-de-chaussée à 18h. Ordre du jour : budget travaux, élection du conseil syndical, questions diverses.", date: "15 juin 2026", type: "ag", authorId: 1, createdAt: "2026-05-27" },
+  { id: 5, title: "Nettoyage des parties communes", description: "Opération nettoyage participatif du hall, des couloirs et de la terrasse. Matériel fourni.", date: "22 juin 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
+  { id: 6, title: "Réunion conseil syndical", description: "Réunion mensuelle du conseil syndical - salle commune à 19h.", date: "25 juin 2026", type: "ag", authorId: 1, createdAt: "2026-05-27" },
+  { id: 7, title: "Soirée jeux de société", description: "Soirée jeux dans le hall. Apportez vos jeux préférés ! Vin chaud et jus de fruits offerts.", date: "4 juillet 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
+  { id: 8, title: "Atelier cuisine collective", description: "Cuisinons ensemble ! Au menu : spécialités méditerranéennes. Inscriptions limitées à 12 personnes.", date: "12 juillet 2026", type: "convivial", authorId: 1, createdAt: "2026-05-27" },
 ];
 
 export const fallbackUsers = [
-  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marie", phone: null, bio: "Passionnee de jardinage et de cuisine", tagline: "Maman de deux enfants", senior: false },
-  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-jp", phone: null, bio: null, tagline: "Retraité, disponible", senior: true },
-  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-sophie", phone: null, bio: "Prof d anglais, adore les chats", tagline: "Prof d'anglais", senior: false },
-  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-lucas", phone: null, bio: null, tagline: "Jeune actif", senior: false },
-  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marguerite", phone: null, bio: null, tagline: "Grand-mère de 8 petits-enfants", senior: true },
-  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-karim", phone: null, bio: "Bricoleur du dimanche", tagline: "Bricoleur passionné", senior: false },
-  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-paul", phone: null, bio: null, tagline: "Ancien marin", senior: true },
-  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-camille", phone: null, bio: null, tagline: "Photographe amateur", senior: false },
-  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-henri", phone: null, bio: null, tagline: "Musicien jazz", senior: false },
-  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-emma", phone: null, bio: null, tagline: "Étudiante en psychologie", senior: false },
+  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marie", phone: null, bio: "Passionnee de jardinage et de cuisine", tagline: "Maman de deux enfants", senior: false, showFullName: false },
+  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-jp", phone: null, bio: null, tagline: "Retraité, disponible", senior: true, showFullName: false },
+  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-sophie", phone: null, bio: "Prof d anglais, adore les chats", tagline: "Prof d'anglais", senior: false, showFullName: false },
+  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-lucas", phone: null, bio: null, tagline: "Jeune actif", senior: false, showFullName: false },
+  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marguerite", phone: null, bio: null, tagline: "Grand-mère de 8 petits-enfants", senior: true, showFullName: false },
+  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-karim", phone: null, bio: "Bricoleur du dimanche", tagline: "Bricoleur passionné", senior: false, showFullName: false },
+  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-paul", phone: null, bio: null, tagline: "Ancien marin", senior: true, showFullName: false },
+  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-camille", phone: null, bio: null, tagline: "Photographe amateur", senior: false, showFullName: false },
+  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-henri", phone: null, bio: null, tagline: "Musicien jazz", senior: false, showFullName: false },
+  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-emma", phone: null, bio: null, tagline: "Étudiante en psychologie", senior: false, showFullName: false },
 ];
 
 export const fallbackAdminUsers = fallbackUsers.map((u) => ({

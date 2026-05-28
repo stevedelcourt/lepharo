@@ -1,9 +1,10 @@
 import { getDb } from "@/lib/db";
-import { alerts, forumTopics, entraideListings, users, events } from "@/lib/schema";
-import { desc, eq } from "drizzle-orm";
+import { alerts, forumTopics, entraideListings, users, events, adminWarnings } from "@/lib/schema";
+import { desc, eq, and } from "drizzle-orm";
 import { fallbackAlerts, fallbackForumTopics, fallbackListings, fallbackEvents } from "@/lib/fallback-data";
 import { IconBell, IconHandshake, IconForum as IconForumIcon, IconCalendar, IconUsers, IconFolder, IconMail, IconDashboard as IconDashboardIcon } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import DismissWarningButton from "@/components/dismiss-warning";
 
 export const dynamic = "force-dynamic";
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IconChevronLeft, IconTag } from "@/components/icons";
+import ReportButton from "@/components/report-button";
 
 type Listing = {
   id: number;
@@ -121,6 +122,7 @@ export default function ListingDetailClient({
               {listing.category === "vente" && <IconTag size={14} />}
               {categoryLabels[listing.category] || listing.category}
             </span>
+            <ReportButton targetType="listing" targetId={listing.id} />
             {listing.status === "closed" && (
               <span className="tag tag-closed">Fermée</span>
             )}

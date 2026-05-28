@@ -7,6 +7,7 @@ import { fallbackAdminUsers } from "@/lib/fallback-data";
 import { IconUsers, IconShield } from "@/components/icons";
 import { DeleteButton, EditButton, WarnButton, ModerateButton } from "../admin-actions";
 import { PromoteAdminButton } from "../promote-admin";
+import { CreateUserButton } from "../create-user";
 
 const roleLabels: Record<string, string> = { superadmin: "Super Admin", moderator: "Modérateur", editor: "Éditeur" };
 const roleColors: Record<string, string> = { superadmin: "#dc2626", moderator: "#0891b2", editor: "#7c3aed" };
@@ -21,7 +22,10 @@ export default async function AdminUsersPage() {
 
   return (
     <>
-      <h1><IconUsers size={24} /> Utilisateurs ({allUsers.length})</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <h1 style={{ margin: 0 }}><IconUsers size={24} /> Utilisateurs ({allUsers.length})</h1>
+        <CreateUserButton />
+      </div>
       <table className="admin-table">
         <thead>
           <tr>

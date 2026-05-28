@@ -5,7 +5,7 @@ import { IconClose, IconSend, IconHandshake, IconForum, IconPoll } from "@/compo
 import { formatDate } from "@/lib/utils";
 
 type Activity = {
-  user: { id: number; firstName: string; lastName: string; floor: number | null; avatarUrl: string | null; bio: string | null; tagline: string | null; senior: boolean };
+  user: { id: number; firstName: string; lastName: string; floor: number | null; avatarUrl: string | null; bio: string | null; tagline: string | null; senior: boolean; showFullName: boolean };
   lastListing: { id: number; title: string; type: string; createdAt: string } | null;
   lastReply: { id: number; content: string; topicId: number; topicTitle: string | null; createdAt: string } | null;
   lastPoll: { id: number; question: string; createdAt: string } | null;

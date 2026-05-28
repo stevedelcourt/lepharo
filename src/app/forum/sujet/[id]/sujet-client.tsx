@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconForum, IconPin, IconLock, IconSend, IconChevronLeft, IconMessage } from "@/components/icons";
+import ReportButton from "@/components/report-button";
 import { formatDate } from "@/lib/utils";
 
 const rubriqueNames: Record<string, string> = {
@@ -116,6 +117,9 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
         {topic.content}
       </div>
 
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 8 }}>
+        <ReportButton targetType="forum_topic" targetId={topic.id} />
+      </div>
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
           <IconMessage size={20} />

@@ -7,13 +7,21 @@ import { fallbackDocuments } from "@/lib/fallback-data";
 import { IconFolder } from "@/components/icons";
 import { DeleteButton, EditButton } from "../admin-actions";
 import AdminDocumentsForm from "./form";
+import UploadButton from "./upload-btn";
 
 export default async function AdminDocumentsPage() {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
 
   const db = getDb();
-  const docs = db ? await db.select().from(documents).orderBy(desc(documents.date)).all() : fallbackDocuments;
+  let docs: any[] = fallbackDocuments;
+  if (db) {
+    try {
+      docs = await db.select().from(documents).orderBy(desc(documents.date)).all();
+    } catch {
+      // fallbackDocuments already set
+    }
+  }
 
   return (
     <>
@@ -39,7 +47,14 @@ export default async function AdminDocumentsPage() {
               <td><span className="tag">{d.category}</span></td>
               <td>{d.pages}</td>
               <td>{d.date}</td>
-              <td>{d.fileUrl ? <a href={d.fileUrl} target="_blank" className="btn btn-ghost btn-sm" style={{ fontSize: "0.8125rem" }}>Télécharger</a> : "—"}</td>
+              <td>
+                {d.fileUrl ? (
+                  <a href={d.fileUrl} target="_blank" className="btn btn-ghost btn-sm" style={{ fontSize: "0.8125rem" }}>Télécharger</a>
+                ) : (
+                  <span style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>Aucun</span>
+                )}
+                <UploadButton docId={d.id} />
+              </td>
               <td>
                 <div className="input-group" style={{ gap: 4 }}>
                   <EditButton table="documents" id={d.id} fields={[

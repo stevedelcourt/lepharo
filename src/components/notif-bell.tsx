@@ -1,11 +1,28 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { IconBell } from "@/components/icons";
+import { IconBell, IconCheck } from "@/components/icons";
+
+function DismissBtn({ id, onDone }: { id: number; onDone: () => void }) {
+  const [working, setWorking] = useState(false);
+  async function dismiss() {
+    setWorking(true);
+    await fetch("/api/warnings/dismiss", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    onDone();
+  }
+  return (
+    <button onClick={dismiss} disabled={working} className="btn-ghost btn-sm" type="button" style={{ fontSize: "0.75rem", padding: "2px 10px", display: "inline-flex", alignItems: "center", gap: 4 }}>
+      <IconCheck size={12} /> {working ? "..." : "OK"}
+    </button>
+  );
+}
 import { formatDate } from "@/lib/utils";
 
 type NotifItem = {
-  type: "private" | "listing";
+  type: "private" | "listing" | "warning";
   id: number;
   content: string;
   createdAt: string;
@@ -119,7 +136,7 @@ export default function NotifBell() {
               {items.map((item) => (
                 <a
                   key={`${item.type}-${item.id}`}
-                  href={item.type === "private" ? "/messagerie" : `/entraide/${item.listingId}`}
+                  href={item.type === "private" ? "/messagerie" : item.type === "warning" ? "/dashboard" : "/entraide/" + item.listingId}
                   style={{
                     display: "block",
                     padding: "10px 16px",
@@ -142,6 +159,11 @@ export default function NotifBell() {
                     {item.type === "listing" && <>{item.authorName}: </>}
                     {item.content}
                   </p>
+                  {item.type === "warning" && (
+                    <div style={{ marginTop: 6, display: "flex", justifyContent: "flex-end" }}>
+                      <DismissBtn id={item.id} onDone={() => { refreshCount(); setItems((prev) => prev.filter((i) => i.id !== item.id)); }} />
+                    </div>
+                  )}
                 </a>
               ))}
               {nextCursor && (

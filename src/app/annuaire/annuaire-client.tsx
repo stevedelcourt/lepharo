@@ -17,6 +17,7 @@ type Resident = {
   bio: string | null;
   tagline: string | null;
   senior: boolean;
+  showFullName: boolean;
 };
 
 function Avatar({ r, size }: { r: Resident; size: number }) {
@@ -110,7 +111,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                   <Avatar r={r} size={PHOTO_SIZE} />
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1.0625rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.lastName.charAt(0)}.</button>
+                      <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1.0625rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}</button>
                     </div>
                     <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
@@ -142,7 +143,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                 <Avatar r={r} size={PHOTO_SIZE} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.lastName.charAt(0)}.</button>
+                    <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}</button>
                     {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
                     <span className="tag" style={{ fontSize: "0.75rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
                   </div>

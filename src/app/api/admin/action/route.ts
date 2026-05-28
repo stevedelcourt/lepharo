@@ -33,7 +33,10 @@ export async function POST(request: Request) {
       if (!tbl || !id || !data) {
         return NextResponse.json({ error: "Paramètres invalides" }, { status: 400 });
       }
-      // Only allow updating safe columns
+      // Column name to Drizzle property name mapping
+      const colToProp: Record<string, string> = {
+        "first_name": "firstName", "last_name": "lastName", "admin_role": "adminRole",
+      };
       const allowed: Record<string, string[]> = {
         users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "admin_role"],
         forum_topics: ["title", "content", "rubrique", "pinned", "locked"],
@@ -47,13 +50,16 @@ export async function POST(request: Request) {
       const allowedCols = allowed[table] || [];
       const cleanData: Record<string, any> = {};
       for (const col of allowedCols) {
-        if (col in data) cleanData[col] = data[col];
+        if (col in data) {
+          const prop = colToProp[col] || col;
+          cleanData[prop] = data[col];
+        }
       }
       if (Object.keys(cleanData).length === 0) {
         return NextResponse.json({ error: "Aucune colonne valide à mettre à jour" }, { status: 400 });
       }
-      if (table === "users" && "verified" in cleanData) {
-        cleanData.verified = cleanData.verified === true || cleanData.verified === 1 ? 1 : 0;
+      if (table === "users" && "verified" in data) {
+        cleanData.verified = data.verified === true || data.verified === 1 ? 1 : 0;
       }
       await db.update(tbl).set(cleanData).where(eq(tbl.id, id)).run();
       return NextResponse.json({ success: true });

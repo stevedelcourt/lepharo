@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { privateMessages, listingMessages, entraideListings } from "@/lib/schema";
+import { privateMessages, listingMessages, entraideListings, adminWarnings } from "@/lib/schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -21,5 +21,8 @@ export async function GET() {
     .innerJoin(entraideListings, eq(listingMessages.listingId, entraideListings.id))
     .where(and(eq(entraideListings.authorId, uid), eq(listingMessages.read, false), sql`${listingMessages.authorId} != ${uid}`)).get();
 
-  return NextResponse.json({ count: (pmCount?.count ?? 0) + (lmCount?.count ?? 0) });
+  const wCount = await db.select({ count: sql<number>`count(*)` }).from(adminWarnings)
+    .where(and(eq(adminWarnings.userId, uid), eq(adminWarnings.dismissed, false))).get();
+
+  return NextResponse.json({ count: (pmCount?.count ?? 0) + (lmCount?.count ?? 0) + (wCount?.count ?? 0) });
 }

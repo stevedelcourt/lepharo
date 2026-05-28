@@ -18,7 +18,12 @@ const categoryMeta: Record<string, { name: string }> = {
 
 export default async function DocumentsPage() {
   const db = getDb();
-  const allDocs = db ? await db.select().from(documents).orderBy(desc(documents.date)).all() : fallbackDocuments;
+  let allDocs = fallbackDocuments;
+  if (db) {
+    try {
+      allDocs = await db.select().from(documents).orderBy(desc(documents.date)).all();
+    } catch {}
+  }
 
   const grouped: Record<string, typeof allDocs> = {};
   for (const doc of allDocs) {

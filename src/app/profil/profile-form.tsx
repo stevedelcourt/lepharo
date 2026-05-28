@@ -15,6 +15,7 @@ type Props = {
     avatarUrl: string | null;
     hasPassword: boolean;
     senior: boolean;
+    showFullName: boolean;
   };
 };
 
@@ -26,6 +27,7 @@ export default function ProfileForm({ user }: Props) {
   const [bio, setBio] = useState(user.bio || "");
   const [tagline, setTagline] = useState(user.tagline || "");
   const [senior, setSenior] = useState(user.senior);
+  const [showFullName, setShowFullName] = useState(user.showFullName);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -53,6 +55,7 @@ export default function ProfileForm({ user }: Props) {
           bio,
           tagline,
           senior,
+          showFullName,
         }),
       });
       const data = await res.json();
@@ -314,10 +317,24 @@ export default function ProfileForm({ user }: Props) {
               <div>
                 <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: 4 }}>Senior</p>
                 <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
-                  En tant que senior, je souhaiterais mentionner cette information sur mon profil public pour favoriser des interactions adaptées et conviviales au sein de la résidence.
+                  En tant que senior,
+          showFullName, je souhaiterais mentionner cette information sur mon profil public pour favoriser des interactions adaptées et conviviales au sein de la résidence.
                 </p>
               </div>
             </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0" }}>
+            <input
+              type="checkbox"
+              id="showFullName"
+              checked={showFullName}
+              onChange={(e) => setShowFullName(e.target.checked)}
+              style={{ width: 18, height: 18, cursor: "pointer" }}
+            />
+            <label htmlFor="showFullName" style={{ fontSize: "0.9375rem", cursor: "pointer" }}>
+              Je veux montrer mon nom complet
+            </label>
           </div>
         </div>
 
