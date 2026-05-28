@@ -85,8 +85,8 @@ export default function MesAnnoncesClient({ listings: initial }: { listings: Lis
             style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, textDecoration: "none" }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <span className={`tag ${l.type === "propose" ? "tag-propose" : "tag-cherche"}`}>
-                {l.type === "propose" ? "Propose" : "Cherche"}
+              <span className={`tag ${l.type === "propose" ? "tag-propose" : l.type === "vente" ? "tag-vente" : "tag-cherche"}`}>
+                {l.type === "propose" ? "Propose" : l.type === "vente" ? "Vente" : "Cherche"}
               </span>
               <div>
                 <p style={{ marginBottom: 2 }}>{l.title}</p>

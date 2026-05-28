@@ -35,7 +35,7 @@ const PAGE_SIZE = 10;
 
 export default function EntraideClient({ listings: initialListings }: { listings: Listing[] }) {
   const [listings] = useState(initialListings);
-  const [activeTab, setActiveTab] = useState<"all" | "propose" | "cherche">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "propose" | "cherche" | "vente">("all");
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -81,6 +81,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
         <button onClick={() => setActiveTab("all")} className={`btn btn-sm ${activeTab === "all" ? "btn-primary" : "btn-ghost"}`}>Tout</button>
         <button onClick={() => setActiveTab("propose")} className={`btn btn-sm ${activeTab === "propose" ? "btn-primary" : "btn-ghost"}`}>Je propose</button>
         <button onClick={() => setActiveTab("cherche")} className={`btn btn-sm ${activeTab === "cherche" ? "btn-primary" : "btn-ghost"}`}>Je cherche</button>
+        <button onClick={() => setActiveTab("vente")} className={`btn btn-sm ${activeTab === "vente" ? "btn-primary" : "btn-ghost"}`}>Vente</button>
         <div style={{ flex: 1 }} />
         <div className="input-group" style={{ gap: 4 }}>
           <IconSort size={18} />
@@ -132,8 +133,8 @@ export default function EntraideClient({ listings: initialListings }: { listings
           return (
             <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, textDecoration: "none" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <span className={`tag ${item.type === "propose" ? "tag-propose" : "tag-cherche"}`}>
-                  {item.type === "propose" ? "Propose" : "Cherche"}
+                <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`}>
+                  {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
                 </span>
                 <CatIcon size={20} />
                 <div>

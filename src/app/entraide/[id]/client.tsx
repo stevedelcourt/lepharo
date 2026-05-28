@@ -114,8 +114,8 @@ export default function ListingDetailClient({
       <div className="card" style={{ padding: "24px 28px", marginBottom: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span className={`tag ${listing.type === "propose" ? "tag-propose" : "tag-cherche"}`}>
-              {listing.type === "propose" ? "Propose" : "Cherche"}
+            <span className={`tag ${listing.type === "propose" ? "tag-propose" : listing.type === "vente" ? "tag-vente" : "tag-cherche"}`}>
+              {listing.type === "propose" ? "Propose" : listing.type === "vente" ? "Vente" : "Cherche"}
             </span>
             <span className="tag" style={{ fontSize: "0.8125rem", display: "inline-flex", alignItems: "center", gap: 4 }}>
               {listing.category === "vente" && <IconTag size={14} />}

@@ -7,6 +7,7 @@ import { NavItem } from "@/components/SidebarNav";
 import { getSession } from "@/lib/auth";
 import NotifBell from "@/components/notif-bell";
 import ThemeToggle from "@/components/theme-toggle";
+import BurgerMenu from "@/components/burger-menu";
 import {
   IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
   IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
@@ -43,12 +44,14 @@ export default async function RootLayout({
       <body>
         <div className="layout">
           <Sidebar session={session} />
+          <div className="sidebar-overlay" />
           <div className="main-area">
             <TopBar />
             <main className="main-content">{children}</main>
             <FooterBar />
           </div>
         </div>
+        <BurgerMenu />
         <CookieBanner />
       </body>
     </html>
@@ -58,9 +61,14 @@ export default async function RootLayout({
 function TopBar() {
   return (
     <div className="top-bar">
+      <div className="top-bar-left">
+        <button className="burger-btn" id="burger-btn" type="button" aria-label="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+      </div>
       <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }}>
-        <ThemeToggle />
         <NotifBell />
+        <ThemeToggle />
       </div>
     </div>
   );

@@ -24,9 +24,15 @@ export const fallbackListings = [
   { id: 1, type: "propose", title: "Cours d anglais pour enfants", description: "Je donne des cours d anglais aux enfants du residence", category: "garde", status: "open", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
   { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", description: "J ai besoin d etre accompagnee chez le medecin", category: "compagnie", status: "open", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
   { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", description: "Je propose de faire vos courses", category: "courses", status: "open", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
-  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", description: "Je prete mes outils de bricolage", category: "pret", status: "open", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
-  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", description: "Je cherche quelqu un pour m aider", category: "bricolage", status: "open", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
-  { id: 6, type: "propose", title: "Baby-sitting samedi soir", description: "Je propose de garder vos enfants", category: "garde", status: "open", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
+  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", description: "Je prete mes outils de bricolage. Perceuse a percussion Bosch, visseuse sans fil DeWalt, scie sauteuse Makita. Tout est en bon etat.", category: "pret", status: "open", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: '["https://picsum.photos/seed/outil1/400/300","https://picsum.photos/seed/outil2/400/300","https://picsum.photos/seed/outil3/400/300"]' },
+  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", description: "Je cherche quelqu un pour m aider a monter un lit KALLAX. Je peux offrir un bon repas en echange !", category: "bricolage", status: "open", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
+  { id: 6, type: "propose", title: "Baby-sitting samedi soir", description: "Je propose de garder vos enfants samedi soir. Je suis etudiante en psychologie, experience avec les tout-petits.", category: "garde", status: "open", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
+  { id: 7, type: "vente", title: "Table basse en verre", description: "Table basse carree 80x80cm, plateau en verre trempe, pieds chromes. Excellent etat. Prix : 40€ a debattre.", category: "vente", status: "open", authorName: "Marie", authorFloor: 7, createdAt: "2026-05-28", images: '["https://picsum.photos/seed/table1/400/300","https://picsum.photos/seed/table2/400/300"]' },
+  { id: 8, type: "vente", title: "Velo de ville Peugeot", description: "Velo de ville Peugeot, 24 vitesses, freins a disque, tres peu utilise. Parfait pour les balades sur la corniche. Prix : 120€.", category: "vente", status: "open", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-28", images: '["https://picsum.photos/seed/velo1/400/300","https://picsum.photos/seed/velo2/400/300"]' },
+  { id: 9, type: "vente", title: "Canape convertible 3 places", description: "Canape convertible 3 places, tissu gris clair, tres confortable. Mecanisme facile a deplier. A venir voir sur place. Prix : 200€.", category: "vente", status: "open", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: '["https://picsum.photos/seed/canape1/400/300","https://picsum.photos/seed/canape2/400/300","https://picsum.photos/seed/canape3/400/300"]' },
+  { id: 10, type: "vente", title: "iPhone 13 128Go", description: "iPhone 13 128Go, couleur bleu, achete en mars 2024, toujours sous garantie. Etat impeccable (coque + vitre de protection depuis le debut). Prix : 450€.", category: "vente", status: "open", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-26", images: '["https://picsum.photos/seed/iphone1/400/300","https://picsum.photos/seed/iphone2/400/300"]' },
+  { id: 11, type: "propose", title: "Cours de yoga en groupe", description: "Je propose des cours de yoga doux dans la salle commune, les mardis et jeudis soirs. 10€ par seance. Premier cours gratuit !", category: "divers", status: "open", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-25", images: '["https://picsum.photos/seed/yoga1/400/300"]' },
+  { id: 12, type: "vente", title: "Plantes vertes d appartement", description: "Je demenage et je vends quelques plantes : un monstera, deux pothos et une sanseviere. 15€ chaque ou 50€ les quatre.", category: "vente", status: "open", authorName: "Marie", authorFloor: 7, createdAt: "2026-05-24", images: '["https://picsum.photos/seed/plante1/400/300","https://picsum.photos/seed/plante2/400/300"]' },
 ];
 
 export const fallbackDocuments = [
@@ -48,16 +54,16 @@ export const fallbackEvents = [
 ];
 
 export const fallbackUsers = [
-  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: null, phone: null, bio: "Passionnee de jardinage et de cuisine", senior: false },
-  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: null, phone: null, bio: null, senior: true },
-  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: null, phone: null, bio: "Prof d anglais, adore les chats", senior: false },
-  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: null, phone: null, bio: null, senior: false },
-  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: null, phone: null, bio: null, senior: true },
-  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: null, phone: null, bio: "Bricoleur du dimanche", senior: false },
-  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: null, phone: null, bio: null, senior: true },
-  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: null, phone: null, bio: null, senior: false },
-  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: null, phone: null, bio: null, senior: false },
-  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: null, phone: null, bio: null, senior: false },
+  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marie", phone: null, bio: "Passionnee de jardinage et de cuisine", senior: false },
+  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-jp", phone: null, bio: null, senior: true },
+  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-sophie", phone: null, bio: "Prof d anglais, adore les chats", senior: false },
+  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-lucas", phone: null, bio: null, senior: false },
+  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marguerite", phone: null, bio: null, senior: true },
+  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-karim", phone: null, bio: "Bricoleur du dimanche", senior: false },
+  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-paul", phone: null, bio: null, senior: true },
+  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-camille", phone: null, bio: null, senior: false },
+  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-henri", phone: null, bio: null, senior: false },
+  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-emma", phone: null, bio: null, senior: false },
 ];
 
 export const fallbackAdminUsers = fallbackUsers.map((u) => ({
