@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { IconUsers, IconSearch, IconSort, IconSend, IconGrid, IconList } from "@/components/icons";
+import ResidentModal from "@/components/resident-modal";
 
 const PHOTO_SIZE = 80;
 
@@ -43,22 +44,9 @@ function Avatar({ r, size }: { r: Resident; size: number }) {
   );
 }
 
-function MessageButton({ residentId }: { residentId: number }) {
-  return (
-    <a
-      href={`/messagerie?to=${residentId}`}
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 4,
-        padding: "6px 16px", borderRadius: 999,
-        background: "var(--color-primary)", color: "#000",
-        fontSize: "0.8125rem", fontWeight: 600,
-        textDecoration: "none", lineHeight: 1,
-      }}
-    >
-      <IconSend size={14} />
-      Message
-    </a>
-  );
+function truncate(text: string, max: number): { short: string; isLong: boolean } {
+  if (text.length <= max) return { short: text, isLong: false };
+  return { short: text.slice(0, max).trimEnd() + "…", isLong: true };
 }
 
 export default function AnnuaireClient({ residents: initialResidents }: { residents: Resident[] }) {
@@ -67,6 +55,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
   const [filterFloor, setFilterFloor] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<"floor" | "name" | "name-desc">("floor");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [modalUserId, setModalUserId] = useState<number | null>(null);
 
   const sorted = [...residents].sort((a, b) => {
     if (sortBy === "floor") return (a.floor || 0) - (b.floor || 0);
@@ -96,105 +85,107 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
       <div className="input-group" style={{ marginBottom: 24 }}>
         <div style={{ position: "relative", flex: 1, maxWidth: 320 }}>
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
-          <input
-            type="search"
-            autoComplete="off"
-            placeholder="Rechercher…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="input"
-            style={{ paddingLeft: 40, width: "100%" }}
-          />
+          <input type="search" autoComplete="off" placeholder="Rechercher…" value={search} onChange={(e) => setSearch(e.target.value)} className="input" style={{ paddingLeft: 40, width: "100%" }} />
         </div>
-        <select
-          value={filterFloor ?? ""}
-          onChange={(e) => setFilterFloor(e.target.value ? Number(e.target.value) : null)}
-          className="input"
-          style={{ padding: "8px 12px", width: "auto" }}
-        >
+        <select value={filterFloor ?? ""} onChange={(e) => setFilterFloor(e.target.value ? Number(e.target.value) : null)} className="input" style={{ padding: "8px 12px", width: "auto" }}>
           <option value="">Tous les étages</option>
-          {Array.from({ length: 19 }, (_, i) => (
-            <option key={i} value={i + 1}>{i + 1}e étage</option>
-          ))}
+          {Array.from({ length: 19 }, (_, i) => (<option key={i} value={i + 1}>{i + 1}e étage</option>))}
         </select>
         <div className="input-group" style={{ gap: 4 }}>
           <IconSort size={18} />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as "floor" | "name" | "name-desc")}
-            className="input"
-            style={{ padding: "6px 10px", fontSize: "0.8125rem", width: "auto" }}
-          >
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as "floor" | "name" | "name-desc")} className="input" style={{ padding: "6px 10px", fontSize: "0.8125rem", width: "auto" }}>
             <option value="floor">Par étage</option>
             <option value="name">Nom (A-Z)</option>
             <option value="name-desc">Nom (Z-A)</option>
           </select>
         </div>
         <div className="input-group" style={{ gap: 2, marginLeft: 4 }}>
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`}
-            style={{ padding: "6px 8px" }}
-            title="Vue grille"
-          >
-            <IconGrid size={18} />
-          </button>
-          <button
-            onClick={() => setViewMode("list")}
-            className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`}
-            style={{ padding: "6px 8px" }}
-            title="Vue liste"
-          >
-            <IconList size={18} />
-          </button>
+          <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
+          <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
         </div>
       </div>
 
       {viewMode === "grid" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
-          {filtered.map((r) => (
-            <div key={r.id} className="card" style={{ padding: "20px 24px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
-                <Avatar r={r} size={PHOTO_SIZE} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h4 style={{ margin: 0, fontSize: "1.0625rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
+          {filtered.map((r) => {
+            const t = r.bio ? truncate(r.bio, 200) : null;
+            return (
+              <div key={r.id} className="card" style={{ padding: "20px 24px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
+                  <Avatar r={r} size={PHOTO_SIZE} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h4 style={{ margin: 0, fontSize: "1.0625rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
+                    </div>
+                    <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
+                      {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
+                      <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
+                    </div>
+                    {t && (
+                      <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: "4px 0 0", lineHeight: 1.4 }}>
+                        {t.short}
+                        {t.isLong && (
+                          <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-primary)", fontSize: "0.8125rem", padding: 0, marginLeft: 2 }}>
+                            plus
+                          </button>
+                        )}
+                      </p>
+                    )}
                   </div>
-                  <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
-                    {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
-                    <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
-                  </div>
-                  {r.bio && (
-                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: "4px 0 0", lineHeight: 1.4 }}>
-                      {r.bio}
-                    </p>
-                  )}
                 </div>
+                <a
+                  href={`/messagerie?to=${r.id}`}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 4,
+                    padding: "6px 16px", borderRadius: 999,
+                    background: "var(--color-primary)", color: "#000",
+                    fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
+                  }}
+                >
+                  <IconSend size={14} /> Message
+                </a>
               </div>
-              <MessageButton residentId={r.id} />
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          {filtered.map((r) => (
-            <div key={r.id} className="card" style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-              <Avatar r={r} size={PHOTO_SIZE} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                  <h4 style={{ margin: 0, fontSize: "1rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
-                  {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
-                  <span className="tag" style={{ fontSize: "0.75rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
+          {filtered.map((r) => {
+            const t = r.bio ? truncate(r.bio, 400) : null;
+            return (
+              <div key={r.id} className="card" style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+                <Avatar r={r} size={PHOTO_SIZE} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                    <h4 style={{ margin: 0, fontSize: "1rem" }}>{r.firstName} {r.lastName.charAt(0)}.</h4>
+                    {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
+                    <span className="tag" style={{ fontSize: "0.75rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
+                  </div>
+                  {t && (
+                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.4 }}>
+                      {t.short}
+                      {t.isLong && (
+                        <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-primary)", fontSize: "0.8125rem", padding: 0, marginLeft: 2 }}>
+                          plus
+                        </button>
+                      )}
+                    </p>
+                  )}
                 </div>
-                {r.bio && (
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {r.bio}
-                  </p>
-                )}
+                <a
+                  href={`/messagerie?to=${r.id}`}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0,
+                    padding: "6px 16px", borderRadius: 999,
+                    background: "var(--color-primary)", color: "#000",
+                    fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
+                  }}
+                >
+                  <IconSend size={14} /> Message
+                </a>
               </div>
-              <MessageButton residentId={r.id} />
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -203,6 +194,8 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
           Aucun résident ne correspond à vos critères.
         </p>
       )}
+
+      {modalUserId !== null && <ResidentModal userId={modalUserId} onClose={() => setModalUserId(null)} />}
     </div>
   );
 }
