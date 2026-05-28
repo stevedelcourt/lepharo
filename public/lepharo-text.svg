@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="300 830 400 300" version="1.1" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <rect x="30" y="41" width="350" height="18" style="fill:currentColor;"/>
+  <g transform="matrix(0.41,0,0,0.41,55,100)">
+    <text x="266.175px" y="1117.24px" style="font-family:'AvenirNext-Bold','Avenir Next',sans-serif;font-weight:700;font-size:228.014px;fill:currentColor;">LA<tspan x="548.228px 599.759px 725.394px 919.434px" y="1117.24px 1117.24px 1117.24px 1117.24px"> TOU</tspan>R</text>
+  </g>
+  <g transform="matrix(0.37,0,0,0.37,80,175)">
+    <text x="422.478px" y="1117.24px" style="font-family:'AvenirNext-Bold','Avenir Next',sans-serif;font-weight:700;font-size:228.014px;fill:currentColor;">DU</text>
+  </g>
+</svg>

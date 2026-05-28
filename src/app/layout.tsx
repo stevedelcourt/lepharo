@@ -79,13 +79,8 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
     <aside className="sidebar">
       <div className="sidebar-logo">
         <a href="/">
-          <Image
-            src="/lepharo.svg"
-            alt="Le Pharo"
-            width={223}
-            height={273}
-            className="sidebar-building-icon"
-          />
+          <Image src="/lepharo.svg" alt="Le Pharo" width={223} height={273} className="sidebar-building-icon" />
+          <Image src="/lepharo-text.svg" alt="Le Pharo" width={140} height={44} className="sidebar-text-icon" />
         </a>
       </div>
 
