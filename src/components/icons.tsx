@@ -405,8 +405,17 @@ export function IconParty({ size = 24, className, style }: Props) {
 export function IconClose({ size = 24, className, style }: Props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </svg>
+  );
+}
+
+export function IconTag({ size = 24, className, style }: Props) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+      <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.828 7.828a2 2 0 0 0 2.828 0l5.172 -5.172a2 2 0 0 0 0 -2.828l-7.828 -7.828a2 2 0 0 0 -1.414 -.586h-5.172a2 2 0 0 0 -2 2z" />
     </svg>
   );
 }

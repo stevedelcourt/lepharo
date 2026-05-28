@@ -26,6 +26,7 @@ export default async function ListingDetailPage({ params }: Props) {
     title: entraideListings.title,
     description: entraideListings.description,
     category: entraideListings.category,
+    images: entraideListings.images,
     status: entraideListings.status,
     authorId: entraideListings.authorId,
     authorName: users.firstName,

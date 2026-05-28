@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Base de donnees non disponible" }, { status: 503 });
   }
 
-  const { type, title, description, category } = await request.json();
+  const { type, title, description, category, images } = await request.json();
 
   if (!type || !title || !description || !category) {
     return NextResponse.json({ error: "Tous les champs sont requis" }, { status: 400 });
@@ -24,11 +24,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Type invalide" }, { status: 400 });
   }
 
+  const imagesJson = Array.isArray(images) ? JSON.stringify(images) : "[]";
+
   const result = await db.insert(entraideListings).values({
     type,
     title,
     description,
     category,
+    images: imagesJson,
     authorId: session.id,
     status: "open",
   }).run();

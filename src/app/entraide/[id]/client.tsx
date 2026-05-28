@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconChevronLeft, IconTag } from "@/components/icons";
 
 type Listing = {
   id: number;
@@ -14,6 +15,7 @@ type Listing = {
   authorName: string;
   authorFloor: number | null;
   createdAt: string;
+  images: string;
 };
 
 type Message = {
@@ -27,11 +29,12 @@ type Message = {
 const categoryLabels: Record<string, string> = {
   garde: "Garde d'enfants",
   compagnie: "Compagnie et visite",
-  courses: "Courses et deplacements",
-  numerique: "Aide numerique",
+  courses: "Courses et déplacements",
+  numerique: "Aide numérique",
   bricolage: "Bricolage et petits travaux",
-  pret: "Pret d'objets",
-  transport: "Transport et mobilite",
+  vente: "Vente d'objets",
+  pret: "Prêt d'objets",
+  transport: "Transport et mobilité",
   divers: "Divers",
 };
 
@@ -48,6 +51,12 @@ export default function ListingDetailClient({
   const [messages, setMessages] = useState(initialMessages);
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  let images: string[] = [];
+  try {
+    images = JSON.parse(listing.images || "[]");
+  } catch { /* empty */ }
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
@@ -83,40 +92,27 @@ export default function ListingDetailClient({
   const isOwner = listing.authorId === currentUserId;
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 720, margin: "0 auto" }}>
+    <div className="container" style={{ padding: "40px 24px", maxWidth: 760, margin: "0 auto" }}>
       <a
         href="/entraide"
         style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 24, textDecoration: "none" }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-        Retour a l entraide
+        <IconChevronLeft size={16} />
+        Retour à l&apos;entraide
       </a>
 
       <div className="card" style={{ padding: "24px 28px", marginBottom: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-          <div>
-            <span style={{
-              display: "inline-flex",
-              width: 28,
-              height: 28,
-              borderRadius: 999,
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.6875rem",
-              textTransform: "uppercase",
-              color: "#fff",
-              background: listing.type === "propose" ? "var(--color-primary)" : "var(--color-accent)",
-              marginRight: 10,
-            }}>
-              {listing.type === "propose" ? "P" : "C"}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span className={`tag ${listing.type === "propose" ? "tag-propose" : "tag-cherche"}`}>
+              {listing.type === "propose" ? "Propose" : "Cherche"}
             </span>
-            <span className="tag" style={{ fontSize: "0.8125rem" }}>
+            <span className="tag" style={{ fontSize: "0.8125rem", display: "inline-flex", alignItems: "center", gap: 4 }}>
+              {listing.category === "vente" && <IconTag size={14} />}
               {categoryLabels[listing.category] || listing.category}
             </span>
             {listing.status === "closed" && (
-              <span className="tag" style={{ background: "var(--color-text-tertiary)", color: "#fff", marginLeft: 8 }}>
-                Fermee
-              </span>
+              <span className="tag tag-closed">Fermée</span>
             )}
           </div>
         </div>
@@ -124,12 +120,48 @@ export default function ListingDetailClient({
         <h2 style={{ fontSize: "1.25rem", marginBottom: 8 }}>{listing.title}</h2>
 
         <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 16 }}>
-          {listing.authorName}{listing.authorFloor ? `, ${listing.authorFloor}e etage` : ""}
+          {listing.authorName}{listing.authorFloor ? `, ${listing.authorFloor}e étage` : ""}
         </p>
 
         <p style={{ fontSize: "0.9375rem", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
           {listing.description}
         </p>
+
+        {images.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {images.map((url, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setSelectedImage(selectedImage === i ? null : i)}
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    border: selectedImage === i ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                    cursor: "pointer",
+                    padding: 0,
+                    background: "var(--color-bg)",
+                    transition: "border-color 0.15s",
+                  }}
+                >
+                  <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </button>
+              ))}
+            </div>
+            {selectedImage !== null && (
+              <div style={{ marginTop: 12 }}>
+                <img
+                  src={images[selectedImage]}
+                  alt=""
+                  style={{ width: "100%", maxHeight: 480, borderRadius: 8, objectFit: "contain", background: "var(--color-bg-alt)" }}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Messages */}
@@ -140,7 +172,7 @@ export default function ListingDetailClient({
 
         {messages.length === 0 && (
           <p style={{ color: "var(--color-text-secondary)", fontSize: "0.9375rem", marginBottom: 24 }}>
-            Aucun message pour le moment. Soyez le premier a repondre.
+            Aucun message pour le moment. Soyez le premier à répondre.
           </p>
         )}
 
@@ -157,7 +189,7 @@ export default function ListingDetailClient({
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 4 }}>
-                <span style={{ fontSize: "0.8125rem", fontWeight: 300, color: "var(--color-text)" }}>
+                <span style={{ fontSize: "0.8125rem", color: "var(--color-text)" }}>
                   {m.authorName}
                 </span>
               </div>
@@ -174,7 +206,7 @@ export default function ListingDetailClient({
               className="input"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={isOwner ? "Repondez a un message..." : "Envoyer un message..."}
+              placeholder={isOwner ? "Répondez à un message..." : "Envoyer un message..."}
               required
               style={{ flex: 1 }}
             />

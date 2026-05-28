@@ -16,6 +16,7 @@ export default async function EntraidePage() {
     authorName: users.firstName,
     authorFloor: users.floor,
     createdAt: entraideListings.createdAt,
+    images: entraideListings.images,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
     .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings;
 

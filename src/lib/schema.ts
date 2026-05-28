@@ -40,6 +40,7 @@ export const entraideListings = sqliteTable("entraide_listings", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
+  images: text("images").notNull().default("[]"),
   authorId: integer("author_id").notNull().references(() => users.id),
   status: text("status").notNull().default("open"),
   createdAt: text("created_at").notNull().default("(datetime('now'))"),

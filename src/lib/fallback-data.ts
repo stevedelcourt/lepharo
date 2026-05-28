@@ -12,12 +12,12 @@ export const fallbackForumTopics: { id: number; title: string; rubrique: string;
 ];
 
 export const fallbackListings = [
-  { id: 1, type: "propose", title: "Cours d anglais pour enfants", category: "garde", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27" },
-  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", category: "compagnie", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26" },
-  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", category: "courses", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25" },
-  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", category: "pret", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24" },
-  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", category: "bricolage", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23" },
-  { id: 6, type: "propose", title: "Baby-sitting samedi soir", category: "garde", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22" },
+  { id: 1, type: "propose", title: "Cours d anglais pour enfants", category: "garde", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
+  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", category: "compagnie", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
+  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", category: "courses", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
+  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", category: "pret", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
+  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", category: "bricolage", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
+  { id: 6, type: "propose", title: "Baby-sitting samedi soir", category: "garde", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
 ];
 
 export const fallbackDocuments = [
@@ -78,6 +78,7 @@ export const fallbackAdminListings = fallbackListings.map((l) => ({
   authorName: l.authorName,
   authorFloor: l.authorFloor,
   createdAt: l.createdAt,
+  images: l.images,
 }));
 
 export const fallbackAdminEvents = fallbackEvents.map((e) => ({

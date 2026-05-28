@@ -50,6 +50,7 @@ export async function GET(request: Request) {
     authorName: users.firstName,
     authorFloor: users.floor,
     createdAt: entraideListings.createdAt,
+    images: entraideListings.images,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
     .where(and(...conditions))
     .orderBy(desc(entraideListings.createdAt)).all();

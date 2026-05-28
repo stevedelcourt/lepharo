@@ -11,6 +11,7 @@ type Listing = {
   category: string;
   status: string;
   createdAt: string;
+  images: string;
 };
 
 const categoryLabels: Record<string, string> = {
@@ -19,6 +20,7 @@ const categoryLabels: Record<string, string> = {
   courses: "Courses et déplacements",
   numerique: "Aide numérique",
   bricolage: "Bricolage et petits travaux",
+  vente: "Vente d'objets",
   pret: "Prêt d'objets",
   transport: "Transport et mobilité",
   divers: "Divers",

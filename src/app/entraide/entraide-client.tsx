@@ -3,7 +3,8 @@
 import { useState } from "react";
 import {
   IconHandshake, IconBaby, IconUsersHeart, IconCart, IconMonitor,
-  IconWrench, IconBox, IconCar, IconDots, IconChevronRight, IconSort, IconSearch,
+  IconWrench, IconBox, IconCar, IconDots, IconTag,
+  IconChevronRight, IconSort,
 } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ const categories = [
   { id: "courses", label: "Courses et déplacements", icon: IconCart },
   { id: "numerique", label: "Aide numérique", icon: IconMonitor },
   { id: "bricolage", label: "Bricolage et petits travaux", icon: IconWrench },
+  { id: "vente", label: "Vente d'objets", icon: IconTag },
   { id: "pret", label: "Prêt d'objets", icon: IconBox },
   { id: "transport", label: "Transport et mobilité", icon: IconCar },
   { id: "divers", label: "Divers", icon: IconDots },
@@ -26,6 +28,7 @@ type Listing = {
   authorName: string;
   authorFloor: number | null;
   createdAt: string;
+  images: string;
 };
 
 export default function EntraideClient({ listings: initialListings }: { listings: Listing[] }) {
@@ -48,6 +51,13 @@ export default function EntraideClient({ listings: initialListings }: { listings
     const cat = categories.find((c) => c.id === catId);
     return cat ? cat.icon : IconDots;
   };
+
+  function hasImages(imgs: string): boolean {
+    try {
+      const arr = JSON.parse(imgs);
+      return Array.isArray(arr) && arr.length > 0;
+    } catch { return false; }
+  }
 
   return (
     <div className="container" style={{ padding: "40px 24px" }}>
@@ -119,7 +129,14 @@ export default function EntraideClient({ listings: initialListings }: { listings
                 </span>
                 <CatIcon size={20} />
                 <div>
-                  <p style={{ marginBottom: 2 }}>{item.title}</p>
+                  <p style={{ marginBottom: 2 }}>
+                    {item.title}
+                    {hasImages(item.images) && (
+                      <span style={{ marginLeft: 8, fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
+                        +{JSON.parse(item.images).length} photo{JSON.parse(item.images).length > 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </p>
                   <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
                     {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
                   </p>

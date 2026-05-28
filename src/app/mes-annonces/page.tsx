@@ -13,7 +13,7 @@ export default async function MesAnnoncesPage() {
 
   const db = getDb();
   let listings: {
-    id: number; type: string; title: string; category: string; status: string; createdAt: string;
+    id: number; type: string; title: string; category: string; status: string; createdAt: string; images: string;
   }[] = [];
 
   if (db) {
@@ -24,6 +24,7 @@ export default async function MesAnnoncesPage() {
       category: entraideListings.category,
       status: entraideListings.status,
       createdAt: entraideListings.createdAt,
+      images: entraideListings.images,
     }).from(entraideListings)
       .where(eq(entraideListings.authorId, session.id))
       .orderBy(desc(entraideListings.createdAt)).all();
