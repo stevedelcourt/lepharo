@@ -13,7 +13,7 @@ export default async function MesAnnoncesPage() {
 
   const db = getDb();
   let listings: {
-    id: number; type: string; title: string; category: string; status: string; createdAt: string; images: string;
+    id: number; type: string; title: string; description: string; category: string; status: string; createdAt: string; images: string;
   }[] = [];
 
   if (db) {
@@ -21,6 +21,7 @@ export default async function MesAnnoncesPage() {
       id: entraideListings.id,
       type: entraideListings.type,
       title: entraideListings.title,
+      description: entraideListings.description,
       category: entraideListings.category,
       status: entraideListings.status,
       createdAt: entraideListings.createdAt,
