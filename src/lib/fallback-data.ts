@@ -12,12 +12,12 @@ export const fallbackForumTopics: { id: number; title: string; content: string; 
 ];
 
 export const fallbackListings = [
-  { id: 1, type: "propose", title: "Cours d anglais pour enfants", description: "Je donne des cours d anglais aux enfants du residence", category: "garde", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
-  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", description: "J ai besoin d etre accompagnee chez le medecin", category: "compagnie", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
-  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", description: "Je propose de faire vos courses", category: "courses", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
-  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", description: "Je prete mes outils de bricolage", category: "pret", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
-  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", description: "Je cherche quelqu un pour m aider", category: "bricolage", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
-  { id: 6, type: "propose", title: "Baby-sitting samedi soir", description: "Je propose de garder vos enfants", category: "garde", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
+  { id: 1, type: "propose", title: "Cours d anglais pour enfants", description: "Je donne des cours d anglais aux enfants du residence", category: "garde", status: "open", authorName: "Sophie", authorFloor: 4, createdAt: "2026-05-27", images: "[]" },
+  { id: 2, type: "cherche", title: "Qui peut m accompagner chez le medecin ?", description: "J ai besoin d etre accompagnee chez le medecin", category: "compagnie", status: "open", authorName: "Marguerite", authorFloor: 9, createdAt: "2026-05-26", images: "[]" },
+  { id: 3, type: "propose", title: "Je fais vos courses le samedi matin", description: "Je propose de faire vos courses", category: "courses", status: "open", authorName: "Lucas", authorFloor: 3, createdAt: "2026-05-25", images: "[]" },
+  { id: 4, type: "propose", title: "Perceuse, visseuse, scie sauteuse", description: "Je prete mes outils de bricolage", category: "pret", status: "open", authorName: "Karim", authorFloor: 6, createdAt: "2026-05-24", images: "[]" },
+  { id: 5, type: "cherche", title: "Aide pour monter un meuble IKEA", description: "Je cherche quelqu un pour m aider", category: "bricolage", status: "open", authorName: "Camille", authorFloor: 11, createdAt: "2026-05-23", images: "[]" },
+  { id: 6, type: "propose", title: "Baby-sitting samedi soir", description: "Je propose de garder vos enfants", category: "garde", status: "open", authorName: "Emma", authorFloor: 5, createdAt: "2026-05-22", images: "[]" },
 ];
 
 export const fallbackDocuments = [
@@ -78,6 +78,7 @@ export const fallbackAdminListings = fallbackListings.map((l) => ({
   title: l.title,
   description: l.description,
   category: l.category,
+  status: l.status,
   authorName: l.authorName,
   authorFloor: l.authorFloor,
   createdAt: l.createdAt,

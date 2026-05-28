@@ -18,6 +18,7 @@ export default async function AdminEntraidePage() {
     title: entraideListings.title,
     category: entraideListings.category,
     description: entraideListings.description,
+    status: entraideListings.status,
     authorName: users.firstName,
     authorFloor: users.floor,
     createdAt: entraideListings.createdAt,
@@ -34,6 +35,7 @@ export default async function AdminEntraidePage() {
             <th>Titre</th>
             <th>Type</th>
             <th>Catégorie</th>
+            <th>Statut</th>
             <th>Auteur</th>
             <th>Date</th>
             <th>Actions</th>
@@ -49,6 +51,7 @@ export default async function AdminEntraidePage() {
                 </span>
               </td>
               <td>{l.category}</td>
+              <td>{l.status === "open" ? <span className="tag">Ouvert</span> : <span className="tag tag-closed">Fermée</span>}</td>
               <td>{l.authorName} ({l.authorFloor}e)</td>
               <td>{l.createdAt}</td>
               <td>
@@ -59,7 +62,7 @@ export default async function AdminEntraidePage() {
                     { label: "Type", key: "type", type: "select", options: [{ value: "propose", label: "Propose" }, { value: "cherche", label: "Cherche" }], default: l.type },
                     { label: "Catégorie", key: "category", type: "text", default: l.category },
                   ]} />
-                  <ModerateButton table="entraide_listings" id={l.id} field="status" label="Fermer/Rouvrir" value={l.createdAt} />
+                  <ModerateButton table="entraide_listings" id={l.id} field="status" label={l.status === "open" ? "Fermer l'annonce" : "Rouvrir l'annonce"} value={l.status} />
                   <DeleteButton table="entraide_listings" id={l.id} />
                 </div>
               </td>

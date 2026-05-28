@@ -163,12 +163,12 @@ export function ModerateButton({ table, id, field, label, icon, value: initialVa
     window.location.reload();
   }
 
-  const isActive = initialValue === true || initialValue === "1" || initialValue === 1 || initialValue === "open";
+  const btnLabel = label.split(" ")[0];
 
   return (
     <button onClick={toggle} disabled={working} className="btn-ghost btn-sm" type="button" style={{ padding: "4px 8px", fontSize: "0.8125rem" }}>
       {icon}
-      {isActive ? "Désactiver" : "Activer"}
+      {btnLabel}
     </button>
   );
 }
