@@ -5,7 +5,7 @@ import { IconClose, IconSend, IconHandshake, IconForum, IconPoll } from "@/compo
 import { formatDate } from "@/lib/utils";
 
 type Activity = {
-  user: { id: number; firstName: string; lastName: string; floor: number | null; avatarUrl: string | null; bio: string | null; senior: boolean };
+  user: { id: number; firstName: string; lastName: string; floor: number | null; avatarUrl: string | null; bio: string | null; tagline: string | null; senior: boolean };
   lastListing: { id: number; title: string; type: string; createdAt: string } | null;
   lastReply: { id: number; content: string; topicId: number; topicTitle: string | null; createdAt: string } | null;
   lastPoll: { id: number; question: string; createdAt: string } | null;
@@ -43,7 +43,7 @@ export default function ResidentModal({ userId, onClose }: { userId: number; onC
               <div>
                 <h2 style={{ margin: 0, fontSize: "1.25rem" }}>{data.user.firstName} {data.user.lastName}</h2>
                 <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: "2px 0 0", display: "flex", alignItems: "center", gap: 6 }}>
-                  {data.user.floor ? `${data.user.floor}e étage` : "Résident"}
+                  {data.user.tagline || (data.user.floor ? `${data.user.floor}e étage` : "Résident")}
                   {data.user.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.6875rem" }}>Senior</span>}
                 </p>
               </div>

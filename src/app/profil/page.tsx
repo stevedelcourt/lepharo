@@ -20,6 +20,7 @@ export default async function ProfilPage() {
     floor: number | null;
     phone: string | null;
     bio: string | null;
+    tagline: string | null;
     avatarUrl: string | null;
     senior: boolean;
     hasPassword: boolean;
@@ -36,6 +37,7 @@ export default async function ProfilPage() {
         floor: users.floor,
         phone: users.phone,
         bio: users.bio,
+      tagline: users.tagline,
         avatarUrl: users.avatarUrl,
         senior: users.senior,
         passwordHash: users.passwordHash,
@@ -49,6 +51,7 @@ export default async function ProfilPage() {
         floor: users.floor,
         phone: users.phone,
         bio: users.bio,
+      tagline: users.tagline,
         avatarUrl: users.avatarUrl,
         passwordHash: users.passwordHash,
       }).from(users).where(eq(users.id, session.id)).get();
@@ -64,6 +67,7 @@ export default async function ProfilPage() {
       floor: u.floor,
       phone: u.phone,
       bio: u.bio,
+      tagline: u.tagline,
       avatarUrl: u.avatarUrl,
       senior: u.senior ?? false,
       hasPassword: !!u.passwordHash,
@@ -77,6 +81,7 @@ export default async function ProfilPage() {
       floor: null,
       phone: null,
       bio: null,
+      tagline: null,
       avatarUrl: null,
       senior: false,
       hasPassword: true,

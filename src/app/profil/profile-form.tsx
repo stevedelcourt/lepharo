@@ -11,6 +11,7 @@ type Props = {
     floor: number | null;
     phone: string | null;
     bio: string | null;
+    tagline: string | null;
     avatarUrl: string | null;
     hasPassword: boolean;
     senior: boolean;
@@ -23,6 +24,7 @@ export default function ProfileForm({ user }: Props) {
   const [floor, setFloor] = useState(user.floor?.toString() || "");
   const [phone, setPhone] = useState(user.phone || "");
   const [bio, setBio] = useState(user.bio || "");
+  const [tagline, setTagline] = useState(user.tagline || "");
   const [senior, setSenior] = useState(user.senior);
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -49,6 +51,7 @@ export default function ProfileForm({ user }: Props) {
           floor: floor ? parseInt(floor, 10) : null,
           phone,
           bio,
+          tagline,
           senior,
         }),
       });
@@ -254,6 +257,23 @@ export default function ProfileForm({ user }: Props) {
                 style={{ width: "100%" }}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="label" style={{ display: "block", marginBottom: 4, fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
+              Une ligne sur moi
+            </label>
+            <input
+              className="input"
+              value={tagline}
+              onChange={(e) => { const v = e.target.value; if (v.length <= 110) setTagline(v); }}
+              placeholder="Ceci apparaît à côté de votre photo dans l&#39;annuaire"
+              maxLength={110}
+              style={{ width: "100%" }}
+            />
+            <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: 4, textAlign: "right" }}>
+              {tagline.length}/110
+            </p>
           </div>
 
           <div>

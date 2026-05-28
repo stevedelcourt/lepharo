@@ -11,7 +11,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Indisponible" }, { status: 503 });
 
-  const u = await db.select({ id: users.id, firstName: users.firstName, lastName: users.lastName, floor: users.floor, avatarUrl: users.avatarUrl, bio: users.bio, senior: users.senior })
+  const u = await db.select({ id: users.id, firstName: users.firstName, lastName: users.lastName, floor: users.floor, avatarUrl: users.avatarUrl, bio: users.bio, tagline: users.tagline, senior: users.senior })
     .from(users).where(eq(users.id, userId)).get();
   if (!u) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
 

@@ -54,16 +54,16 @@ export const fallbackEvents = [
 ];
 
 export const fallbackUsers = [
-  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marie", phone: null, bio: "Passionnee de jardinage et de cuisine", senior: false },
-  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-jp", phone: null, bio: null, senior: true },
-  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-sophie", phone: null, bio: "Prof d anglais, adore les chats", senior: false },
-  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-lucas", phone: null, bio: null, senior: false },
-  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marguerite", phone: null, bio: null, senior: true },
-  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-karim", phone: null, bio: "Bricoleur du dimanche", senior: false },
-  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-paul", phone: null, bio: null, senior: true },
-  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-camille", phone: null, bio: null, senior: false },
-  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-henri", phone: null, bio: null, senior: false },
-  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-emma", phone: null, bio: null, senior: false },
+  { id: 1, firstName: "Marie", lastName: "L.", floor: 7, email: "marie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marie", phone: null, bio: "Passionnee de jardinage et de cuisine", tagline: "Maman de deux enfants", senior: false },
+  { id: 2, firstName: "Jean-Pierre", lastName: "D.", floor: 12, email: "jp@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-jp", phone: null, bio: null, tagline: "Retraité, disponible", senior: true },
+  { id: 3, firstName: "Sophie", lastName: "K.", floor: 4, email: "sophie@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-sophie", phone: null, bio: "Prof d anglais, adore les chats", tagline: "Prof d'anglais", senior: false },
+  { id: 4, firstName: "Lucas", lastName: "M.", floor: 3, email: "lucas@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-lucas", phone: null, bio: null, tagline: "Jeune actif", senior: false },
+  { id: 5, firstName: "Marguerite", lastName: "B.", floor: 9, email: "marguerite@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-marguerite", phone: null, bio: null, tagline: "Grand-mère de 8 petits-enfants", senior: true },
+  { id: 6, firstName: "Karim", lastName: "A.", floor: 6, email: "karim@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-karim", phone: null, bio: "Bricoleur du dimanche", tagline: "Bricoleur passionné", senior: false },
+  { id: 7, firstName: "Paul", lastName: "R.", floor: 15, email: "paul@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-paul", phone: null, bio: null, tagline: "Ancien marin", senior: true },
+  { id: 8, firstName: "Camille", lastName: "T.", floor: 11, email: "camille@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-camille", phone: null, bio: null, tagline: "Photographe amateur", senior: false },
+  { id: 9, firstName: "Henri", lastName: "D.", floor: 14, email: "henri@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-henri", phone: null, bio: null, tagline: "Musicien jazz", senior: false },
+  { id: 10, firstName: "Emma", lastName: "J.", floor: 5, email: "emma@email.fr", avatarUrl: "https://i.pravatar.cc/150?u=lepharo-emma", phone: null, bio: null, tagline: "Étudiante en psychologie", senior: false },
 ];
 
 export const fallbackAdminUsers = fallbackUsers.map((u) => ({

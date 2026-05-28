@@ -15,6 +15,7 @@ type Resident = {
   avatarUrl: string | null;
   phone: string | null;
   bio: string | null;
+  tagline: string | null;
   senior: boolean;
 };
 
@@ -121,6 +122,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
                       <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
                     </div>
+                    {r.tagline && <p style={{ fontSize: "0.8125rem", color: "var(--color-text)", margin: "2px 0 0", fontWeight: 500 }}>{r.tagline}</p>}
                     {t && (
                       <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: "4px 0 0", lineHeight: 1.4 }}>
                         {t.short}
