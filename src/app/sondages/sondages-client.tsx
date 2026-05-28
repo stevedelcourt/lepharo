@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { IconPoll, IconPlus } from "@/components/icons";
+import { IconPoll, IconPlus, IconStar } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
-type Poll = { id: number; question: string; authorName: string; authorFloor: number | null; createdAt: string; voteCount: number; optionCount: number };
+const barColors = ["#22C55E", "#F59E0B", "#6366f1", "#06b6d4", "#d946ef", "#14b8a6", "#f97316", "#8b5cf6"];
+
+type Option = { id: number; label: string; count: number };
+type Poll = { id: number; question: string; authorName: string; authorFloor: number | null; createdAt: string; totalVotes: number; options: Option[] };
 
 export default function SondagesClient() {
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -25,8 +28,11 @@ export default function SondagesClient() {
           <IconPlus size={16} /> Nouveau sondage
         </a>
       </div>
-      <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", marginBottom: 32 }}>
+      <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", marginBottom: 4, lineHeight: 1.5 }}>
         Une idée, une question, une décision à discuter ? Chaque résident peut créer un sondage.
+      </p>
+      <p style={{ color: "var(--color-text-tertiary)", fontSize: "0.875rem", marginBottom: 32, fontStyle: "italic" }}>
+        Les propositions qui reçoivent plus de 25 votes seront soumises à la présidente représentante de l&apos;immeuble et/ou au syndic. Démocratie appliquée.
       </p>
 
       {loading ? (
@@ -37,21 +43,47 @@ export default function SondagesClient() {
           <a href="/sondages/nouveau" className="btn btn-primary">Créer le premier sondage</a>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {polls.map((p) => (
-            <a key={p.id} href={`/sondages/${p.id}`} className="card" style={{ padding: "16px 20px", textDecoration: "none", color: "var(--color-text)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-              <div>
-                <p style={{ fontWeight: 600, marginBottom: 4 }}>{p.question}</p>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-                  Par {p.authorName}{p.authorFloor ? ` (${p.authorFloor}e)` : ""} · {formatDate(p.createdAt)}
-                </p>
-              </div>
-              <div style={{ textAlign: "right", flexShrink: 0, fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
-                <p>{p.voteCount} vote{p.voteCount > 1 ? "s" : ""}</p>
-                <p>{p.optionCount} option{p.optionCount > 1 ? "s" : ""}</p>
-              </div>
-            </a>
-          ))}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {polls.map((p) => {
+            const sorted = [...p.options].sort((a, b) => b.count - a.count);
+            const maxCount = Math.max(...p.options.map((o) => o.count), 1);
+            const colored = sorted.map((opt, i) => ({ ...opt, color: barColors[i % barColors.length], pct: p.totalVotes > 0 ? Math.round((opt.count / p.totalVotes) * 100) : 0 }));
+
+            return (
+              <a key={p.id} href={`/sondages/${p.id}`} className="card" style={{ padding: "18px 22px", textDecoration: "none", color: "var(--color-text)", display: "block" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                  <div>
+                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", marginBottom: 2 }}>
+                      {formatDate(p.createdAt)} · Par {p.authorName}{p.authorFloor ? ` (${p.authorFloor}e)` : ""}
+                    </p>
+                    <p style={{ fontWeight: 700, fontSize: "1.0625rem", margin: 0 }}>{p.question}</p>
+                  </div>
+                  {p.totalVotes >= 25 && (
+                    <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", flexShrink: 0, marginLeft: 12 }}>
+                      <IconStar size={12} style={{ marginRight: 4 }} />
+                      {p.totalVotes} votes
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
+                  {colored.map((opt) => (
+                    <div key={opt.id}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                        <span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>{opt.label}</span>
+                        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-text-tertiary)" }}>{opt.pct}% ({opt.count})</span>
+                      </div>
+                      <div style={{ height: 6, borderRadius: 3, background: "var(--color-border-light)", overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${opt.pct}%`, background: opt.color, borderRadius: 3, transition: "width 0.3s" }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: 8, textAlign: "right" }}>
+                  {p.totalVotes} vote{p.totalVotes > 1 ? "s" : ""}
+                </div>
+              </a>
+            );
+          })}
         </div>
       )}
     </div>

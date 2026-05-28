@@ -16,12 +16,21 @@ export async function GET() {
     authorName: users.firstName,
     authorFloor: users.floor,
     createdAt: polls.createdAt,
-    voteCount: sql<number>`(SELECT COUNT(*) FROM poll_votes WHERE poll_votes.poll_id = polls.id)`.as("voteCount"),
-    optionCount: sql<number>`(SELECT COUNT(*) FROM poll_options WHERE poll_options.poll_id = polls.id)`.as("optionCount"),
+    totalVotes: sql<number>`(SELECT COUNT(*) FROM poll_votes WHERE poll_votes.poll_id = polls.id)`.as("totalVotes"),
   }).from(polls).innerJoin(users, eq(polls.authorId, users.id))
     .orderBy(desc(polls.createdAt)).all();
 
-  return NextResponse.json(rows);
+  const items = [];
+  for (const row of rows) {
+    const options = await db.select({
+      id: pollOptions.id,
+      label: pollOptions.label,
+      count: sql<number>`(SELECT COUNT(*) FROM poll_votes WHERE poll_votes.option_id = poll_options.id)`.as("count"),
+    }).from(pollOptions).where(eq(pollOptions.pollId, row.id)).all();
+    items.push({ ...row, options });
+  }
+
+  return NextResponse.json(items);
 }
 
 export async function POST(req: Request) {
