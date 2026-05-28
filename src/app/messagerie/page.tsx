@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IconSend, IconMail } from "@/components/icons";
 
 type Conversation = {
@@ -22,6 +22,7 @@ type Message = {
 
 export default function MessageriePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConv, setActiveConv] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -31,15 +32,24 @@ export default function MessageriePage() {
   const [sending, setSending] = useState(false);
   const chatEnd = useRef<HTMLDivElement>(null);
 
+  const toParam = searchParams.get("to");
+
   useEffect(() => {
     fetch("/api/messagerie/conversations")
       .then((r) => r.json())
       .then((data) => {
         setConversations(data);
-        if (data.length > 0) setActiveConv(data[0].id);
+        const target = toParam ? parseInt(toParam, 10) : null;
+        if (target && data.some((c: Conversation) => c.id === target)) {
+          setActiveConv(target);
+        } else if (data.length > 0) {
+          setActiveConv(data[0].id);
+        } else if (target) {
+          setActiveConv(target);
+        }
         setLoading(false);
       });
-  }, []);
+  }, [toParam]);
 
   useEffect(() => {
     if (!activeConv) return;
@@ -80,7 +90,7 @@ export default function MessageriePage() {
     setSending(false);
   }
 
-  const current = conversations.find((c) => c.id === activeConv);
+  const current = conversations.find((c) => c.id === activeConv) || (activeConv ? { id: activeConv, name: `Résident #${activeConv}`, floor: null, lastMessage: "", time: "", unread: 0 } as Conversation : null);
 
   return (
     <div className="container" style={{ padding: "40px 24px" }}>

@@ -263,11 +263,15 @@ export default function ProfileForm({ user }: Props) {
             <textarea
               className="input"
               value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              onChange={(e) => { const v = e.target.value; if (v.length <= 1000) setBio(v); }}
               placeholder="Parlez de vous, de vos hobbies, de ce que vous pouvez partager avec vos voisins..."
               rows={4}
+              maxLength={1000}
               style={{ width: "100%", resize: "vertical", fontFamily: "inherit" }}
             />
+            <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: 4, textAlign: "right" }}>
+              {bio.length}/1000
+            </p>
           </div>
 
           <div style={{ marginTop: 8, padding: "16px 20px", background: senior ? "var(--color-warning-light)" : "var(--color-bg-alt)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border)" }}>
@@ -290,7 +294,7 @@ export default function ProfileForm({ user }: Props) {
               <div>
                 <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: 4 }}>Senior</p>
                 <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
-                  Je suis senior et parfait, j&apos;aurais vraiment besoin d&apos;aide, je souhaite signaler ça dans mon profil public.
+                  En tant que senior, je souhaiterais mentionner cette information sur mon profil public pour favoriser des interactions adaptées et conviviales au sein de la résidence.
                 </p>
               </div>
             </div>
