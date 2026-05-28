@@ -48,27 +48,7 @@ export default function RegisterPage() {
           </label>
           <input id="password" type="password" required style={inputStyle} placeholder="Au moins 8 caractères" />
         </div>
-        <div>
-          <label htmlFor="document" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-            Justificatif d&apos;occupation
-          </label>
-          <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", marginBottom: 8 }}>
-            Avis de taxe foncière, bail ou quittance de charges. Le fichier
-            est supprimé après vérification de votre compte.
-          </p>
-          <input
-            id="document"
-            type="file"
-            required
-            accept=".pdf,.jpg,.jpeg,.png"
-            style={{
-              width: "100%",
-              padding: "8px 0",
-              fontSize: "0.9375rem",
-            }}
-          />
-        </div>
-        <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875rem", color: "var(--color-text-secondary)", cursor: "pointer" }}>
+<label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875rem", color: "var(--color-text-secondary)", cursor: "pointer" }}>
           <input type="checkbox" required style={{ marginTop: 3 }} />
           <span>
             J&apos;accepte la{" "}
