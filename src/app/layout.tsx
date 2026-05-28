@@ -55,8 +55,8 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
           <Image
             src="/lepharo.svg"
             alt="Le Pharo"
-            width={144}
-            height={176}
+            width={223}
+            height={273}
             className="sidebar-building-icon"
           />
         </a>
