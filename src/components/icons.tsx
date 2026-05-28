@@ -449,6 +449,19 @@ export function IconMessage({ size = 24, className, style }: Props) {
   );
 }
 
+export function IconPoll({ size = 24, className, style }: Props) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <rect x="4" y="6" width="16" height="14" rx="2" />
+      <line x1="7" y1="10" x2="10" y2="10" />
+      <line x1="7" y1="14" x2="13" y2="14" />
+      <line x1="7" y1="18" x2="9" y2="18" />
+      <rect x="12" y="11" width="5" height="2" rx="1" fill="currentColor" />
+      <rect x="15" y="15" width="2" height="2" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function IconHelp({ size = 24, className, style }: Props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>

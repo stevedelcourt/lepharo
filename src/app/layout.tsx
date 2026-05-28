@@ -11,7 +11,7 @@ import BurgerMenu from "@/components/burger-menu";
 import {
   IconHome, IconDashboard, IconUsers, IconForum, IconHandshake,
   IconCalendar, IconFolder, IconClipboard, IconUser, IconShield,
-  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar, IconMessage, IconHelp,
+  IconBell, IconLogout, IconLogin, IconInfo, IconMail, IconBook, IconSend, IconStar, IconMessage, IconHelp, IconPoll,
 } from "@/components/icons";
 import "./globals.css";
 import "./sidebar.css";
@@ -99,6 +99,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <NavItem href="/forum" icon={<IconForum />} label="Forum" />
             <NavItem href="/calendrier" icon={<IconCalendar />} label="Calendrier" />
             <NavItem href="/documents" icon={<IconFolder />} label="Documents" />
+            <NavItem href="/sondages" icon={<IconPoll />} label="Sondages" />
             <NavItem href="/aide" icon={<IconHelp />} label="Aide" />
 
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>

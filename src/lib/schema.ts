@@ -102,6 +102,26 @@ export const adminWarnings = sqliteTable("admin_warnings", {
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
+export const polls = sqliteTable("polls", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  question: text("question").notNull(),
+  authorId: integer("author_id").notNull().references(() => users.id),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const pollOptions = sqliteTable("poll_options", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  pollId: integer("poll_id").notNull().references(() => polls.id),
+  label: text("label").notNull(),
+});
+
+export const pollVotes = sqliteTable("poll_votes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  pollId: integer("poll_id").notNull().references(() => polls.id),
+  optionId: integer("option_id").notNull().references(() => pollOptions.id),
+  voterId: integer("voter_id").notNull().references(() => users.id),
+});
+
 export const alerts = sqliteTable("alerts", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   message: text("message").notNull(),

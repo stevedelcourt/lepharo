@@ -21,6 +21,9 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "012_fix_dates_events", sql: `UPDATE events SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
   { id: "013_fix_dates_alerts", sql: `UPDATE alerts SET created_at = datetime('now') WHERE created_at LIKE '(datetime%'` },
   { id: "014_users_senior", sql: `ALTER TABLE users ADD COLUMN senior integer DEFAULT false NOT NULL` },
+  { id: "015_polls", sql: `CREATE TABLE IF NOT EXISTS polls (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, question text NOT NULL, author_id integer NOT NULL REFERENCES users(id), created_at text DEFAULT (datetime('now')) NOT NULL)` },
+  { id: "016_poll_options", sql: `CREATE TABLE IF NOT EXISTS poll_options (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, poll_id integer NOT NULL REFERENCES polls(id), label text NOT NULL)` },
+  { id: "017_poll_votes", sql: `CREATE TABLE IF NOT EXISTS poll_votes (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, poll_id integer NOT NULL REFERENCES polls(id), option_id integer NOT NULL REFERENCES poll_options(id), voter_id integer NOT NULL REFERENCES users(id))` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {
