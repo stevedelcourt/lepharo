@@ -26,18 +26,33 @@ export default async function ProfilPage() {
   };
 
   if (db) {
-    const u = await db.select({
-      id: users.id,
-      firstName: users.firstName,
-      lastName: users.lastName,
-      email: users.email,
-      floor: users.floor,
-      phone: users.phone,
-      bio: users.bio,
-      avatarUrl: users.avatarUrl,
-      senior: users.senior,
-      passwordHash: users.passwordHash,
-    }).from(users).where(eq(users.id, session.id)).get();
+    let u: any;
+    try {
+      u = await db.select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        email: users.email,
+        floor: users.floor,
+        phone: users.phone,
+        bio: users.bio,
+        avatarUrl: users.avatarUrl,
+        senior: users.senior,
+        passwordHash: users.passwordHash,
+      }).from(users).where(eq(users.id, session.id)).get();
+    } catch {
+      u = await db.select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        email: users.email,
+        floor: users.floor,
+        phone: users.phone,
+        bio: users.bio,
+        avatarUrl: users.avatarUrl,
+        passwordHash: users.passwordHash,
+      }).from(users).where(eq(users.id, session.id)).get();
+    }
 
     if (!u) redirect("/connexion");
 
@@ -50,7 +65,7 @@ export default async function ProfilPage() {
       phone: u.phone,
       bio: u.bio,
       avatarUrl: u.avatarUrl,
-      senior: u.senior,
+      senior: u.senior ?? false,
       hasPassword: !!u.passwordHash,
     };
   } else {
