@@ -131,13 +131,13 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {hotTopics.map((t) => (
-              <div key={t.id} className="card" style={{ padding: "14px 18px" }}>
+              <a key={t.id} href={`/forum/sujet/${t.id}`} className="card" style={{ padding: "14px 18px", textDecoration: "none", color: "var(--color-text)" }}>
                 <p style={{ marginBottom: 6, fontSize: "0.9375rem" }}>{t.title}</p>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
                   <span className="tag" style={{ textTransform: "capitalize" }}>{t.rubrique}</span>
                   <span>{t.replyCount} réponses · {formatDate(t.createdAt)}</span>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
