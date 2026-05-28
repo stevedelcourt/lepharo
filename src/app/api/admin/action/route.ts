@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       }
       // Only allow updating safe columns
       const allowed: Record<string, string[]> = {
-        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio"],
+        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "admin_role"],
         forum_topics: ["title", "content", "rubrique", "pinned", "locked"],
         forum_replies: ["content"],
         forum_rubriques: ["name", "slug", "description"],

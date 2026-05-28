@@ -41,14 +41,24 @@ export function EditButton({ table, id, fields }: { table: string; id: number; f
         data[f.key] = values[f.key];
       }
     });
-    await fetch("/api/admin/action", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "update", table, id, data }),
-    });
-    setSaving(false);
-    setOpen(false);
-    window.location.reload();
+    try {
+      const res = await fetch("/api/admin/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "update", table, id, data }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        setOpen(false);
+        window.location.reload();
+      } else {
+        alert(result.error || "Erreur");
+        setSaving(false);
+      }
+    } catch {
+      alert("Erreur réseau");
+      setSaving(false);
+    }
   }
 
   return (
