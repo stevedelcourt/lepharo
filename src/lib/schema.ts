@@ -19,7 +19,6 @@ export const users = sqliteTable("users", {
   senior: integer("senior", { mode: "boolean" }).notNull().default(false),
   showFullName: integer("show_full_name", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const forumRubriques = sqliteTable("forum_rubriques", {
@@ -28,7 +27,6 @@ export const forumRubriques = sqliteTable("forum_rubriques", {
   slug: text("slug").notNull().unique(),
   description: text("description"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const forumTopics = sqliteTable("forum_topics", {
@@ -40,7 +38,6 @@ export const forumTopics = sqliteTable("forum_topics", {
   pinned: integer("pinned", { mode: "boolean" }).notNull().default(false),
   locked: integer("locked", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const forumReplies = sqliteTable("forum_replies", {
@@ -49,7 +46,6 @@ export const forumReplies = sqliteTable("forum_replies", {
   authorId: integer("author_id").notNull().references(() => users.id),
   content: text("content").notNull(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const entraideListings = sqliteTable("entraide_listings", {
@@ -62,7 +58,6 @@ export const entraideListings = sqliteTable("entraide_listings", {
   authorId: integer("author_id").notNull().references(() => users.id),
   status: text("status").notNull().default("open"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const listingMessages = sqliteTable("listing_messages", {
@@ -72,7 +67,6 @@ export const listingMessages = sqliteTable("listing_messages", {
   content: text("content").notNull(),
   read: integer("read", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const documents = sqliteTable("documents", {
@@ -93,7 +87,6 @@ export const events = sqliteTable("events", {
   type: text("type").notNull(),
   authorId: integer("author_id").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const privateMessages = sqliteTable("private_messages", {
@@ -103,7 +96,6 @@ export const privateMessages = sqliteTable("private_messages", {
   content: text("content").notNull(),
   read: integer("read", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const adminWarnings = sqliteTable("admin_warnings", {
@@ -120,7 +112,6 @@ export const polls = sqliteTable("polls", {
   question: text("question").notNull(),
   authorId: integer("author_id").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const pollOptions = sqliteTable("poll_options", {
@@ -143,7 +134,6 @@ export const reports = sqliteTable("reports", {
   reason: text("reason").notNull(),
   reporterId: integer("reporter_id").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
 
 export const alerts = sqliteTable("alerts", {
@@ -153,5 +143,4 @@ export const alerts = sqliteTable("alerts", {
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   createdBy: integer("created_by").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
-  dismissed: integer("dismissed", { mode: "boolean" }).notNull().default(false),
 });
