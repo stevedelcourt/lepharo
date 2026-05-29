@@ -27,7 +27,11 @@ export async function POST(request: Request) {
     }).from(users).where(eq(users.email, email)).get();
   }
 
-  if (!user || !user.passwordHash || !compareSync(password, user.passwordHash)) {
+  let passwordValid = false;
+  try {
+    passwordValid = !!user?.passwordHash && compareSync(password, user.passwordHash);
+  } catch { passwordValid = false; }
+  if (!user || !passwordValid) {
     return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });
   }
 

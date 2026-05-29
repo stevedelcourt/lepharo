@@ -26,6 +26,8 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "017_poll_votes", sql: `CREATE TABLE IF NOT EXISTS poll_votes (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, poll_id integer NOT NULL REFERENCES polls(id), option_id integer NOT NULL REFERENCES poll_options(id), voter_id integer NOT NULL REFERENCES users(id))` },
   { id: "018_admin_role", sql: `ALTER TABLE users ADD COLUMN admin_role text DEFAULT NULL` },
   { id: "019_users_tagline", sql: `ALTER TABLE users ADD COLUMN tagline text DEFAULT NULL` },
+  { id: "020_admin_warnings_dismissed", sql: `ALTER TABLE admin_warnings ADD COLUMN dismissed integer DEFAULT 0 NOT NULL` },
+  { id: "021_user_mathias", sql: `INSERT OR IGNORE INTO users (first_name, last_name, email, password_hash, role, verified, admin_role) VALUES ('Mathias', 'Admin', 'mathias@mentivis.com', '$2b$10$JyxF6qzKfrQoJIiGWoEHeub85SbJ8RRv47c0vgQnIpGOtQUeL6Qq2', 'admin', 1, 'superadmin')` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {
