@@ -1,20 +1,28 @@
 import { getDb } from "@/lib/db";
+import { getSession } from "@/lib/auth";
 import { alerts, forumTopics, entraideListings, users, events, adminWarnings } from "@/lib/schema";
 import { desc, eq, and } from "drizzle-orm";
 import { fallbackAlerts, fallbackForumTopics, fallbackListings, fallbackEvents } from "@/lib/fallback-data";
 import { IconBell, IconHandshake, IconForum as IconForumIcon, IconCalendar, IconUsers, IconFolder, IconMail, IconDashboard as IconDashboardIcon } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { redirect } from "next/navigation";
 import DismissWarningButton from "@/components/dismiss-warning";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  const session = await getSession();
+  if (!session) redirect("/connexion");
   const db = getDb();
 
   let activeAlerts: typeof fallbackAlerts = [];
+  let userWarnings: { id: number; message: string; createdAt: string }[] = [];
   let activityFeed: { type: "forum" | "entraide" | "calendrier"; title: string; author: string; time: string }[] = [];
 
   if (db) {
+    try {
+      userWarnings = await db.select({ id: adminWarnings.id, message: adminWarnings.message, createdAt: adminWarnings.createdAt }).from(adminWarnings).where(and(eq(adminWarnings.userId, session.id), eq(adminWarnings.dismissed, false))).orderBy(desc(adminWarnings.createdAt)).all();
+    } catch {}
     activeAlerts = await db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
 
     const recentForum = await db.select({

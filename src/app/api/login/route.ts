@@ -12,7 +12,20 @@ export async function POST(request: Request) {
   if (!db) {
     return NextResponse.json({ error: "Base de donnees non disponible" }, { status: 503 });
   }
-  const user = await db.select().from(users).where(eq(users.email, email)).get();
+  let user: any;
+  try {
+    user = await db.select({
+      id: users.id, firstName: users.firstName, lastName: users.lastName,
+      email: users.email, role: users.role, adminRole: users.adminRole,
+      passwordHash: users.passwordHash,
+    }).from(users).where(eq(users.email, email)).get();
+  } catch {
+    user = await db.select({
+      id: users.id, firstName: users.firstName, lastName: users.lastName,
+      email: users.email, role: users.role,
+      passwordHash: users.passwordHash,
+    }).from(users).where(eq(users.email, email)).get();
+  }
 
   if (!user || !user.passwordHash || !compareSync(password, user.passwordHash)) {
     return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });
@@ -24,7 +37,7 @@ export async function POST(request: Request) {
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role,
-    adminRole: user.adminRole,
+    adminRole: (user as any).adminRole || null,
   });
 
   return NextResponse.json({ success: true, role: user.role });

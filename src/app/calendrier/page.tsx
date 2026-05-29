@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 
 export default async function CalendrierPage() {
   const db = getDb();
-  const allEvents = db ? await db.select().from(events).orderBy(desc(events.date)).all() : fallbackEvents;
+  let allEvents = fallbackEvents;
+  if (db) {
+    try { allEvents = await db.select().from(events).orderBy(desc(events.date)).all(); } catch {}
+  }
 
   return <CalendrierClient events={allEvents} />;
 }

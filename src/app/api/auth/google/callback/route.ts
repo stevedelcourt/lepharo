@@ -82,6 +82,7 @@ export async function GET(request: Request) {
     firstName: user!.firstName,
     lastName: user!.lastName,
     role: user!.role,
+    adminRole: (user as any).adminRole || null,
   });
 
   return NextResponse.redirect(new URL("/dashboard", request.url));
