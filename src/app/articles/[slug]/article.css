@@ -1,0 +1,95 @@
+.article-detail {
+  padding: 48px 0 80px;
+}
+
+.article-detail-header {
+  margin-bottom: 32px;
+}
+
+.article-detail-back {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.article-detail-header h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.article-detail-subtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+}
+
+.article-detail-image {
+  margin-bottom: 32px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.article-detail-image img {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+.article-detail-content {
+  max-width: 720px;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.article-detail-content h1 {
+  font-size: 2rem;
+  margin: 32px 0 12px;
+}
+
+.article-detail-content h2 {
+  font-size: 1.5rem;
+  margin: 28px 0 10px;
+}
+
+.article-detail-content h3 {
+  font-size: 1.25rem;
+  margin: 24px 0 8px;
+}
+
+.article-detail-content p {
+  margin-bottom: 16px;
+}
+
+.article-detail-content li {
+  margin-left: 24px;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 768px) {
+  .article-detail-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .article-detail-subtitle {
+    font-size: 1rem;
+  }
+}
+
+.sujet-card,
+.sujet-reply {
+  padding: 24px 28px !important;
+}
+
+@media (max-width: 768px) {
+  .sujet-card {
+    padding: 16px !important;
+  }
+
+  .sujet-reply {
+    padding: 12px 14px !important;
+  }
+}

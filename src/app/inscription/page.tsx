@@ -1,72 +1,7 @@
 "use client";
 
-export default function RegisterPage() {
-  return (
-    <div className="container" style={{ maxWidth: 560, margin: "0 auto", padding: "80px 24px" }}>
-      <h1 style={{ marginBottom: 8 }}>Rejoindre la communauté</h1>
-      <p style={{ color: "var(--color-text-secondary)", marginBottom: 32 }}>
-        L&apos;accès est réservé aux résidents et propriétaires du 75 boulevard
-        Charles Livon. Votre inscription sera vérifiée par un administrateur.
-      </p>
-
-      <form className="card" style={{ padding: 32, display: "flex", flexDirection: "column", gap: 20 }}
-        onSubmit={(e) => { e.preventDefault(); }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div>
-            <label htmlFor="firstName" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-              Prénom
-            </label>
-            <input id="firstName" type="text" required style={inputStyle} />
-          </div>
-          <div>
-            <label htmlFor="lastName" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-              Nom
-            </label>
-            <input id="lastName" type="text" required style={inputStyle} />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="email" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-            Email
-          </label>
-          <input id="email" type="email" required style={inputStyle} placeholder="votre@email.fr" />
-        </div>
-        <div>
-          <label htmlFor="floor" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-            Étage
-          </label>
-          <select id="floor" required style={inputStyle}>
-            <option value="">Sélectionnez votre étage</option>
-            {Array.from({ length: 19 }, (_, i) => (
-              <option key={i} value={i + 1}>{i + 1}<sup>er</sup> étage</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="password" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
-            Mot de passe
-          </label>
-          <input id="password" type="password" required style={inputStyle} placeholder="Au moins 8 caractères" />
-        </div>
-<label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875rem", color: "var(--color-text-secondary)", cursor: "pointer" }}>
-          <input type="checkbox" required style={{ marginTop: 3 }} />
-          <span>
-            J&apos;accepte la{" "}
-            <a href="/charte" target="_blank">charte de la communauté</a> et la{" "}
-            <a href="/confidentialite" target="_blank">politique de confidentialité</a>.
-          </span>
-        </label>
-        <button type="submit" className="btn btn-primary btn-lg" style={{ width: "100%", marginTop: 8 }}>
-          Créer mon compte
-        </button>
-        <p style={{ textAlign: "center", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-          Déjà inscrit ?{" "}
-          <a href="/connexion">Se connecter</a>
-        </p>
-      </form>
-    </div>
-  );
-}
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -77,3 +12,159 @@ const inputStyle: React.CSSProperties = {
   background: "var(--color-bg)",
   outline: "none",
 };
+
+export default function RegisterPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [floor, setFloor] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const isPhone = phone.length > 0;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (!email && !phone) {
+      setError("Email ou numéro de téléphone requis");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, phone, floor, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Erreur lors de l'inscription");
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Erreur réseau — veuillez réessayer");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="container page-padding" style={{ maxWidth: 560, margin: "0 auto" }}>
+      <h1 style={{ marginBottom: 8 }}>Rejoindre la communauté</h1>
+      <p style={{ color: "var(--color-text-secondary)", marginBottom: 32 }}>
+        L&apos;accès est réservé aux résidents et propriétaires du 75 boulevard
+        Charles Livon. Votre inscription sera vérifiée par un administrateur.
+      </p>
+
+      {error && (
+        <p style={{ color: "var(--color-accent)", fontSize: "0.875rem", marginBottom: 16 }}>
+          {error}
+        </p>
+      )}
+
+      <form className="card form-card" style={{ padding: 32, display: "flex", flexDirection: "column", gap: 20 }} onSubmit={handleSubmit}>
+        <div className="form-row-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div>
+            <label htmlFor="firstName" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+              Prénom
+            </label>
+            <input id="firstName" type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} style={inputStyle} />
+          </div>
+          <div>
+            <label htmlFor="lastName" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+              Nom
+            </label>
+            <input id="lastName" type="text" required value={lastName} onChange={(e) => setLastName(e.target.value)} style={inputStyle} />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="email" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+            Email <span style={{ color: "var(--color-text-tertiary)", fontWeight: 400 }}>(ou téléphone ci-dessous)</span>
+          </label>
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="votre@email.fr" />
+        </div>
+
+        <div>
+          <label htmlFor="phone" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+            Téléphone <span style={{ color: "var(--color-text-tertiary)", fontWeight: 400 }}>(ou email ci-dessus)</span>
+          </label>
+          <div style={{ display: "flex", alignItems: "center", gap: 0, position: "relative" }}>
+            {isPhone && (
+              <span style={{
+                position: "absolute",
+                left: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                fontSize: "0.875rem",
+                color: "var(--color-text-secondary)",
+                pointerEvents: "none",
+                zIndex: 1,
+              }}>
+                <span style={{ fontSize: "1.1rem" }}>🇫🇷</span>
+                <span>+33</span>
+              </span>
+            )}
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              style={{
+                ...inputStyle,
+                paddingLeft: isPhone ? 80 : 14,
+              }}
+              placeholder="06 XX XX XX XX"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="floor" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+            Étage
+          </label>
+          <select id="floor" value={floor} onChange={(e) => setFloor(e.target.value)} required style={inputStyle}>
+            <option value="">Sélectionnez votre étage</option>
+            {Array.from({ length: 19 }, (_, i) => (
+              <option key={i} value={i + 1}>{i + 1}<sup>er</sup> étage</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="password" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>
+            Mot de passe
+          </label>
+          <input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} placeholder="Au moins 8 caractères" />
+        </div>
+
+        <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875rem", color: "var(--color-text-secondary)", cursor: "pointer" }}>
+          <input type="checkbox" required style={{ marginTop: 3 }} />
+          <span>
+            J&apos;accepte la{" "}
+            <a href="/charte" target="_blank">charte de la communauté</a> et la{" "}
+            <a href="/confidentialite" target="_blank">politique de confidentialité</a>.
+          </span>
+        </label>
+
+        <button type="submit" className="btn btn-primary btn-lg" style={{ width: "100%", marginTop: 8 }} disabled={loading}>
+          {loading ? "Inscription…" : "Créer mon compte"}
+        </button>
+
+        <p style={{ textAlign: "center", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
+          Déjà inscrit ?{" "}
+          <a href="/connexion">Se connecter</a>
+        </p>
+      </form>
+    </div>
+  );
+}

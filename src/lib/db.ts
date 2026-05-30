@@ -28,6 +28,7 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "019_users_tagline", sql: `ALTER TABLE users ADD COLUMN tagline text DEFAULT NULL` },
   { id: "020_admin_warnings_dismissed", sql: `ALTER TABLE admin_warnings ADD COLUMN dismissed integer DEFAULT 0 NOT NULL` },
   { id: "021_user_mathias", sql: `INSERT OR IGNORE INTO users (first_name, last_name, email, password_hash, role, verified, admin_role) VALUES ('Mathias', 'Admin', 'mathias@mentivis.com', '$2b$10$JyxF6qzKfrQoJIiGWoEHeub85SbJ8RRv47c0vgQnIpGOtQUeL6Qq2', 'admin', 1, 'superadmin')` },
+  { id: "022_articles", sql: `CREATE TABLE IF NOT EXISTS articles (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, title text NOT NULL, slug text NOT NULL UNIQUE, subtitle text, content text, image_url text, page text NOT NULL DEFAULT 'home', sort_order integer NOT NULL DEFAULT 0, published integer NOT NULL DEFAULT 0, created_at text DEFAULT (datetime('now')) NOT NULL, updated_at text)` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {
@@ -70,8 +71,9 @@ async function migrateLibsql(client: any) {
 
 export function getDb(): Database | null {
   if (db !== null) return db;
-  if (process.env.VERCEL) {
-    if (!process.env.TURSO_DB_URL || !process.env.TURSO_DB_TOKEN) return null;
+
+  // Use Turso when configured (local or Vercel)
+  if (process.env.TURSO_DB_URL && process.env.TURSO_DB_TOKEN) {
     try {
       const { createClient } = require("@libsql/client/web");
       const { drizzle } = require("drizzle-orm/libsql");
@@ -86,6 +88,8 @@ export function getDb(): Database | null {
       return null;
     }
   }
+
+  // Fallback: local SQLite (dev only, no Turso configured)
   try {
     const Database = require("better-sqlite3");
     const path = require("path");

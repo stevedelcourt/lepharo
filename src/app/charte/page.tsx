@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Charte - Le Pharo Communauté",
+  title: "Charte - La communauté de La Tour du Pharo",
 };
 
 export default function CharterPage() {
   return (
-    <div className="container" style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px" }}>
+    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 12 }}>Charte de la communauté</h1>
       <p style={{ color: "var(--color-text-secondary)", fontSize: "1.125rem", marginBottom: 40 }}>
         Les règles qui permettent à notre communauté de fonctionner dans le
@@ -15,7 +15,7 @@ export default function CharterPage() {
 
       <h2 style={{ marginBottom: 8, marginTop: 32 }}>Principes généraux</h2>
       <p>
-        Le Pharo Communauté est un espace privé réservé aux résidents et
+        La communauté de La Tour du Pharo est un espace privé réservé aux résidents et
         propriétaires du 75 boulevard Charles Livon. En créant un compte,
         vous vous engagez à respecter les règles suivantes.
       </p>

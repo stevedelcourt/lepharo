@@ -1,9 +1,9 @@
 export default function AboutPage() {
   return (
-    <div className="container" style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px" }}>
+    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 12 }}>À propos</h1>
       <p style={{ color: "var(--color-text-secondary)", fontSize: "1.125rem", marginBottom: 40 }}>
-        Le Pharo Communauté est né d&apos;une idée simple : mieux vivre ensemble
+        La communauté de La Tour du Pharo est née d&apos;une idée simple : mieux vivre ensemble
         dans notre immeuble.
       </p>
 
@@ -21,7 +21,7 @@ export default function AboutPage() {
         l&apos;entraide, pas de mémoire collective facilement accessible.
       </p>
       <p>
-        Le Pharo Communauté a été créé par un groupe de résidents pour répondre
+        La communauté de La Tour du Pharo a été créée par un groupe de résidents pour répondre
         à ces besoins : un espace privé, sécurisé, où chacun peut proposer son
         aide, poser une question, partager un document ou organiser un événement.
       </p>
@@ -48,14 +48,14 @@ export default function AboutPage() {
 
       <h2 style={{ marginBottom: 8, marginTop: 32 }}>Indépendance</h2>
       <p>
-        Le Pharo Communauté est une initiative strictement privée et indépendante.
+        La communauté de La Tour du Pharo est une initiative strictement privée et indépendante.
         Elle n&apos;est aucunement affiliée au syndic de copropriété, aux cabinets
         de gestion, aux entreprises intervenant dans l&apos;immeuble, ni à aucune
         autre personne morale ou physique extérieure à la résidence.
       </p>
       <p>
         Le site est administré par des résidents bénévoles. Aucune structure
-        associative formelle pour le moment — juste des voisins qui ont
+        associative formelle pour le moment - juste des voisins qui ont
         décidé de prendre les choses en main.
       </p>
       <p>

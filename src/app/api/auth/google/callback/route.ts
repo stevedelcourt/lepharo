@@ -57,33 +57,59 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/connexion?error=db_unavailable", request.url));
   }
 
-  let user = await db.select().from(users).where(eq(users.email, email)).get();
+  let user: any;
+  try {
+    const rows = await db.select({
+      id: users.id, email: users.email, firstName: users.firstName,
+      lastName: users.lastName, role: users.role, adminRole: users.adminRole,
+      googleId: users.googleId,
+    }).from(users).where(eq(users.email, email)).limit(1).execute();
+    user = rows[0] || null;
+  } catch {
+    return NextResponse.redirect(new URL("/connexion?error=db_query_failed", request.url));
+  }
 
   if (user) {
     if (!user.googleId) {
-      await db.update(users).set({ googleId }).where(eq(users.id, user.id)).run();
+      try {
+        await db.update(users).set({ googleId }).where(eq(users.id, user.id)).run();
+      } catch {
+        return NextResponse.redirect(new URL("/connexion?error=db_update_failed", request.url));
+      }
     }
   } else {
-    const result = await db.insert(users).values({
-      firstName: given_name || email.split("@")[0],
-      lastName: family_name || "",
-      email,
-      googleId,
-      role: "resident",
-      verified: true,
-    }).returning().get();
-
-    user = result;
+    try {
+      await db.insert(users).values({
+        firstName: given_name || email.split("@")[0],
+        lastName: family_name || "",
+        email,
+        googleId,
+        role: "resident",
+        verified: true,
+      }).run();
+      const rows = await db.select({
+        id: users.id, email: users.email, firstName: users.firstName,
+        lastName: users.lastName, role: users.role, adminRole: users.adminRole,
+        googleId: users.googleId,
+      }).from(users).where(eq(users.email, email)).limit(1).execute();
+      user = rows[0] || null;
+    } catch {
+      return NextResponse.redirect(new URL("/connexion?error=db_insert_failed", request.url));
+    }
   }
 
-  await createSession({
-    id: user!.id,
-    email: user!.email,
-    firstName: user!.firstName,
-    lastName: user!.lastName,
-    role: user!.role,
-    adminRole: (user as any).adminRole || null,
-  });
+  try {
+    await createSession({
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      adminRole: (user as any).adminRole || null,
+    });
+  } catch {
+    return NextResponse.redirect(new URL("/connexion?error=session_failed", request.url));
+  }
 
   return NextResponse.redirect(new URL("/dashboard", request.url));
 }

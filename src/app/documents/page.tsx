@@ -32,7 +32,7 @@ export default async function DocumentsPage() {
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
         <IconFolder size={28} />
         <h1 style={{ margin: 0 }}>Espace documents</h1>

@@ -3,28 +3,41 @@ import { getDb } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { createSession } from "@/lib/auth";
 import { compareSync } from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
+import { normalizePhone } from "@/lib/phone";
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json();
+  const { identifier, email, password } = await request.json();
+  const id = identifier || email;
+
+  if (!id) {
+    return NextResponse.json({ error: "Email ou numéro de téléphone requis" }, { status: 400 });
+  }
 
   const db = getDb();
   if (!db) {
     return NextResponse.json({ error: "Base de donnees non disponible" }, { status: 503 });
   }
+
+  const isEmail = id.includes("@");
+  const phone = isEmail ? null : normalizePhone(id);
+
+  const conditions = [eq(users.email, id)];
+  if (phone) conditions.push(eq(users.phone, phone));
+
   let user: any;
   try {
     user = await db.select({
       id: users.id, firstName: users.firstName, lastName: users.lastName,
       email: users.email, role: users.role, adminRole: users.adminRole,
       passwordHash: users.passwordHash,
-    }).from(users).where(eq(users.email, email)).get();
+    }).from(users).where(or(...conditions)).get();
   } catch {
     user = await db.select({
       id: users.id, firstName: users.firstName, lastName: users.lastName,
       email: users.email, role: users.role,
       passwordHash: users.passwordHash,
-    }).from(users).where(eq(users.email, email)).get();
+    }).from(users).where(or(...conditions)).get();
   }
 
   let passwordValid = false;

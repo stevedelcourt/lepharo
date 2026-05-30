@@ -34,7 +34,7 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
   const hasMore = visibleCount < filtered.length;
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 800 }}>
+    <div className="container page-padding" style={{ maxWidth: 800 }}>
       <a
         href="/forum"
         style={{

@@ -18,7 +18,7 @@ export default function SondagesClient() {
   }, []);
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 720, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <IconPoll size={28} />

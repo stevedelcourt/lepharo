@@ -1,14 +1,23 @@
+import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { alerts, forumTopics, entraideListings, users, events, adminWarnings } from "@/lib/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { alerts, forumTopics, entraideListings, users, events } from "@/lib/schema";
+import { desc, eq } from "drizzle-orm";
 import { fallbackAlerts, fallbackForumTopics, fallbackListings, fallbackEvents } from "@/lib/fallback-data";
 import { IconBell, IconHandshake, IconForum as IconForumIcon, IconCalendar, IconUsers, IconFolder, IconMail, IconDashboard as IconDashboardIcon } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import DismissWarningButton from "@/components/dismiss-warning";
+import "./dashboard.css";
 
 export const dynamic = "force-dynamic";
+
+type FeedItem = {
+  type: "forum" | "entraide" | "calendrier";
+  title: string;
+  author: string;
+  time: string;
+  href: string;
+};
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -16,70 +25,70 @@ export default async function DashboardPage() {
   const db = getDb();
 
   let activeAlerts: typeof fallbackAlerts = [];
-  let userWarnings: { id: number; message: string; createdAt: string }[] = [];
-  let activityFeed: { type: "forum" | "entraide" | "calendrier"; title: string; author: string; time: string }[] = [];
+  let feedItems: FeedItem[] = [];
 
   if (db) {
-    try {
-      userWarnings = await db.select({ id: adminWarnings.id, message: adminWarnings.message, createdAt: adminWarnings.createdAt }).from(adminWarnings).where(and(eq(adminWarnings.userId, session.id), eq(adminWarnings.dismissed, false))).orderBy(desc(adminWarnings.createdAt)).all();
-    } catch {}
     activeAlerts = await db.select().from(alerts).where(eq(alerts.active, true)).orderBy(desc(alerts.createdAt)).all();
 
     const recentForum = await db.select({
       id: forumTopics.id,
       title: forumTopics.title,
       authorName: users.firstName,
-      authorFloor: users.floor,
       createdAt: forumTopics.createdAt,
     }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
-      .orderBy(desc(forumTopics.createdAt)).limit(3).all();
+      .orderBy(desc(forumTopics.createdAt)).limit(10).all();
 
     const recentListings = await db.select({
       id: entraideListings.id,
       title: entraideListings.title,
       type: entraideListings.type,
       authorName: users.firstName,
-      authorFloor: users.floor,
       createdAt: entraideListings.createdAt,
     }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
-      .orderBy(desc(entraideListings.createdAt)).limit(3).all();
+      .orderBy(desc(entraideListings.createdAt)).limit(10).all();
 
     const recentEvents = await db.select({
       id: events.id,
       title: events.title,
       date: events.date,
-    }).from(events).orderBy(desc(events.date)).limit(3).all();
+    }).from(events).orderBy(desc(events.date)).limit(10).all();
 
-    activityFeed = [
+    feedItems = [
       ...recentForum.map((t) => ({
         type: "forum" as const, title: t.title,
-        author: `${t.authorName}, ${t.authorFloor}e`, time: t.createdAt || "",
+        author: t.authorName, time: t.createdAt || "",
+        href: `/forum/sujet/${t.id}`,
       })),
       ...recentListings.map((l) => ({
         type: "entraide" as const, title: l.title,
-        author: `${l.authorName}, ${l.authorFloor}e`, time: l.createdAt || "",
+        author: l.authorName, time: l.createdAt || "",
+        href: `/entraide/${l.id}`,
       })),
       ...recentEvents.map((e) => ({
         type: "calendrier" as const, title: e.title,
-        author: e.date, time: "",
+        author: "", time: e.date,
+        href: `/calendrier`,
       })),
-    ].sort(() => Math.random() - 0.5).slice(0, 5);
+    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
   } else {
     activeAlerts = fallbackAlerts;
-    activityFeed = [
-      ...fallbackForumTopics.slice(0, 3).map((t) => ({
+    feedItems = [
+      ...fallbackForumTopics.slice(0, 5).map((t) => ({
         type: "forum" as const, title: t.title,
-        author: `${t.authorName}, ${t.authorFloor}e`, time: t.createdAt,
+        author: t.authorName, time: t.createdAt,
+        href: `/forum/sujet/${t.id}`,
       })),
-      ...fallbackListings.slice(0, 3).map((l) => ({
+      ...fallbackListings.slice(0, 5).map((l) => ({
         type: "entraide" as const, title: l.title,
-        author: `${l.authorName}, ${l.authorFloor}e`, time: l.createdAt,
+        author: l.authorName, time: l.createdAt,
+        href: `/entraide/${l.id}`,
       })),
-      ...fallbackEvents.slice(0, 3).map((e) => ({
+      ...fallbackEvents.slice(0, 5).map((e) => ({
         type: "calendrier" as const, title: e.title,
-        author: e.date, time: "",
+        author: "", time: e.date,
+        href: `/calendrier`,
       })),
-    ].sort(() => Math.random() - 0.5).slice(0, 5);
+    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
   }
 
   const shortcuts = [
@@ -91,74 +100,81 @@ export default async function DashboardPage() {
     { label: "Messagerie", path: "/messagerie", icon: IconMail },
   ];
 
+  const hasMore = feedItems.length > 5;
+
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+    <div className="container page-padding">
+      <div className="dashboard-header">
         <IconDashboardIcon size={32} />
-        <h1 style={{ margin: 0 }}>Bonjour</h1>
+        <h1>À la une</h1>
       </div>
 
+      <p className="dashboard-subtitle">
+        Alertes et dernières interactions de toutes les rubriques
+      </p>
+
       {activeAlerts.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 40 }}>
+        <div className="dashboard-alerts">
           {activeAlerts.map((alert) => (
             <div
               key={alert.id}
-              className="card"
-              style={{
-                padding: "12px 20px",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                borderLeft: `4px solid ${alert.type === "warning" ? "var(--color-warning)" : "var(--color-primary)"}`,
-                background: alert.type === "warning" ? "var(--color-warning-light)" : "var(--color-primary-light)",
-              }}
+              className="dashboard-alert"
+              data-type={alert.type}
             >
               <IconBell size={20} />
-              <p style={{ fontSize: "0.9375rem", margin: 0 }}>{alert.message}</p>
+              <p>{alert.message}</p>
             </div>
           ))}
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32, alignItems: "start" }}>
-        <div>
-          <h3 style={{ marginBottom: 16, fontSize: "1.125rem" }}>Fil d&apos;actualité</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {activityFeed.map((item, i) => (
-              <div key={i} className="card" style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center" }}>
-                <div>
-                  <p style={{ marginBottom: 2 }}>{item.title}</p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
-                    {item.author}{item.time ? ` · ${formatDate(item.time)}` : ""}
-                  </p>
+      <div className="dashboard-grid">
+        <div className="dashboard-feed">
+          <h3>Fil d&apos;actualité</h3>
+          <div className="dashboard-feed-list">
+            {feedItems.slice(0, 5).map((item, i) => (
+              <Link key={i} href={item.href} className="dashboard-feed-item">
+                <div className="dashboard-feed-item-body">
+                  <span className="dashboard-feed-item-title">{item.title}</span>
+                  <span className="dashboard-feed-item-meta">
+                    {item.author && `${item.author} · `}{formatDate(item.time)}
+                  </span>
                 </div>
-                <span className={`tag tag-${item.type === "forum" ? "info" : item.type === "entraide" ? "propose" : "ag"}`} style={{ textTransform: "capitalize" }}>{item.type}</span>
-              </div>
+                <span className={`tag tag-${item.type === "forum" ? "info" : item.type === "entraide" ? "propose" : "ag"}`}>
+                  {item.type === "forum" ? "Forum" : item.type === "entraide" ? "Entraide" : "Événement"}
+                </span>
+              </Link>
             ))}
           </div>
+          {hasMore && (
+            <details className="dashboard-feed-more">
+              <summary className="dashboard-feed-more-toggle">Voir plus ({feedItems.length - 5} autres)</summary>
+              <div className="dashboard-feed-list" style={{ marginTop: 8 }}>
+                {feedItems.slice(5).map((item, i) => (
+                  <Link key={i} href={item.href} className="dashboard-feed-item">
+                    <div className="dashboard-feed-item-body">
+                      <span className="dashboard-feed-item-title">{item.title}</span>
+                      <span className="dashboard-feed-item-meta">
+                        {item.author && `${item.author} · `}{formatDate(item.time)}
+                      </span>
+                    </div>
+                    <span className={`tag tag-${item.type === "forum" ? "info" : item.type === "entraide" ? "propose" : "ag"}`}>
+                      {item.type === "forum" ? "Forum" : item.type === "entraide" ? "Entraide" : "Événement"}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </details>
+          )}
         </div>
 
-        <div>
-          <h3 style={{ marginBottom: 16, fontSize: "1.125rem" }}>Raccourcis</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div className="dashboard-shortcuts">
+          <h3>Raccourcis</h3>
+          <div className="dashboard-shortcuts-list">
             {shortcuts.map((s) => {
               const Icon = s.icon;
               return (
-                <a
-                  key={s.path}
-                  href={s.path}
-                  className="card"
-                  style={{
-                    padding: "12px 20px",
-                    fontSize: "0.9375rem",
-                    textDecoration: "none",
-                    color: "var(--color-text)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    transition: "border-color 0.15s",
-                  }}
-                >
+                <a key={s.path} href={s.path} className="dashboard-shortcut">
                   <Icon size={20} />
                   {s.label}
                 </a>

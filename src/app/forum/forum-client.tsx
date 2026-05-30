@@ -49,7 +49,7 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
     .slice(0, 3);
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, gap: 24, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <IconForum size={28} />

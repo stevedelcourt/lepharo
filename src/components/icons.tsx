@@ -48,11 +48,12 @@ export function IconForum({ size = 24, className, style }: Props) {
 export function IconHandshake({ size = 24, className, style }: Props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 0 1 1.288 -1.068a5 5 0 0 1 5.212 0a5 5 0 0 1 5.212 0a5 5 0 0 1 1.288 1.068" />
-      <path d="M3 13h1l2 3l2 -3h1" />
-      <path d="M15 13h1l2 3l2 -3h1" />
-      <path d="M8 9l2 -2l2 2l2 -2l2 2" />
-      <path d="M12 7v5" />
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="3" x2="12" y2="7" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+      <line x1="3" y1="12" x2="7" y2="12" />
+      <line x1="17" y1="12" x2="21" y2="12" />
     </svg>
   );
 }
@@ -282,6 +283,15 @@ export function IconArrowUp({ size = 24, className, style }: Props) {
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <line x1="12" y1="5" x2="12" y2="19" />
       <polyline points="19,12 12,5 5,12" />
+    </svg>
+  );
+}
+
+export function IconArrowRight({ size = 24, className, style }: Props) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12,5 19,12 12,19" />
     </svg>
   );
 }

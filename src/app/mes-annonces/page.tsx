@@ -32,7 +32,7 @@ export default async function MesAnnoncesPage() {
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 720, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 32 }}>Mes annonces</h1>
       <MesAnnoncesClient listings={listings} />
     </div>

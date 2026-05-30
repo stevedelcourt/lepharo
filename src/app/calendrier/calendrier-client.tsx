@@ -56,14 +56,14 @@ export default function CalendrierClient({ events: initialEvents }: { events: Ev
   const cutoffFormatted = months[cutoffDate.getMonth()] + " " + cutoffDate.getFullYear();
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, gap: 24, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <IconCalendar size={28} />
           <div>
             <h1 style={{ margin: 0, marginBottom: 4 }}>Calendrier</h1>
             <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", margin: 0 }}>
-              &Agrave; venir — {nowFormatted} &rarr; {cutoffFormatted}
+              &Agrave; venir - {nowFormatted} &rarr; {cutoffFormatted}
             </p>
           </div>
         </div>

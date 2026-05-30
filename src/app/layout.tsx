@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Work_Sans } from "next/font/google";
-import CookieBanner from "@/components/CookieBanner";
-import CookiesLink from "@/components/CookiesLink";
 import { NavItem } from "@/components/SidebarNav";
 import { getSession } from "@/lib/auth";
 import NotifBell from "@/components/notif-bell";
@@ -24,8 +22,8 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Le Pharo Communauté",
-  description: "Le site communautaire de la Résidence du Pharo, 75 boulevard Charles Livon, Marseille",
+  title: "La communauté de La Tour du Pharo",
+  description: "Le site privé des résidents du 75 boulevard Charles Livon, Marseille",
 };
 
 export default async function RootLayout({
@@ -52,7 +50,6 @@ export default async function RootLayout({
           </div>
         </div>
         <BurgerMenu />
-        <CookieBanner />
       </body>
     </html>
   );
@@ -78,6 +75,15 @@ function TopBar() {
 function Sidebar({ session }: { session: { id: number; email: string; role: string; firstName: string; lastName: string } | null }) {
   return (
     <aside className="sidebar">
+      <div className="sidebar-mobile-header">
+        <a href="/" className="sidebar-mobile-logo-link">
+          <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={120} height={38} />
+        </a>
+        <button className="sidebar-close-btn" id="sidebar-close-btn" type="button" aria-label="Fermer le menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
       <div className="sidebar-logo">
         <a href="/">
           <Image src="/lepharo.svg" alt="Le Pharo" width={223} height={273} className="sidebar-building-icon" />
@@ -89,7 +95,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
         {session ? (
           <>
             <div className="sidebar-section-label">Navigation</div>
-            <NavItem href="/dashboard" icon={<IconDashboard />} label="À la une" />
+            <NavItem href="/dashboard" icon={<IconDashboard />} label="Accueil" />
             <NavItem href="/entraide" icon={<IconHandshake />} label="Entraide" className="sidebar-link-entraide" />
             <NavItem href="/annuaire" icon={<IconUsers />} label="Annuaire" />
             <NavItem href="/forum" icon={<IconForum />} label="Forum" />
@@ -113,6 +119,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <NavItem href="/a-propos" icon={<IconInfo />} label="A propos" />
             <NavItem href="/histoire" icon={<IconBook />} label="Histoire" />
             <NavItem href="/contact" icon={<IconSend />} label="Contact" />
+            <NavItem href="/aide" icon={<IconHelp />} label="Aide" />
           </>
         )}
       </nav>
@@ -149,7 +156,6 @@ function FooterBar() {
       <a href="/confidentialite" className="footer-bar-link">Confidentialité</a>
       <a href="/mentions-legales" className="footer-bar-link">Mentions légales</a>
       <a href="/contact" className="footer-bar-link">Contact</a>
-      <CookiesLink className="footer-bar-link" />
       <span className="footer-bar-copyright">&copy; 2026 L&rsquo;amicale du Pharo</span>
     </div>
   );

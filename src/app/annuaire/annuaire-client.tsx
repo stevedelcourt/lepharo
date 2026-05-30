@@ -70,7 +70,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
   });
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
         <IconUsers size={28} />
         <h1 style={{ margin: 0 }}>Annuaire des résidents</h1>
@@ -80,7 +80,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
       </p>
 
       <div className="input-group" style={{ marginBottom: 24 }}>
-        <div style={{ position: "relative", flex: 1, maxWidth: 320 }}>
+        <div className="annuaire-search" style={{ position: "relative", flex: 1, maxWidth: 320 }}>
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
           <input type="search" autoComplete="off" placeholder="Rechercher…" value={search} onChange={(e) => setSearch(e.target.value)} className="input" style={{ paddingLeft: 40, width: "100%" }} />
         </div>

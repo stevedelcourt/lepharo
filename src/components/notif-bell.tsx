@@ -112,8 +112,9 @@ export default function NotifBell() {
         <div style={{
           position: "absolute",
           top: "100%",
-          right: 0,
+          right: 8,
           width: 360,
+          maxWidth: "calc(100vw - 32px)",
           maxHeight: 480,
           overflowY: "auto",
           background: "var(--color-bg-card)",

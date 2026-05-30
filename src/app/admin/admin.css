@@ -211,3 +211,61 @@
 .admin-back:hover {
   color: var(--color-text);
 }
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0.5rem 1rem;
+  }
+
+  .admin-header > div {
+    flex-wrap: wrap;
+  }
+
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .admin-sidebar a {
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .admin-main {
+    padding: 1rem;
+  }
+
+  .admin-main h1 {
+    font-size: 1.25rem;
+  }
+
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .admin-table {
+    font-size: 0.8125rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-form {
+    max-width: 100%;
+  }
+}

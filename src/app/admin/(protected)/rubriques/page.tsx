@@ -30,7 +30,7 @@ export default async function AdminRubriquesPage() {
             <tr key={r.id}>
               <td style={{ fontWeight: 600 }}>{r.name}</td>
               <td><code>{r.slug}</code></td>
-              <td style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>{r.description || "—"}</td>
+              <td style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>{r.description || "-"}</td>
               <td>
                 <div className="input-group" style={{ gap: 4 }}>
                   <EditButton table="forum_rubriques" id={r.id} fields={[

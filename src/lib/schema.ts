@@ -144,3 +144,17 @@ export const alerts = sqliteTable("alerts", {
   createdBy: integer("created_by").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
+
+export const articles = sqliteTable("articles", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  subtitle: text("subtitle"),
+  content: text("content"),
+  imageUrl: text("image_url"),
+  page: text("page").notNull().default("home"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  published: integer("published", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at"),
+});

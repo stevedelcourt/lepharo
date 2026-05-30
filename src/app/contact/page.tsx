@@ -2,13 +2,13 @@
 
 export default function ContactPage() {
   return (
-    <div className="container" style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px" }}>
+    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 12 }}>Contact</h1>
       <p style={{ color: "var(--color-text-secondary)", fontSize: "1.125rem", marginBottom: 40 }}>
         Une question ? Une suggestion ? Envoyez-nous un message.
       </p>
 
-      <form className="card" style={{ padding: 32, display: "flex", flexDirection: "column", gap: 20 }}
+      <form className="card form-card" style={{ padding: 32, display: "flex", flexDirection: "column", gap: 20 }}
         onSubmit={(e) => { e.preventDefault(); }}>
         <div>
           <label htmlFor="name" style={{ display: "block", fontWeight: 300, marginBottom: 6, fontSize: "0.9375rem" }}>

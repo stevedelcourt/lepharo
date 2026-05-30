@@ -68,7 +68,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
         <IconHandshake size={28} />
         <h1 style={{ margin: 0 }}>Entraide entre voisins</h1>

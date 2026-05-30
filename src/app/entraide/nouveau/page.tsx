@@ -9,7 +9,7 @@ export default async function NouveauListingPage() {
   if (!session) redirect("/connexion");
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 640, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 640, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 8 }}>Publier une annonce</h1>
       <p style={{ color: "var(--color-text-secondary)", marginBottom: 32, fontSize: "1.0625rem" }}>
         Proposez votre aide ou demandez ce dont vous avez besoin.

@@ -65,7 +65,7 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 800 }}>
+    <div className="container page-padding" style={{ maxWidth: 800 }}>
       <a
         href="/forum"
         style={{
@@ -105,17 +105,17 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
       </div>
 
       <div
-        className="card"
-        style={{
-          padding: "24px 28px",
-          marginBottom: 32,
-          whiteSpace: "pre-wrap",
-          lineHeight: 1.7,
-          fontSize: "1rem",
-        }}
-      >
-        {topic.content}
-      </div>
+          className="card sujet-card"
+          style={{
+            padding: "24px 28px",
+            marginBottom: 32,
+            whiteSpace: "pre-wrap",
+            lineHeight: 1.7,
+            fontSize: "1rem",
+          }}
+        >
+          {topic.content}
+        </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 8 }}>
         <ReportButton targetType="forum_topic" targetId={topic.id} />
@@ -131,13 +131,13 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {replies.map((r) => (
             <div
-              key={r.id}
-              className="card"
-              style={{
-                padding: "16px 20px",
-                borderLeft: "3px solid var(--color-primary)",
-              }}
-            >
+                key={r.id}
+                className="card sujet-reply"
+                style={{
+                  padding: "16px 20px",
+                  borderLeft: "3px solid var(--color-primary)",
+                }}
+              >
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: "0.8125rem" }}>
                 <span style={{ fontWeight: 600 }}>
                   {r.authorName}{r.authorFloor ? ` (${r.authorFloor}e)` : ""}

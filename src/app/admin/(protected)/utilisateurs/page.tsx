@@ -1,24 +1,80 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { users } from "@/lib/schema";
-import { asc } from "drizzle-orm";
+import { asc, desc } from "drizzle-orm";
 import { fallbackAdminUsers } from "@/lib/fallback-data";
 import { IconUsers, IconShield } from "@/components/icons";
 import { DeleteButton, EditButton, WarnButton, ModerateButton } from "../admin-actions";
 import { PromoteAdminButton } from "../promote-admin";
 import { CreateUserButton } from "../create-user";
 
+const SORTABLE: Record<string, any> = {
+  firstName: users.firstName,
+  lastName: users.lastName,
+  email: users.email,
+  floor: users.floor,
+  role: users.role,
+  verified: users.verified,
+};
+
+const LABELS: Record<string, string> = {
+  firstName: "Prénom",
+  lastName: "Nom",
+  email: "Email",
+  floor: "Étage",
+  role: "Rôle",
+  verified: "Vérifié",
+};
+
 const roleLabels: Record<string, string> = { superadmin: "Super Admin", moderator: "Modérateur", editor: "Éditeur" };
 const roleColors: Record<string, string> = { superadmin: "#dc2626", moderator: "#0891b2", editor: "#7c3aed" };
 
-export default async function AdminUsersPage() {
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string; order?: string }>;
+}) {
   const session = await getSession();
   if (!session || session.role !== "admin") redirect("/admin/login");
   const isSuper = (session as any).adminRole === "superadmin" || !(session as any).adminRole;
 
+  const params = await searchParams;
+  const rawSort = params.sort;
+  const sort = rawSort && rawSort in SORTABLE ? rawSort : "floor";
+  const order = params.order === "asc" ? "asc" : "desc";
+
   const db = getDb();
-  const allUsers = db ? await db.select().from(users).orderBy(asc(users.floor)).all() : fallbackAdminUsers;
+  const orderBy = order === "asc" ? asc(SORTABLE[sort]) : desc(SORTABLE[sort]);
+  const allUsers = db ? await db.select().from(users).orderBy(orderBy).all() : fallbackAdminUsers;
+
+  function toggle(col: string) {
+    if (col === sort) return order === "asc" ? "desc" : "asc";
+    return "asc";
+  }
+
+  function SortIcon({ col }: { col: string }) {
+    if (col !== sort) return null;
+    return order === "asc" ? (
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    ) : (
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    );
+  }
+
+  function Th({ col }: { col: string }) {
+    return (
+      <th>
+        <Link
+          href={`/admin/utilisateurs?sort=${col}&order=${toggle(col)}`}
+          style={{ display: "inline-flex", alignItems: "center", gap: 4, textDecoration: "none", color: "inherit" }}
+        >
+          {LABELS[col]} <SortIcon col={col} />
+        </Link>
+      </th>
+    );
+  }
 
   return (
     <>
@@ -29,11 +85,12 @@ export default async function AdminUsersPage() {
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Étage</th>
-            <th>Rôle</th>
-            <th>Vérifié</th>
+            <Th col="firstName" />
+            <Th col="lastName" />
+            <Th col="email" />
+            <Th col="floor" />
+            <Th col="role" />
+            <Th col="verified" />
             <th>Actions</th>
           </tr>
         </thead>

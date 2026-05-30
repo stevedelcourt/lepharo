@@ -47,7 +47,7 @@ export default function SondageDetail({ params }: { params: Promise<{ id: string
   const maxCount = Math.max(...poll.options.map((o: any) => o.count), 1);
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 640, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 640, margin: "0 auto" }}>
       <a href="/sondages" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.875rem", color: "var(--color-text-secondary)", textDecoration: "none", marginBottom: 24 }}>
         <IconChevronLeft size={16} /> Tous les sondages
       </a>

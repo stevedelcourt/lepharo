@@ -4,6 +4,11 @@ export const dynamic = "force-dynamic";
 
 const faqs = [
   {
+    q: "Comment s'inscrire sur le site ?",
+    a: "Rendez-vous sur la page Inscription. Remplissez le formulaire avec votre prénom, nom, email, numéro d'étage et créez un mot de passe. Votre compte sera activé après vérification par un administrateur.\n\nSi vous n'avez pas d'adresse email ou pas d'ordinateur, vous pouvez renseigner votre numéro de téléphone portable à l'accueil de la résidence pour que l'on crée votre compte manuellement.",
+    category: "compte",
+  },
+  {
     q: "Comment publier une annonce sur l'entraide ?",
     a: "Rendez-vous sur la page Entraide, cliquez sur « Publier une annonce ». Choisissez si vous proposez ou cherchez quelque chose, sélectionnez une catégorie, donnez un titre et une description. Vous pouvez ajouter jusqu'à 5 photos. Votre annonce sera visible par tous les résidents connectés.",
     category: "entraide",

@@ -24,7 +24,7 @@ export default function AideClient({ faqs }: { faqs: { q: string; a: string; cat
   );
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 780, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 780, margin: "0 auto" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
         <IconHelp size={28} />
         <h1 style={{ margin: 0 }}>Aide</h1>

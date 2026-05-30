@@ -7,6 +7,7 @@ export default function BurgerMenu() {
     const btn = document.getElementById("burger-btn");
     const sidebar = document.querySelector(".sidebar");
     const overlay = document.querySelector(".sidebar-overlay");
+    const closeBtn = document.getElementById("sidebar-close-btn");
     if (!btn || !sidebar) return;
 
     const el = sidebar as HTMLElement;
@@ -22,12 +23,20 @@ export default function BurgerMenu() {
       if (ov) ov.classList.remove("open");
     }
 
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+    }
+
     btn.addEventListener("click", toggle);
     if (ov) ov.addEventListener("click", close);
+    if (closeBtn) closeBtn.addEventListener("click", close);
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
       btn.removeEventListener("click", toggle);
       if (ov) ov.removeEventListener("click", close);
+      if (closeBtn) closeBtn.removeEventListener("click", close);
+      document.removeEventListener("keydown", handleKeydown);
     };
   }, []);
 

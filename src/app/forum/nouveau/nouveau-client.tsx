@@ -36,7 +36,7 @@ export default function NouveauClient({ rubriques }: { rubriques: { id: number; 
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 700 }}>
+    <div className="container page-padding" style={{ maxWidth: 700 }}>
       <a
         href="/forum"
         style={{

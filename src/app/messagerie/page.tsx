@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconSend, IconMail } from "@/components/icons";
+import { IconSend, IconMail, IconChevronLeft } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
 type Conversation = {
@@ -32,6 +32,7 @@ export default function MessageriePage() {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<number>(0);
   const [sending, setSending] = useState(false);
+  const [showMobileConvList, setShowMobileConvList] = useState(true);
   const chatEnd = useRef<HTMLDivElement>(null);
 
   const toParam = searchParams.get("to");
@@ -105,14 +106,14 @@ export default function MessageriePage() {
   const current = conversations.find((c) => c.id === activeConv) || (activeConv ? { id: activeConv, name: `Résident #${activeConv}`, floor: null, avatarUrl: null, lastMessage: "", time: "", unread: 0 } as Conversation : null);
 
   return (
-    <div className="container" style={{ padding: "40px 24px" }}>
+    <div className="container page-padding">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
         <IconMail size={28} />
         <h1 style={{ margin: 0 }}>Messagerie</h1>
       </div>
 
-      <div className="card" style={{ display: "flex", overflow: "hidden", minHeight: "60vh" }}>
-        <div style={{ width: 320, borderRight: "1px solid var(--color-border-light)", flexShrink: 0 }}>
+      <div className={`card messagerie-layout ${showMobileConvList ? "messagerie-show-list" : "messagerie-show-chat"}`} style={{ display: "flex", overflow: "hidden", minHeight: "60vh" }}>
+        <div className="messagerie-panel-left" style={{ width: 320, borderRight: "1px solid var(--color-border-light)", flexShrink: 0 }}>
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
             <input
               type="search"
@@ -135,7 +136,7 @@ export default function MessageriePage() {
             {conversations.map((conv) => (
               <button
                 key={conv.id}
-                onClick={() => setActiveConv(conv.id)}
+                onClick={() => { setActiveConv(conv.id); setShowMobileConvList(false); }}
                 style={{
                   width: "100%", padding: "14px 16px", display: "flex", gap: 12,
                   textAlign: "left", border: "none", borderBottom: "1px solid var(--color-border-light)",
@@ -175,10 +176,18 @@ export default function MessageriePage() {
           </div>
         </div>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div className="messagerie-panel-right" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {current ? (
             <>
               <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", alignItems: "center", gap: 12 }}>
+                <button
+                  className="messagerie-back"
+                  onClick={() => setShowMobileConvList(true)}
+                  type="button"
+                  style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: 4, color: "var(--color-text-secondary)" }}
+                >
+                  <IconChevronLeft size={20} />
+                </button>
                 <div style={{
                   width: 44, height: 44, borderRadius: 999, background: "var(--color-bg-alt)",
                   overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",

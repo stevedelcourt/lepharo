@@ -93,7 +93,7 @@ export default async function ProfilPage() {
   }
 
   return (
-    <div className="container" style={{ padding: "40px 24px", maxWidth: 640, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 640, margin: "0 auto" }}>
       <h1 style={{ marginBottom: 32 }}>Mon profil</h1>
       <ProfileForm user={userData} />
     </div>
