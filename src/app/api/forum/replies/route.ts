@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { forumReplies, forumTopics } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { eq, sql } from "drizzle-orm";
+import { checkAndFlag } from "@/lib/moderation/flags";
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -35,5 +36,8 @@ export async function POST(req: Request) {
     createdAt: sql`(datetime('now'))`,
   }).returning({ id: forumReplies.id });
 
-  return NextResponse.json({ id: result[0].id });
+  const newId = result[0].id;
+  checkAndFlag(content, "forum_reply", newId, db).catch(() => {});
+
+  return NextResponse.json({ id: newId });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { listingMessages } from "@/lib/schema";
+import { checkAndFlag } from "@/lib/moderation/flags";
 
 export async function POST(
   request: Request,
@@ -34,5 +35,8 @@ export async function POST(
     content,
   }).run();
 
-  return NextResponse.json({ success: true, id: result.lastInsertRowid });
+  const newId = result.lastInsertRowid as number;
+  checkAndFlag(content, "listing_message", newId, db).catch(() => {});
+
+  return NextResponse.json({ success: true, id: newId });
 }

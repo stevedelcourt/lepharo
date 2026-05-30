@@ -53,7 +53,7 @@ export default function ListingDetailClient({
   const [messages, setMessages] = useState(initialMessages);
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<number>(0);
 
   let images: string[] = [];
   try {
@@ -147,7 +147,7 @@ export default function ListingDetailClient({
                 <button
                   key={i}
                   type="button"
-                  onClick={() => setSelectedImage(selectedImage === i ? null : i)}
+                  onClick={() => setSelectedImage(i)}
                   style={{
                     width: 120,
                     height: 120,
@@ -164,7 +164,7 @@ export default function ListingDetailClient({
                 </button>
               ))}
             </div>
-            {selectedImage !== null && (
+            {images.length > 0 && (
               <div style={{ marginTop: 12 }}>
                 <img
                   src={images[selectedImage]}

@@ -31,6 +31,13 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "022_articles", sql: `CREATE TABLE IF NOT EXISTS articles (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, title text NOT NULL, slug text NOT NULL UNIQUE, subtitle text, content text, image_url text, page text NOT NULL DEFAULT 'home', sort_order integer NOT NULL DEFAULT 0, published integer NOT NULL DEFAULT 0, created_at text DEFAULT (datetime('now')) NOT NULL, updated_at text)` },
   { id: "023_show_full_name", sql: `ALTER TABLE users ADD COLUMN show_full_name integer DEFAULT 0 NOT NULL` },
   { id: "024_kids", sql: `ALTER TABLE users ADD COLUMN kids integer DEFAULT 0 NOT NULL` },
+  { id: "025a_reports_auto_flagged", sql: `ALTER TABLE reports ADD COLUMN auto_flagged integer DEFAULT 0 NOT NULL` },
+  { id: "025b_reports_score", sql: `ALTER TABLE reports ADD COLUMN score integer DEFAULT 0` },
+  { id: "025c_reports_categories", sql: `ALTER TABLE reports ADD COLUMN categories text DEFAULT '[]'` },
+  { id: "025d_reports_matched_rules", sql: `ALTER TABLE reports ADD COLUMN matched_rules text DEFAULT '[]'` },
+  { id: "025e_reports_resolved", sql: `ALTER TABLE reports ADD COLUMN resolved integer DEFAULT 0 NOT NULL` },
+  { id: "025f_reports_resolved_by", sql: `ALTER TABLE reports ADD COLUMN resolved_by integer REFERENCES users(id)` },
+  { id: "025g_reports_resolved_at", sql: `ALTER TABLE reports ADD COLUMN resolved_at text` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {

@@ -134,6 +134,13 @@ export const reports = sqliteTable("reports", {
   targetId: integer("target_id").notNull(),
   reason: text("reason").notNull(),
   reporterId: integer("reporter_id").notNull().references(() => users.id),
+  autoFlagged: integer("auto_flagged", { mode: "boolean" }).notNull().default(false),
+  score: integer("score"),
+  categories: text("categories"),
+  matchedRules: text("matched_rules"),
+  resolved: integer("resolved", { mode: "boolean" }).notNull().default(false),
+  resolvedBy: integer("resolved_by").references(() => users.id),
+  resolvedAt: text("resolved_at"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 

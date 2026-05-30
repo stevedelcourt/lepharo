@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { reports } from "@/lib/schema";
-import { desc } from "drizzle-orm";
+import { reports, users } from "@/lib/schema";
+import { desc, eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -25,6 +25,23 @@ export async function GET() {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Indisponible" }, { status: 503 });
 
-  const all = await db.select().from(reports).orderBy(desc(reports.createdAt)).all();
-  return NextResponse.json(all);
+  const rows = await db.select({
+    id: reports.id,
+    targetType: reports.targetType,
+    targetId: reports.targetId,
+    reason: reports.reason,
+    autoFlagged: reports.autoFlagged,
+    score: reports.score,
+    categories: reports.categories,
+    matchedRules: reports.matchedRules,
+    resolved: reports.resolved,
+    createdAt: reports.createdAt,
+  }).from(reports).orderBy(desc(reports.createdAt)).all();
+
+  const mapped = rows.map((r: any) => ({
+    ...r,
+    reporterName: r.autoFlagged ? "🤖 Auto" : "Utilisateur",
+  }));
+
+  return NextResponse.json(mapped);
 }

@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { entraideListings } from "@/lib/schema";
 import { sql } from "drizzle-orm";
+import { checkAndFlag } from "@/lib/moderation/flags";
 
 export async function POST(request: Request) {
   try {
@@ -39,7 +40,10 @@ export async function POST(request: Request) {
       createdAt: sql`(datetime('now'))`,
     }).run();
 
-    return NextResponse.json({ success: true, id: result.lastInsertRowid });
+    const newId = result.lastInsertRowid as number;
+    checkAndFlag(title + " " + description, "listing", newId, db).catch(() => {});
+
+    return NextResponse.json({ success: true, id: newId });
   } catch (err: any) {
     console.error("Create listing error:", err);
     return NextResponse.json({ error: "Erreur: " + (err?.message || String(err)).slice(0, 400) }, { status: 500 });

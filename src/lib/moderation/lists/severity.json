@@ -1,0 +1,11 @@
+{
+  "profanity": 10,
+  "harassment": 25,
+  "racism": 50,
+  "antisemitism": 60,
+  "xenophobia": 40,
+  "homophobia": 50,
+  "sexism": 35,
+  "religion": 30,
+  "extremism": 90
+}

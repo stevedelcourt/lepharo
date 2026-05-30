@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import {
-  users, forumTopics, forumReplies, forumRubriques, entraideListings, documents, events, alerts, adminWarnings,
+  users, forumTopics, forumReplies, forumRubriques, entraideListings,
+  documents, events, alerts, adminWarnings, reports,
+  listingMessages, privateMessages,
 } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -110,6 +112,36 @@ export async function POST(request: Request) {
       }
       const { hashSync } = await import("bcryptjs");
       await db.update(users).set({ passwordHash: hashSync(password, 10) }).where(eq(users.id, userId)).run();
+      return NextResponse.json({ success: true });
+    }
+
+    case "resolve-report": {
+      const { reportId } = body;
+      if (!reportId) return NextResponse.json({ error: "ID requis" }, { status: 400 });
+      await db.update(reports).set({
+        resolved: true,
+        resolvedBy: session.id,
+        resolvedAt: sql`(datetime('now'))`,
+      }).where(eq(reports.id, reportId)).run();
+      return NextResponse.json({ success: true });
+    }
+
+    case "delete-content": {
+      const { targetType, targetId, reportId } = body;
+      if (targetType === "listing") {
+        await db.update(entraideListings).set({ status: "removed", title: "[Supprimé]" }).where(eq(entraideListings.id, targetId)).run();
+      } else if (targetType === "forum_topic") {
+        await db.update(forumTopics).set({ content: "[Supprimé par la modération]", locked: true }).where(eq(forumTopics.id, targetId)).run();
+      } else if (targetType === "forum_reply") {
+        await db.update(forumReplies).set({ content: "[Supprimé par la modération]" }).where(eq(forumReplies.id, targetId)).run();
+      } else if (targetType === "listing_message") {
+        await db.update(listingMessages).set({ content: "[Supprimé par la modération]" }).where(eq(listingMessages.id, targetId)).run();
+      } else if (targetType === "private_message") {
+        await db.update(privateMessages).set({ content: "[Supprimé par la modération]" }).where(eq(privateMessages.id, targetId)).run();
+      }
+      if (reportId) {
+        await db.update(reports).set({ resolved: true, resolvedBy: session.id, resolvedAt: sql`(datetime('now'))` }).where(eq(reports.id, reportId)).run();
+      }
       return NextResponse.json({ success: true });
     }
 

@@ -1,0 +1,61 @@
+{
+  "racism": [
+    "sale arabe", "sale noir", "sale blanc", "sale race", "race inférieure", "race supérieure",
+    "racaille", "sale nègre", "négro", "négresse", "bougnoule", "sale bougnoule",
+    "bicot", "sale bicot", "meloude", "sale meloude", "roumi", "sale roumi",
+    "youpin", "sale youpin", "youpine",
+    "sale métèque", "métèque", "sale étranger",
+    "crouille", "sale crouille", "crouillat",
+    "sale chinetoque", "chinetoque", "niaque", "sale niaque",
+    "sale rital", "rital",
+    "sale portugais",
+    "sale rom", "sale tzigane", "tzigane", "romanichel",
+    "babtou", "babtou fragile",
+    "immigré de merde"
+  ],
+  "antisemitism": [
+    "sale juif", "sale juive", "youpin", "sale youpin", "youpine",
+    "judeo", "judéo", "judéo-maçonnique", "judéo-bolchevique",
+    "sioniste de merde", "finance juive", "complot juif",
+    "juiverie", "enjuivé", "sale feuj", "feuj",
+    "grand remplacement", "théorie du grand remplacement",
+    "protocole de sion"
+  ],
+  "xenophobia": [
+    "sale immigré", "sale étranger", "dehors les étrangers",
+    "france aux français", "casse-toi", "rentre chez toi",
+    "pas chez nous", "dehors les arabes", "dehors les noirs",
+    "préférence nationale", "france d'abord",
+    "invasion migratoire", "submersion migratoire",
+    "anti-français", "sauf qu'il est pas français"
+  ],
+  "homophobia": [
+    "pédé", "enculé", "sale pédé", "sale tapette", "tapette",
+    "fiotte", "sale fiotte", "tantouze", "homoncule",
+    "pédale", "sale pédale", "lopette", "tarlouze",
+    "gouine", "sale gouine", "gougat",
+    "thérapie de conversion", "guérir de l'homosexualité",
+    "contre nature", "perversion", "déviance sexuelle",
+    "lgbt de merde", "trans de merde"
+  ],
+  "sexism": [
+    "sale pute", "sale salope", "sale chienne",
+    "femme à la cuisine", "place de la femme",
+    "meuf de merde", "nana de merde",
+    "bon que à", "réduite à", "objet sexuel",
+    "sale féministe", "féminazi", "féminazie",
+    "sale meuf", "allumeuse", "sale allumeuse",
+    "viol de merde", "elle l'a bien cherché",
+    "soumission de la femme"
+  ],
+  "religion": [
+    "sale musulman", "sale islam", "sale chrétien",
+    "sale catholique", "sale protestant",
+    "sale croyant", "sale mécréant",
+    "islam de merde", "chrétien de merde",
+    "coran de merde", "bible de merde",
+    "terroriste musulman", "islamiste de merde",
+    "intégriste", "extrémiste religieux",
+    "tous des"
+  ]
+}

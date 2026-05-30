@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { privateMessages } from "@/lib/schema";
 import { sql } from "drizzle-orm";
+import { checkAndFlag } from "@/lib/moderation/flags";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -28,5 +29,8 @@ export async function POST(request: Request) {
     createdAt: sql`(datetime('now'))`,
   }).run();
 
-  return NextResponse.json({ success: true, id: result.lastInsertRowid });
+  const newId = result.lastInsertRowid as number;
+  checkAndFlag(content, "private_message", newId, db).catch(() => {});
+
+  return NextResponse.json({ success: true, id: newId });
 }
