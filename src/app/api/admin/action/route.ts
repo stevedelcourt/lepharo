@@ -35,10 +35,10 @@ export async function POST(request: Request) {
       }
       // Column name to Drizzle property name mapping
       const colToProp: Record<string, string> = {
-        "first_name": "firstName", "last_name": "lastName", "admin_role": "adminRole",
+        "first_name": "firstName", "last_name": "lastName", "admin_role": "adminRole", "show_full_name": "showFullName",
       };
       const allowed: Record<string, string[]> = {
-        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "admin_role"],
+        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "tagline", "senior", "kids", "show_full_name", "admin_role"],
         forum_topics: ["title", "content", "rubrique", "pinned", "locked"],
         forum_replies: ["content"],
         forum_rubriques: ["name", "slug", "description"],
@@ -58,8 +58,12 @@ export async function POST(request: Request) {
       if (Object.keys(cleanData).length === 0) {
         return NextResponse.json({ error: "Aucune colonne valide à mettre à jour" }, { status: 400 });
       }
-      if (table === "users" && "verified" in data) {
-        cleanData.verified = data.verified === true || data.verified === 1 ? 1 : 0;
+      if (table === "users") {
+        for (const boolCol of ["verified", "senior", "kids", "showFullName"]) {
+          if (boolCol in cleanData) {
+            cleanData[boolCol] = cleanData[boolCol] === true || cleanData[boolCol] === 1 || cleanData[boolCol] === "1" ? 1 : 0;
+          }
+        }
       }
       await db.update(tbl).set(cleanData).where(eq(tbl.id, id)).run();
       return NextResponse.json({ success: true });
@@ -96,6 +100,16 @@ export async function POST(request: Request) {
       }
       const setValue = typeof value === "boolean" ? (value ? 1 : 0) : value;
       await db.update(tbl).set({ [field]: setValue }).where(eq(tbl.id, id)).run();
+      return NextResponse.json({ success: true });
+    }
+
+    case "reset-password": {
+      const { userId, password } = body;
+      if (!userId || !password) {
+        return NextResponse.json({ error: "Paramètres manquants" }, { status: 400 });
+      }
+      const { hashSync } = await import("bcryptjs");
+      await db.update(users).set({ passwordHash: hashSync(password, 10) }).where(eq(users.id, userId)).run();
       return NextResponse.json({ success: true });
     }
 

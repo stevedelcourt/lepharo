@@ -29,12 +29,13 @@
   margin-bottom: 32px;
   border-radius: var(--radius-lg);
   overflow: hidden;
+  max-width: 720px;
+  aspect-ratio: 5 / 4;
 }
 
 .article-detail-image img {
   width: 100%;
-  height: auto;
-  max-height: 480px;
+  height: 100%;
   object-fit: cover;
   display: block;
 }

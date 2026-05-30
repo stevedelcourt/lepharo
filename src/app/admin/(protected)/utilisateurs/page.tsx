@@ -6,7 +6,7 @@ import { users } from "@/lib/schema";
 import { asc, desc } from "drizzle-orm";
 import { fallbackAdminUsers } from "@/lib/fallback-data";
 import { IconUsers, IconShield } from "@/components/icons";
-import { DeleteButton, EditButton, WarnButton, ModerateButton } from "../admin-actions";
+import { DeleteButton, EditButton, WarnButton, VerifiedBadge, ResetPasswordButton, EditUserModal } from "../admin-actions";
 import { PromoteAdminButton } from "../promote-admin";
 import { CreateUserButton } from "../create-user";
 
@@ -41,13 +41,28 @@ export default async function AdminUsersPage({
   const isSuper = (session as any).adminRole === "superadmin" || !(session as any).adminRole;
 
   const params = await searchParams;
-  const rawSort = params.sort;
+  const rawSort = params?.sort;
   const sort = rawSort && rawSort in SORTABLE ? rawSort : "floor";
-  const order = params.order === "asc" ? "asc" : "desc";
+  const order = params?.order === "asc" ? "asc" : "desc";
 
   const db = getDb();
   const orderBy = order === "asc" ? asc(SORTABLE[sort]) : desc(SORTABLE[sort]);
-  const allUsers = db ? await db.select().from(users).orderBy(orderBy).all() : fallbackAdminUsers;
+  const allUsers = db ? await db.select({
+    id: users.id,
+    firstName: users.firstName,
+    lastName: users.lastName,
+    email: users.email,
+    floor: users.floor,
+    role: users.role,
+    verified: users.verified,
+    adminRole: users.adminRole,
+    phone: users.phone,
+    bio: users.bio,
+    tagline: users.tagline,
+    senior: users.senior,
+    kids: users.kids,
+    showFullName: users.showFullName,
+  }).from(users).orderBy(orderBy).all() : fallbackAdminUsers;
 
   function toggle(col: string) {
     if (col === sort) return order === "asc" ? "desc" : "asc";
@@ -115,20 +130,20 @@ export default async function AdminUsersPage({
                     <span className="tag">Résident</span>
                   )}
                 </td>
-                <td>{user.verified ? "Oui" : "Non"}</td>
+                <td><VerifiedBadge id={user.id} verified={user.verified} /></td>
                 <td>
                   <div className="input-group" style={{ gap: 4 }}>
-                    <EditButton table="users" id={user.id} fields={[
-                      { label: "Prénom", key: "first_name", type: "text", default: user.firstName },
-                      { label: "Nom", key: "last_name", type: "text", default: user.lastName },
-                      { label: "Email", key: "email", type: "text", default: user.email },
-                      { label: "Étage", key: "floor", type: "number", default: user.floor },
-                      { label: "Rôle", key: "role", type: "select", options: [{ value: "resident", label: "Résident" }, { value: "admin", label: "Admin" }], default: user.role },
-                      { label: "Vérifié", key: "verified", type: "boolean", default: user.verified },
-                    ]} />
+                    <EditUserModal user={{
+                      id: user.id, firstName: user.firstName, lastName: user.lastName,
+                      email: user.email, floor: user.floor, role: user.role,
+                      verified: user.verified, phone: (user as any).phone,
+                      bio: (user as any).bio, tagline: (user as any).tagline,
+                      senior: (user as any).senior, kids: (user as any).kids,
+                      showFullName: (user as any).showFullName,
+                    }} />
+                    <ResetPasswordButton userId={user.id} />
                     {isSuper && <PromoteAdminButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} currentRole={adminRole} />}
                     {!adminRole && <WarnButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} />}
-                    <ModerateButton table="users" id={user.id} field="verified" label={user.verified ? "Marquer non vérifié" : "Marquer vérifié"} value={user.verified} />
                     <DeleteButton table="users" id={user.id} />
                   </div>
                 </td>

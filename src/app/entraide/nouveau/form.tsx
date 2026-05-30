@@ -13,6 +13,7 @@ const categories = [
   { id: "vente", label: "Vente d'objets" },
   { id: "pret", label: "Prêt d'objets" },
   { id: "transport", label: "Transport et mobilité" },
+  { id: "sport", label: "Sport" },
   { id: "divers", label: "Divers" },
 ];
 

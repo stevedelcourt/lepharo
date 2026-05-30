@@ -15,6 +15,7 @@ type Props = {
     avatarUrl: string | null;
     hasPassword: boolean;
     senior: boolean;
+    kids: boolean;
     showFullName: boolean;
   };
 };
@@ -27,6 +28,7 @@ export default function ProfileForm({ user }: Props) {
   const [bio, setBio] = useState(user.bio || "");
   const [tagline, setTagline] = useState(user.tagline || "");
   const [senior, setSenior] = useState(user.senior);
+  const [kids, setKids] = useState(user.kids);
   const [showFullName, setShowFullName] = useState(user.showFullName);
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -55,6 +57,7 @@ export default function ProfileForm({ user }: Props) {
           bio,
           tagline,
           senior,
+          kids,
           showFullName,
         }),
       });
@@ -319,6 +322,32 @@ export default function ProfileForm({ user }: Props) {
                 <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
                   En tant que senior,
           showFullName, je souhaiterais mentionner cette information sur mon profil public pour favoriser des interactions adaptées et conviviales au sein de la résidence.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 8, padding: "16px 20px", background: kids ? "#401f7f20" : "var(--color-bg-alt)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <button
+                type="button"
+                onClick={() => setKids(!kids)}
+                style={{
+                  width: 44, height: 24, borderRadius: 12, border: "none", cursor: "pointer",
+                  background: kids ? "#401f7f" : "var(--color-border)",
+                  position: "relative", transition: "background 0.2s", flexShrink: 0, marginTop: 2,
+                }}
+              >
+                <span style={{
+                  position: "absolute", top: 2, width: 20, height: 20, borderRadius: "50%",
+                  background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                  left: kids ? 22 : 2,
+                }} />
+              </button>
+              <div>
+                <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: 4 }}>Kids</p>
+                <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
+                  Je suis parent ou famille avec des enfants. Je souhaite mentionner cette information sur mon profil public pour favoriser les interactions entre familles de la résidence.
                 </p>
               </div>
             </div>

@@ -95,7 +95,8 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
         {session ? (
           <>
             <div className="sidebar-section-label">Navigation</div>
-            <NavItem href="/dashboard" icon={<IconDashboard />} label="Accueil" />
+            <NavItem href="/" icon={<IconHome />} label="Accueil" />
+            <NavItem href="/dashboard" icon={<IconDashboard />} label="À la une" />
             <NavItem href="/entraide" icon={<IconHandshake />} label="Entraide" className="sidebar-link-entraide" />
             <NavItem href="/annuaire" icon={<IconUsers />} label="Annuaire" />
             <NavItem href="/forum" icon={<IconForum />} label="Forum" />

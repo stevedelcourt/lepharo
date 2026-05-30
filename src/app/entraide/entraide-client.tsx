@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   IconHandshake, IconBaby, IconUsersHeart, IconCart, IconMonitor,
   IconWrench, IconBox, IconCar, IconDots, IconTag,
-  IconChevronRight, IconSort,
+  IconChevronRight, IconSort, IconStar,
 } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
@@ -17,6 +17,7 @@ const categories = [
   { id: "vente", label: "Vente d'objets", icon: IconTag },
   { id: "pret", label: "Prêt d'objets", icon: IconBox },
   { id: "transport", label: "Transport et mobilité", icon: IconCar },
+  { id: "sport", label: "Sport", icon: IconStar },
   { id: "divers", label: "Divers", icon: IconDots },
 ];
 
@@ -35,7 +36,7 @@ const PAGE_SIZE = 10;
 
 export default function EntraideClient({ listings: initialListings }: { listings: Listing[] }) {
   const [listings] = useState(initialListings);
-  const [activeTab, setActiveTab] = useState<"all" | "propose" | "cherche" | "vente">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "propose" | "cherche">("all");
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -81,7 +82,6 @@ export default function EntraideClient({ listings: initialListings }: { listings
         <button onClick={() => setActiveTab("all")} className={`btn btn-sm ${activeTab === "all" ? "btn-primary" : "btn-ghost"}`}>Tout</button>
         <button onClick={() => setActiveTab("propose")} className={`btn btn-sm ${activeTab === "propose" ? "btn-primary" : "btn-ghost"}`}>Je propose</button>
         <button onClick={() => setActiveTab("cherche")} className={`btn btn-sm ${activeTab === "cherche" ? "btn-primary" : "btn-ghost"}`}>Je cherche</button>
-        <button onClick={() => setActiveTab("vente")} className={`btn btn-sm ${activeTab === "vente" ? "btn-primary" : "btn-ghost"}`}>Vente</button>
         <div style={{ flex: 1 }} />
         <div className="input-group" style={{ gap: 4 }}>
           <IconSort size={18} />
@@ -130,28 +130,35 @@ export default function EntraideClient({ listings: initialListings }: { listings
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {visible.map((item) => {
           const CatIcon = getCategoryIcon(item.category);
+          let firstImage: string | null = null;
+          try {
+            const arr = JSON.parse(item.images);
+            if (Array.isArray(arr) && arr.length > 0) firstImage = arr[0];
+          } catch {}
           return (
-            <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, textDecoration: "none" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`}>
-                  {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
-                </span>
-                <CatIcon size={20} />
-                  <div>
-                    <p style={{ marginBottom: 2, fontWeight: 700, color: "var(--color-text)" }}>
-                      {item.title}
-                    {hasImages(item.images) && (
-                      <span style={{ marginLeft: 8, fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
-                        +{JSON.parse(item.images).length} photo{JSON.parse(item.images).length > 1 ? "s" : ""}
-                      </span>
-                    )}
-                  </p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
-                    {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
-                  </p>
+            <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ display: "flex", gap: 0, textDecoration: "none", overflow: "hidden" }}>
+              {firstImage && (
+                <div style={{ width: 160, minHeight: 130, flexShrink: 0, overflow: "hidden" }}>
+                  <img src={firstImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
+              )}
+              <div style={{ flex: 1, padding: "14px 20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                  <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`} style={{ minWidth: 82, textAlign: "center", flexShrink: 0 }}>
+                    {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
+                  </span>
+                  <CatIcon size={20} />
+                  <span style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--color-text)" }}>
+                    {item.title}
+                  </span>
+                </div>
+                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
+                  {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
+                </p>
               </div>
-              <IconChevronRight size={18} />
+              <div style={{ display: "flex", alignItems: "center", paddingRight: 16, flexShrink: 0 }}>
+                <IconChevronRight size={18} />
+              </div>
             </a>
           );
         })}

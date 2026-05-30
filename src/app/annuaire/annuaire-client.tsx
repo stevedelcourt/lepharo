@@ -5,6 +5,7 @@ import { IconUsers, IconSearch, IconSort, IconSend, IconGrid, IconList } from "@
 import ResidentModal from "@/components/resident-modal";
 
 const PHOTO_SIZE = 80;
+const LIST_PHOTO_SIZE = 64;
 
 type Resident = {
   id: number;
@@ -17,8 +18,11 @@ type Resident = {
   bio: string | null;
   tagline: string | null;
   senior: boolean;
+  kids: boolean;
   showFullName: boolean;
+  verified: boolean;
 };
+
 
 function Avatar({ r, size }: { r: Resident; size: number }) {
   return (
@@ -106,31 +110,42 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
           {filtered.map((r) => {
             return (
-              <div key={r.id} className="card" style={{ padding: "20px 24px" }}>
+              <div key={r.id} className="card card-hover" style={{ padding: "20px 24px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
                   <Avatar r={r} size={PHOTO_SIZE} />
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1.0625rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}</button>
+                      <button onClick={() => setModalUserId(r.id)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1.0625rem", fontWeight: 700, color: "var(--color-text)" }}>
+                        {r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}
+                        {r.verified && (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                            <circle cx="12" cy="12" r="10" fill="#8c8c8c"/>
+                            <path d="M7.5 12.5l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </button>
                     </div>
                     <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
+                      {r.kids && <span className="tag" style={{ background: "#401f7f", color: "#fff", fontSize: "0.75rem" }}>Kids</span>}
                       <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
                     </div>
                     {r.tagline && <p style={{ fontSize: "0.8125rem", color: "var(--color-text)", margin: "2px 0 0", fontWeight: 500 }}>{r.tagline}</p>}
                   </div>
                 </div>
-                <a
-                  href={`/messagerie?to=${r.id}`}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 4,
-                    padding: "6px 16px", borderRadius: 999,
-                    background: "var(--color-primary)", color: "#000",
-                    fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
-                  }}
-                >
-                  <IconSend size={14} /> Message
-                </a>
+                <div style={{ textAlign: "right" }}>
+                  <a
+                    href={`/messagerie?to=${r.id}`}
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 4,
+                      padding: "6px 16px", borderRadius: 999,
+                      background: "var(--color-primary)", color: "#000",
+                      fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
+                    }}
+                  >
+                    <IconSend size={14} /> Message
+                  </a>
+                </div>
               </div>
             );
           })}
@@ -139,26 +154,35 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
         <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {filtered.map((r) => {
             return (
-              <div key={r.id} className="card" style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <Avatar r={r} size={PHOTO_SIZE} />
+              <div key={r.id} className="card card-hover" style={{ padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
+                <Avatar r={r} size={LIST_PHOTO_SIZE} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <button onClick={() => setModalUserId(r.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "1rem", fontWeight: 700, color: "var(--color-text)" }}>{r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}</button>
-                    {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
-                    <span className="tag" style={{ fontSize: "0.75rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
-                  </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 1 }}>
+                      <button onClick={() => setModalUserId(r.id)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left", fontSize: "0.9375rem", fontWeight: 600, color: "var(--color-text)" }}>
+                        {r.firstName} {r.showFullName ? r.lastName : r.lastName.charAt(0) + '.'}
+                        {r.verified && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                            <circle cx="12" cy="12" r="10" fill="#8c8c8c"/>
+                            <path d="M7.5 12.5l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </button>
+                      {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.7rem" }}>Senior</span>}
+                      {r.kids && <span className="tag" style={{ background: "#401f7f", color: "#fff", fontSize: "0.7rem" }}>Kids</span>}
+                      <span className="tag" style={{ fontSize: "0.7rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
+                    </div>
 
                 </div>
                 <a
                   href={`/messagerie?to=${r.id}`}
                   style={{
-                    display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0,
-                    padding: "6px 16px", borderRadius: 999,
+                    display: "inline-flex", alignItems: "center", gap: 3, flexShrink: 0,
+                    padding: "4px 12px", borderRadius: 999,
                     background: "var(--color-primary)", color: "#000",
-                    fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
+                    fontSize: "0.75rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
                   }}
                 >
-                  <IconSend size={14} /> Message
+                  <IconSend size={12} /> Message
                 </a>
               </div>
             );
@@ -173,6 +197,21 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
       )}
 
       {modalUserId !== null && <ResidentModal userId={modalUserId} onClose={() => setModalUserId(null)} />}
+
+      <a
+        href="/messagerie"
+        style={{
+          position: "fixed", bottom: 24, right: 24,
+          width: 56, height: 56, borderRadius: "50%",
+          background: "var(--color-primary)", color: "#000",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+          textDecoration: "none", zIndex: 100,
+        }}
+        title="Nouveau message"
+      >
+        <IconSend size={24} />
+      </a>
     </div>
   );
 }

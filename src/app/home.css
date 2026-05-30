@@ -1,30 +1,49 @@
-.hero-logged {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #e65c00 100%);
-  min-height: 321px;
+.home-logged-header {
+  background: var(--color-primary);
 }
 
-.hero-logged .hero-inner {
-  min-height: 321px;
-  padding-top: 0;
-  padding-bottom: 0;
-  justify-content: center;
+.home-logged-badge {
+  display: inline-block;
+  background: #000;
   color: #fff;
-}
-
-.hero-logged .hero-inner h1 {
-  font-size: 2.5rem;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  margin: 12px 0;
 }
 
 .privacy-banner {
-  background: rgba(0,0,0,0.05);
+  background: var(--color-bg);
   border-bottom: 1px solid var(--color-border-light);
   font-size: 0.8125rem;
   line-height: 1.5;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 .privacy-banner.is-open {
-  background: var(--color-primary);
+  background: #000;
+  color: #fff;
+}
+
+.privacy-banner.is-open strong {
+  color: #fff;
+}
+
+.privacy-banner.is-open .privacy-banner-toggle {
+  color: #fff;
+}
+
+.privacy-banner.is-open .privacy-banner-toggle:hover {
+  color: rgba(255,255,255,0.7);
+}
+
+.privacy-banner-body p {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.privacy-banner-body strong {
   color: #fff;
 }
 
@@ -50,7 +69,7 @@
   cursor: pointer;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   transition: color 0.15s;
 }
 
@@ -97,15 +116,15 @@
   align-items: flex-start;
   justify-content: flex-end;
   min-height: 321px;
-  padding-top: 32px;
-  padding-bottom: 32px;
+  padding-top: 24px;
+  padding-bottom: 24px;
   color: #fff;
 }
 
 .hero-inner h1 {
   font-size: 3rem;
   line-height: 1.1;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .hero-inner h1 span {
@@ -124,9 +143,9 @@
 
 .hero-subtitle {
   font-size: 1.125rem;
-  line-height: 1.6;
+  line-height: 1.5;
   max-width: 520px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   color: #fff;
   text-shadow: none;
 }
@@ -316,6 +335,11 @@
   height: 100%;
 }
 
+.prehome-featured .article-card-image {
+  aspect-ratio: 5 / 4;
+  flex: none;
+}
+
 .prehome-cards {
   display: flex;
   flex-direction: column;
@@ -434,16 +458,13 @@
     gap: 24px;
   }
 
-  .hero-logged {
-    min-height: 200px;
+  .home-logged-header {
+    min-height: auto;
   }
 
-  .hero-logged .hero-inner {
-    min-height: 200px;
-  }
-
-  .hero-logged .hero-inner h1 {
-    font-size: 1.75rem;
+  .home-logged-badge {
+    font-size: 0.8125rem;
+    margin: 8px 0;
   }
 
   .prehome-grid {

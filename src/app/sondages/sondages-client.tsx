@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { IconPoll, IconPlus, IconStar } from "@/components/icons";
+import { IconPoll, IconPlus, IconStar, IconScale, IconLaurel } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
 const barColors = ["#22C55E", "#F59E0B", "#6366f1", "#06b6d4", "#d946ef", "#14b8a6", "#f97316", "#8b5cf6"];
@@ -18,7 +18,7 @@ export default function SondagesClient() {
   }, []);
 
   return (
-    <div className="container page-padding" style={{ maxWidth: 720, margin: "0 auto" }}>
+    <div className="container page-padding" style={{ maxWidth: 960, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <IconPoll size={28} />
@@ -31,7 +31,8 @@ export default function SondagesClient() {
       <p style={{ color: "var(--color-text-secondary)", fontSize: "1.0625rem", marginBottom: 4, lineHeight: 1.5 }}>
         Une idée, une question, une décision à discuter ? Chaque résident peut créer un sondage.
       </p>
-      <p style={{ color: "var(--color-text-tertiary)", fontSize: "0.875rem", marginBottom: 32, fontStyle: "italic" }}>
+      <p style={{ color: "var(--color-text-tertiary)", fontSize: "0.875rem", marginBottom: 32, fontStyle: "italic", display: "flex", alignItems: "center", gap: 6 }}>
+        <IconScale size={16} />
         Les propositions qui reçoivent plus de 25 votes seront soumises à la présidente représentante de l&apos;immeuble et/ou au syndic. Démocratie appliquée.
       </p>
 
@@ -43,14 +44,14 @@ export default function SondagesClient() {
           <a href="/sondages/nouveau" className="btn btn-primary">Créer le premier sondage</a>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
           {polls.map((p) => {
             const sorted = [...p.options].sort((a, b) => b.count - a.count);
             const maxCount = Math.max(...p.options.map((o) => o.count), 1);
             const colored = sorted.map((opt, i) => ({ ...opt, color: barColors[i % barColors.length], pct: p.totalVotes > 0 ? Math.round((opt.count / p.totalVotes) * 100) : 0 }));
 
             return (
-              <a key={p.id} href={`/sondages/${p.id}`} className="card" style={{ padding: "18px 22px", textDecoration: "none", color: "var(--color-text)", display: "block" }}>
+              <a key={p.id} href={`/sondages/${p.id}`} className="card" style={{ padding: "18px 22px", textDecoration: "none", color: "var(--color-text)", display: "flex", flexDirection: "column", aspectRatio: "1/1", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                   <div>
                     <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", marginBottom: 2 }}>
@@ -65,11 +66,14 @@ export default function SondagesClient() {
                     </span>
                   )}
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, justifyContent: "flex-end" }}>
                   {colored.map((opt) => (
                     <div key={opt.id}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                        <span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>{opt.label}</span>
+                        <span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
+                          {opt.label}
+                          {opt.count >= 25 && <IconLaurel size={12} style={{ color: "var(--color-accent)", flexShrink: 0 }} />}
+                        </span>
                         <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-text-tertiary)" }}>{opt.pct}% ({opt.count})</span>
                       </div>
                       <div style={{ height: 6, borderRadius: 3, background: "var(--color-border-light)", overflow: "hidden" }}>

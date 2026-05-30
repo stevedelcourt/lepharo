@@ -29,6 +29,8 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "020_admin_warnings_dismissed", sql: `ALTER TABLE admin_warnings ADD COLUMN dismissed integer DEFAULT 0 NOT NULL` },
   { id: "021_user_mathias", sql: `INSERT OR IGNORE INTO users (first_name, last_name, email, password_hash, role, verified, admin_role) VALUES ('Mathias', 'Admin', 'mathias@mentivis.com', '$2b$10$JyxF6qzKfrQoJIiGWoEHeub85SbJ8RRv47c0vgQnIpGOtQUeL6Qq2', 'admin', 1, 'superadmin')` },
   { id: "022_articles", sql: `CREATE TABLE IF NOT EXISTS articles (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, title text NOT NULL, slug text NOT NULL UNIQUE, subtitle text, content text, image_url text, page text NOT NULL DEFAULT 'home', sort_order integer NOT NULL DEFAULT 0, published integer NOT NULL DEFAULT 0, created_at text DEFAULT (datetime('now')) NOT NULL, updated_at text)` },
+  { id: "023_show_full_name", sql: `ALTER TABLE users ADD COLUMN show_full_name integer DEFAULT 0 NOT NULL` },
+  { id: "024_kids", sql: `ALTER TABLE users ADD COLUMN kids integer DEFAULT 0 NOT NULL` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {

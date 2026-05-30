@@ -25,6 +25,7 @@ const categoryLabels: Record<string, string> = {
   vente: "Vente d'objets",
   pret: "Prêt d'objets",
   transport: "Transport et mobilité",
+  sport: "Sport",
   divers: "Divers",
 };
 

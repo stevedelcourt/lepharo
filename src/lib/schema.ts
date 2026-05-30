@@ -17,6 +17,7 @@ export const users = sqliteTable("users", {
   bio: text("bio"),
   tagline: text("tagline"),
   senior: integer("senior", { mode: "boolean" }).notNull().default(false),
+  kids: integer("kids", { mode: "boolean" }).notNull().default(false),
   showFullName: integer("show_full_name", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
