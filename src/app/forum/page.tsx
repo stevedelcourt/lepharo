@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ForumPage() {
   const db = getDb();
-  let topicsWithReplies: (typeof fallbackForumTopics[0])[];
+  let topicsWithReplies: any[];
 
   if (db) {
     const replyCounts = await db.select({
@@ -25,6 +25,7 @@ export default async function ForumPage() {
       rubrique: forumTopics.rubrique,
       authorName: users.firstName,
       authorFloor: users.floor,
+      authorAvatar: users.avatarUrl,
       createdAt: forumTopics.createdAt,
     }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
       .orderBy(desc(forumTopics.createdAt)).all();
@@ -34,7 +35,10 @@ export default async function ForumPage() {
       replyCount: replyCountMap.get(t.id) || 0,
     }));
   } else {
-    topicsWithReplies = fallbackForumTopics;
+    topicsWithReplies = fallbackForumTopics.map((t) => ({
+      ...t,
+      authorAvatar: null as string | null,
+    }));
   }
 
   return <ForumClient topics={topicsWithReplies} />;

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { IconForum, IconSearch, IconStar, IconChevronRight, IconSort } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
+import ReportButton from "@/components/report-button";
 
 const rubriquesMeta = [
   { id: "vie-quotidienne", label: "Vie quotidienne", desc: "Bruit, propreté, animaux, tri sélectif, stationnement…" },
@@ -19,6 +21,7 @@ type Topic = {
   rubrique: string;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   replyCount: number;
   createdAt: string;
 };
@@ -132,12 +135,16 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {hotTopics.map((t) => (
-              <a key={t.id} href={`/forum/sujet/${t.id}`} className="card" style={{ padding: "14px 18px", textDecoration: "none", color: "var(--color-text)" }}>
-                <p style={{ marginBottom: 6, fontSize: "0.9375rem" }}>{t.title}</p>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
-                  <span className="tag" style={{ textTransform: "capitalize" }}>{t.rubrique}</span>
-                  <span>{t.replyCount} réponses · {formatDate(t.createdAt)}</span>
+              <a key={t.id} href={`/forum/sujet/${t.id}`} className="card" style={{ padding: "14px 18px", textDecoration: "none", color: "var(--color-text)", display: "flex", alignItems: "center", gap: 10 }}>
+                <UserAvatar url={t.authorAvatar} name={t.authorName} size={32} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ marginBottom: 6, fontSize: "0.9375rem" }}>{t.title}</p>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>
+                    <span className="tag" style={{ textTransform: "capitalize" }}>{t.rubrique}</span>
+                    <span>{t.replyCount} réponses · {formatDate(t.createdAt)}</span>
+                  </div>
                 </div>
+                <ReportButton targetType="forum_topic" targetId={t.id} />
               </a>
             ))}
           </div>

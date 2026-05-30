@@ -8,14 +8,14 @@ import SujetClient from "./sujet-client";
 
 export const dynamic = "force-dynamic";
 
-type Reply = { id: number; content: string; authorName: string; authorFloor: number | null; createdAt: string };
+type Reply = { id: number; content: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; createdAt: string };
 
 export default async function SujetPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const topicId = parseInt(id, 10);
   const session = await getSession();
   const db = getDb();
-  let topic: { id: number; title: string; content: string; rubrique: string; authorName: string; authorFloor: number | null; pinned: boolean; locked: boolean; createdAt: string } | null = null;
+  let topic: { id: number; title: string; content: string; rubrique: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; pinned: boolean; locked: boolean; createdAt: string } | null = null;
   let replies: Reply[] = [];
 
   if (db) {
@@ -26,6 +26,7 @@ export default async function SujetPage({ params }: { params: Promise<{ id: stri
       rubrique: forumTopics.rubrique,
       authorName: users.firstName,
       authorFloor: users.floor,
+      authorAvatar: users.avatarUrl,
       pinned: forumTopics.pinned,
       locked: forumTopics.locked,
       createdAt: forumTopics.createdAt,
@@ -39,6 +40,7 @@ export default async function SujetPage({ params }: { params: Promise<{ id: stri
         content: forumReplies.content,
         authorName: users.firstName,
         authorFloor: users.floor,
+        authorAvatar: users.avatarUrl,
         createdAt: forumReplies.createdAt,
       }).from(forumReplies).innerJoin(users, eq(forumReplies.authorId, users.id))
         .where(eq(forumReplies.topicId, topicId)).orderBy(asc(forumReplies.createdAt)).all();
@@ -46,9 +48,9 @@ export default async function SujetPage({ params }: { params: Promise<{ id: stri
   } else {
     const ft = fallbackForumTopics.find((t) => t.id === topicId);
     if (ft) {
-      topic = { ...ft, pinned: false, locked: false };
+      topic = { ...ft, pinned: false, locked: false, authorAvatar: null };
     }
-    replies = fallbackForumReplies.filter((r) => r.topicId === topicId);
+    replies = fallbackForumReplies.filter((r) => r.topicId === topicId).map((r) => ({ ...r, authorAvatar: null as string | null }));
   }
 
   if (!topic) notFound();

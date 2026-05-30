@@ -53,34 +53,31 @@ export default function AdminReportsPage() {
     return true;
   });
 
-  async function resolve(reportId: number) {
+  async function resolve(reportId: number, entityType?: string) {
     setWorking(reportId);
     await fetch("/api/admin/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "resolve-report", reportId }),
+      body: JSON.stringify({ action: "resolve-report", reportId, type: entityType || "report" }),
     });
     setWorking(null);
     load();
   }
 
-  async function deleteContent(targetType: string, targetId: number, reportId: number) {
+  async function deleteContent(targetType: string, targetId: number, reportId: number, entityType?: string) {
     if (!confirm("Supprimer ce contenu ? Cette action est irréversible.")) return;
     setWorking(reportId);
     await fetch("/api/admin/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "delete-content", targetType, targetId, reportId }),
+      body: JSON.stringify({ action: "delete-content", targetType, targetId, reportId, entityType }),
     });
     setWorking(null);
     load();
   }
 
   function getTargetUrl(r: Report): string {
-    if (r.targetType === "listing") return `/entraide/${r.targetId}`;
-    if (r.targetType === "forum_topic") return `/forum/sujet/${r.targetId}`;
-    if (r.targetType === "forum_reply") return `/forum/sujet/${r.targetId}`;
-    return "#";
+    return `/api/redirect?type=${r.targetType}&id=${r.targetId}`;
   }
 
   return (
@@ -187,7 +184,7 @@ export default function AdminReportsPage() {
                       <IconMail size={14} /> Voir
                     </a>
                     <button
-                      onClick={() => resolve(r.id)}
+                      onClick={() => resolve(r.id, (r as any).entityType)}
                       disabled={working === r.id}
                       className="btn-ghost btn-sm"
                       style={{ padding: "4px 10px", fontSize: "0.8125rem", color: "var(--color-success)" }}
@@ -195,7 +192,7 @@ export default function AdminReportsPage() {
                       <IconCheck size={14} /> Ignorer
                     </button>
                     <button
-                      onClick={() => deleteContent(r.targetType, r.targetId, r.id)}
+                      onClick={() => deleteContent(r.targetType, r.targetId, r.id, (r as any).entityType)}
                       disabled={working === r.id}
                       className="btn-ghost btn-sm"
                       style={{ padding: "4px 10px", fontSize: "0.8125rem", color: "var(--color-error)" }}

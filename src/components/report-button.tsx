@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconWarning } from "@/components/icons";
+import { IconFlag } from "@/components/icons";
 
 export default function ReportButton({ targetType, targetId }: { targetType: string; targetId: number }) {
   const [open, setOpen] = useState(false);
@@ -25,43 +25,40 @@ export default function ReportButton({ targetType, targetId }: { targetType: str
   }
 
   return (
-    <div style={{ position: "relative", display: "inline-flex" }}>
+    <div style={{ position: "relative", display: "inline-flex", lineHeight: 0 }}>
       <button
         onClick={() => setOpen(!open)}
         className="btn-ghost btn-sm"
         type="button"
         title="Signaler"
-        style={{ padding: 4, lineHeight: 1, color: "var(--color-text-tertiary)", opacity: 0.5 }}
-        onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.5"; }}
+        style={{ padding: 2, lineHeight: 1, color: "var(--color-text-tertiary)", opacity: 0.4, border: "none", background: "none", cursor: "pointer" }}
       >
-        <IconWarning size={14} />
-        <span style={{ fontSize: "0.6875rem", marginLeft: 3 }}>Signaler</span>
+        <IconFlag size={14} />
       </button>
       {open && (
         <div
-          style={{ position: "absolute", bottom: "100%", right: 0, marginBottom: 6, width: 300, zIndex: 50 }}
+          style={{ position: "absolute", bottom: "100%", right: 0, marginBottom: 6, width: 280, zIndex: 50 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="card" style={{ padding: "12px 16px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
+          <div className="card" style={{ padding: "10px 14px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
             {done ? (
-              <p style={{ fontSize: "0.875rem", color: "var(--color-success)", textAlign: "center" }}>Signalement envoyé</p>
+              <p style={{ fontSize: "0.8125rem", color: "var(--color-success)", textAlign: "center", margin: 0 }}>Signalement envoyé</p>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>Pourquoi signalez-vous ce contenu ?</p>
+              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", margin: 0 }}>Pourquoi ?</p>
                 <textarea
                   className="input"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder="Contenu inapproprié, spam, etc."
-                  rows={3}
-                  style={{ width: "100%", resize: "vertical", fontSize: "0.8125rem" }}
+                  placeholder="Contenu inapproprié, spam…"
+                  rows={2}
+                  style={{ width: "100%", resize: "vertical", fontSize: "0.75rem", padding: "6px 10px" }}
                   required
                 />
-                <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
-                  <button type="button" onClick={() => setOpen(false)} className="btn-ghost btn-sm" style={{ fontSize: "0.8125rem" }}>Annuler</button>
-                  <button type="submit" className="btn btn-primary btn-sm" disabled={sending || !reason.trim()} style={{ fontSize: "0.8125rem" }}>
-                    {sending ? "..." : "Envoyer"}
+                <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => setOpen(false)} className="btn-ghost btn-sm" style={{ fontSize: "0.75rem", padding: "4px 8px" }}>Annuler</button>
+                  <button type="submit" className="btn btn-primary btn-sm" disabled={sending || !reason.trim()} style={{ fontSize: "0.75rem", padding: "4px 10px" }}>
+                    {sending ? "…" : "Signaler"}
                   </button>
                 </div>
               </form>

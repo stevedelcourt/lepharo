@@ -18,6 +18,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     question: polls.question,
     authorName: users.firstName,
     authorFloor: users.floor,
+    authorAvatar: users.avatarUrl,
     createdAt: polls.createdAt,
   }).from(polls).innerJoin(users, eq(polls.authorId, users.id))
     .where(eq(polls.id, pollId)).get();

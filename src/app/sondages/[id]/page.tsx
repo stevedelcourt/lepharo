@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconPoll, IconCheck, IconChevronLeft, IconScale, IconLaurel } from "@/components/icons";
 import ReportButton from "@/components/report-button";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
 
 const barColors = ["#22C55E", "#F59E0B", "#6366f1", "#06b6d4", "#d946ef", "#14b8a6", "#f97316", "#8b5cf6"];
 
@@ -80,9 +81,10 @@ export default function SondageDetail({ params }: { params: Promise<{ id: string
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
         <ReportButton targetType="poll" targetId={poll.id} />
       </div>
-      <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 24 }}>
-        Par {poll.authorName}{poll.authorFloor ? ` (${poll.authorFloor}e)` : ""} · {formatDate(poll.createdAt)} · {poll.totalVotes} vote{poll.totalVotes > 1 ? "s" : ""}
-      </p>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 24 }}>
+        <UserAvatar url={(poll as any).authorAvatar} name={poll.authorName} size={28} />
+        <span>Par {poll.authorName}{poll.authorFloor ? ` (${poll.authorFloor}e)` : ""} · {formatDate(poll.createdAt)} · {poll.totalVotes} vote{poll.totalVotes > 1 ? "s" : ""}</span>
+      </div>
 
       {eligible && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", borderRadius: "var(--radius-md)", background: "var(--color-accent-light)", color: "var(--color-accent)", marginBottom: 20, fontSize: "0.875rem" }}>

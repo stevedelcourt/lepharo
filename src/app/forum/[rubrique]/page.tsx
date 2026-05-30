@@ -22,7 +22,7 @@ export default async function RubriquePage({ params }: { params: Promise<{ rubri
   if (!rubriqueNames[rubrique]) notFound();
 
   const db = getDb();
-  let topics: { id: number; title: string; content: string; authorName: string; authorFloor: number | null; replyCount: number; createdAt: string }[] = [];
+  let topics: { id: number; title: string; content: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; replyCount: number; createdAt: string }[] = [];
 
   if (db) {
     const replyCounts = await db.select({
@@ -38,6 +38,7 @@ export default async function RubriquePage({ params }: { params: Promise<{ rubri
       content: forumTopics.content,
       authorName: users.firstName,
       authorFloor: users.floor,
+      authorAvatar: users.avatarUrl,
       createdAt: forumTopics.createdAt,
     }).from(forumTopics).innerJoin(users, eq(forumTopics.authorId, users.id))
       .where(eq(forumTopics.rubrique, rubrique))
@@ -50,7 +51,7 @@ export default async function RubriquePage({ params }: { params: Promise<{ rubri
   } else {
     topics = fallbackForumTopics
       .filter((t) => t.rubrique === rubrique)
-      .map((t) => ({ id: t.id, title: t.title, content: t.content, authorName: t.authorName, authorFloor: t.authorFloor, replyCount: t.replyCount, createdAt: t.createdAt }));
+      .map((t) => ({ id: t.id, title: t.title, content: t.content, authorName: t.authorName, authorFloor: t.authorFloor, authorAvatar: null as string | null, replyCount: t.replyCount, createdAt: t.createdAt }));
   }
 
   return <RubriqueClient rubrique={rubrique} rubriqueName={rubriqueNames[rubrique]} topics={topics} />;

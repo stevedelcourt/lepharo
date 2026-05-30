@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import {
   IconHandshake, IconBaby, IconUsersHeart, IconCart, IconMonitor,
   IconWrench, IconBox, IconCar, IconDots, IconTag,
-  IconChevronRight, IconSort, IconStar,
+  IconChevronRight, IconSort, IconStar, IconGrid, IconList,
 } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
+import ReportButton from "@/components/report-button";
 
 const categories = [
   { id: "garde", label: "Garde d'enfants", icon: IconBaby },
@@ -26,8 +28,10 @@ type Listing = {
   type: string;
   title: string;
   category: string;
+  description: string;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   createdAt: string;
   images: string;
 };
@@ -40,6 +44,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTab, activeCat, sortBy]);
 
@@ -61,11 +66,11 @@ export default function EntraideClient({ listings: initialListings }: { listings
     return cat ? cat.icon : IconDots;
   };
 
-  function hasImages(imgs: string): boolean {
+  function getFirstImage(imgs: string): string | null {
     try {
       const arr = JSON.parse(imgs);
-      return Array.isArray(arr) && arr.length > 0;
-    } catch { return false; }
+      return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+    } catch { return null; }
   }
 
   return (
@@ -96,25 +101,19 @@ export default function EntraideClient({ listings: initialListings }: { listings
             <option value="type">Type</option>
           </select>
         </div>
+        <div className="input-group" style={{ gap: 2, marginLeft: 4 }}>
+          <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
+          <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 6, marginBottom: 28, flexWrap: "wrap" }}>
-        <button
-          onClick={() => setActiveCat(null)}
-          className={`btn btn-sm ${!activeCat ? "btn-primary" : "btn-ghost"}`}
-        >
-          Toutes
-        </button>
+        <button onClick={() => setActiveCat(null)} className={`btn btn-sm ${!activeCat ? "btn-primary" : "btn-ghost"}`}>Toutes</button>
         {categories.map((c) => {
           const Icon = c.icon;
           return (
-            <button
-              key={c.id}
-              onClick={() => setActiveCat(activeCat === c.id ? null : c.id)}
-              className={`btn btn-sm ${activeCat === c.id ? "btn-primary" : "btn-ghost"}`}
-            >
-              <Icon size={16} />
-              {c.label}
+            <button key={c.id} onClick={() => setActiveCat(activeCat === c.id ? null : c.id)} className={`btn btn-sm ${activeCat === c.id ? "btn-primary" : "btn-ghost"}`}>
+              <Icon size={16} /> {c.label}
             </button>
           );
         })}
@@ -127,42 +126,84 @@ export default function EntraideClient({ listings: initialListings }: { listings
         <a href="/entraide/nouveau" className="btn btn-accent btn-sm">Publier une annonce</a>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {visible.map((item) => {
-          const CatIcon = getCategoryIcon(item.category);
-          let firstImage: string | null = null;
-          try {
-            const arr = JSON.parse(item.images);
-            if (Array.isArray(arr) && arr.length > 0) firstImage = arr[0];
-          } catch {}
-          return (
-            <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ display: "flex", gap: 0, textDecoration: "none", overflow: "hidden" }}>
-              {firstImage && (
-                <div style={{ width: 160, minHeight: 130, flexShrink: 0, overflow: "hidden" }}>
-                  <img src={firstImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      {viewMode === "grid" ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+          {visible.map((item) => {
+            const CatIcon = getCategoryIcon(item.category);
+            const firstImage = getFirstImage(item.images);
+            return (
+              <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ display: "flex", flexDirection: "column", textDecoration: "none", overflow: "hidden", aspectRatio: "1/1" }}>
+                <div style={{ flex: 2, overflow: "hidden", background: firstImage ? "transparent" : "var(--color-bg-alt)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {firstImage ? (
+                    <img src={firstImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <CatIcon size={48} style={{ color: "var(--color-text-tertiary)", opacity: 0.3 }} />
+                  )}
                 </div>
-              )}
-              <div style={{ flex: 1, padding: "14px 20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                  <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`} style={{ minWidth: 82, textAlign: "center", flexShrink: 0 }}>
-                    {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
-                  </span>
-                  <CatIcon size={20} />
-                  <span style={{ fontWeight: 700, fontSize: "0.9375rem", color: "var(--color-text)" }}>
-                    {item.title}
-                  </span>
+                <div style={{ flex: 1, padding: "10px 14px", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`} style={{ minWidth: 68, textAlign: "center", fontSize: "0.65rem", flexShrink: 0 }}>
+                      {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
+                    </span>
+                    <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--color-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {item.title}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", margin: "0 0 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {item.description?.slice(0, 80)}{item.description?.length > 80 ? "…" : ""}
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: "auto" }}>
+                    <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
+                    <span style={{ fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>
+                      {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""}
+                    </span>
+                    <ReportButton targetType="listing" targetId={item.id} />
+                  </div>
                 </div>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
-                  {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
-                </p>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", paddingRight: 16, flexShrink: 0 }}>
-                <IconChevronRight size={18} />
-              </div>
-            </a>
-          );
-        })}
-      </div>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {visible.map((item) => {
+            const CatIcon = getCategoryIcon(item.category);
+            const firstImage = getFirstImage(item.images);
+            return (
+              <a key={item.id} href={`/entraide/${item.id}`} className="card" style={{ display: "flex", gap: 0, textDecoration: "none", overflow: "hidden" }}>
+                {firstImage && (
+                  <div style={{ width: 120, minHeight: 100, flexShrink: 0, overflow: "hidden" }}>
+                    <img src={firstImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                )}
+                <div style={{ flex: 1, padding: "12px 16px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <span className={`tag ${item.type === "propose" ? "tag-propose" : item.type === "vente" ? "tag-vente" : "tag-cherche"}`} style={{ minWidth: 72, textAlign: "center", fontSize: "0.7rem", flexShrink: 0 }}>
+                      {item.type === "propose" ? "Propose" : item.type === "vente" ? "Vente" : "Cherche"}
+                    </span>
+                    <span style={{ fontWeight: 600, fontSize: "0.9375rem", color: "var(--color-text)" }}>
+                      {item.title}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: "0 0 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {item.description?.slice(0, 120)}{item.description?.length > 120 ? "…" : ""}
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
+                    <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
+                      {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
+                    </span>
+                    <ReportButton targetType="listing" targetId={item.id} />
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", paddingRight: 12, flexShrink: 0 }}>
+                  <IconChevronRight size={18} />
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
 
       {hasMore && (
         <div style={{ textAlign: "center", marginTop: 20 }}>

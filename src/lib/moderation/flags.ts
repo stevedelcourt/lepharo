@@ -1,7 +1,6 @@
-import { check, normalize } from "."
+import { check } from "."
 import type { CheckResult } from "."
-import { reports } from "@/lib/schema"
-import { eq } from "drizzle-orm"
+import { moderationFlags } from "@/lib/schema"
 
 export async function checkAndFlag(
   text: string,
@@ -13,18 +12,16 @@ export async function checkAndFlag(
   if (!result.flagged) return result
 
   try {
-    await db.insert(reports).values({
+    await db.insert(moderationFlags).values({
       targetType,
       targetId,
       reason: `Auto-modération [${result.severity}] — ${result.categories.join(", ")}`,
-      reporterId: 0,
-      autoFlagged: true,
       score: result.score,
       categories: JSON.stringify(result.categories),
       matchedRules: JSON.stringify(result.matches),
     }).run()
-  } catch {
-    // silently ignore if insert fails
+  } catch (e: any) {
+    console.error("checkAndFlag insert error:", e?.message || e)
   }
 
   return result

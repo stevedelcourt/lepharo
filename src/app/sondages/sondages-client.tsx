@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { IconPoll, IconPlus, IconStar, IconScale, IconLaurel } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
+import ReportButton from "@/components/report-button";
 
 const barColors = ["#22C55E", "#F59E0B", "#6366f1", "#06b6d4", "#d946ef", "#14b8a6", "#f97316", "#8b5cf6"];
 
 type Option = { id: number; label: string; count: number };
-type Poll = { id: number; question: string; authorName: string; authorFloor: number | null; createdAt: string; totalVotes: number; options: Option[] };
+type Poll = { id: number; question: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; createdAt: string; totalVotes: number; options: Option[] };
 
 export default function SondagesClient() {
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -54,9 +56,12 @@ export default function SondagesClient() {
               <a key={p.id} href={`/sondages/${p.id}`} className="card" style={{ padding: "18px 22px", textDecoration: "none", color: "var(--color-text)", display: "flex", flexDirection: "column", aspectRatio: "1/1", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                   <div>
-                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", marginBottom: 2 }}>
-                      {formatDate(p.createdAt)} · Par {p.authorName}{p.authorFloor ? ` (${p.authorFloor}e)` : ""}
-                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <UserAvatar url={(p as any).authorAvatar} name={p.authorName} size={28} />
+                      <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
+                        {formatDate(p.createdAt)} · Par {p.authorName}{p.authorFloor ? ` (${p.authorFloor}e)` : ""}
+                      </p>
+                    </div>
                     <p style={{ fontWeight: 700, fontSize: "1.0625rem", margin: 0 }}>{p.question}</p>
                   </div>
                   {p.totalVotes >= 25 && (

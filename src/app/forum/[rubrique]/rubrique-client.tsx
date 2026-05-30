@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { IconForum, IconSearch, IconSort, IconChevronLeft, IconMessage } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
+import ReportButton from "@/components/report-button";
 
 const PAGE_SIZE = 15;
 
@@ -12,6 +14,7 @@ type Topic = {
   content: string;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   replyCount: number;
   createdAt: string;
 };
@@ -103,14 +106,15 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
               href={`/forum/sujet/${t.id}`}
               className="card"
               style={{
-                padding: "16px 20px",
+                padding: "14px 20px",
                 textDecoration: "none",
                 color: "var(--color-text)",
                 display: "flex",
                 alignItems: "center",
-                gap: 16,
+                gap: 12,
               }}
             >
+              <UserAvatar url={(t as any).authorAvatar} name={t.authorName} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontWeight: 500, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</p>
                 <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", margin: 0 }}>
@@ -121,6 +125,7 @@ export default function RubriqueClient({ rubrique, rubriqueName, topics }: { rub
                 <IconMessage size={14} />
                 {t.replyCount}
               </div>
+              <ReportButton targetType="forum_topic" targetId={t.id} />
             </a>
           ))}
         </div>

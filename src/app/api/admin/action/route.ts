@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db";
 import {
   users, forumTopics, forumReplies, forumRubriques, entraideListings,
   documents, events, alerts, adminWarnings, reports,
-  listingMessages, privateMessages,
+  listingMessages, privateMessages, moderationFlags,
 } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 
@@ -116,18 +116,22 @@ export async function POST(request: Request) {
     }
 
     case "resolve-report": {
-      const { reportId } = body;
+      const { reportId, type } = body;
       if (!reportId) return NextResponse.json({ error: "ID requis" }, { status: 400 });
-      await db.update(reports).set({
-        resolved: true,
-        resolvedBy: session.id,
-        resolvedAt: sql`(datetime('now'))`,
-      }).where(eq(reports.id, reportId)).run();
+      if (type === "flag") {
+        await db.update(moderationFlags).set({ resolved: true }).where(eq(moderationFlags.id, reportId)).run();
+      } else {
+        await db.update(reports).set({
+          resolved: true,
+          resolvedBy: session.id,
+          resolvedAt: sql`(datetime('now'))`,
+        }).where(eq(reports.id, reportId)).run();
+      }
       return NextResponse.json({ success: true });
     }
 
     case "delete-content": {
-      const { targetType, targetId, reportId } = body;
+      const { targetType, targetId, reportId, entityType } = body;
       if (targetType === "listing") {
         await db.update(entraideListings).set({ status: "removed", title: "[Supprimé]" }).where(eq(entraideListings.id, targetId)).run();
       } else if (targetType === "forum_topic") {
@@ -140,7 +144,11 @@ export async function POST(request: Request) {
         await db.update(privateMessages).set({ content: "[Supprimé par la modération]" }).where(eq(privateMessages.id, targetId)).run();
       }
       if (reportId) {
-        await db.update(reports).set({ resolved: true, resolvedBy: session.id, resolvedAt: sql`(datetime('now'))` }).where(eq(reports.id, reportId)).run();
+        if (entityType === "flag") {
+          await db.update(moderationFlags).set({ resolved: true }).where(eq(moderationFlags.id, reportId)).run();
+        } else {
+          await db.update(reports).set({ resolved: true, resolvedBy: session.id, resolvedAt: sql`(datetime('now'))` }).where(eq(reports.id, reportId)).run();
+        }
       }
       return NextResponse.json({ success: true });
     }

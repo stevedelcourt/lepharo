@@ -133,7 +133,7 @@ export const reports = sqliteTable("reports", {
   targetType: text("target_type").notNull(),
   targetId: integer("target_id").notNull(),
   reason: text("reason").notNull(),
-  reporterId: integer("reporter_id").notNull().references(() => users.id),
+  reporterId: integer("reporter_id").references(() => users.id),
   autoFlagged: integer("auto_flagged", { mode: "boolean" }).notNull().default(false),
   score: integer("score"),
   categories: text("categories"),
@@ -165,4 +165,16 @@ export const articles = sqliteTable("articles", {
   published: integer("published", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   updatedAt: text("updated_at"),
+});
+
+export const moderationFlags = sqliteTable("moderation_flags", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  targetType: text("target_type").notNull(),
+  targetId: integer("target_id").notNull(),
+  reason: text("reason").notNull(),
+  score: integer("score").default(0),
+  categories: text("categories").default("[]"),
+  matchedRules: text("matched_rules").default("[]"),
+  resolved: integer("resolved", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

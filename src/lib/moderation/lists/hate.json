@@ -3,7 +3,6 @@
     "sale arabe", "sale noir", "sale blanc", "sale race", "race inférieure", "race supérieure",
     "racaille", "sale nègre", "négro", "négresse", "bougnoule", "sale bougnoule",
     "bicot", "sale bicot", "meloude", "sale meloude", "roumi", "sale roumi",
-    "youpin", "sale youpin", "youpine",
     "sale métèque", "métèque", "sale étranger",
     "crouille", "sale crouille", "crouillat",
     "sale chinetoque", "chinetoque", "niaque", "sale niaque",
@@ -11,7 +10,28 @@
     "sale portugais",
     "sale rom", "sale tzigane", "tzigane", "romanichel",
     "babtou", "babtou fragile",
-    "immigré de merde"
+    "immigré de merde",
+    "les arabes sont", "les noirs sont", "les arabes et les noirs",
+    "dehors les arabes", "dehors les noirs", "dehors les étrangers", "dehors les immigrés",
+    "les arabes nous", "les noirs nous", "les immigrés nous",
+    "les arabes envahissent", "les noirs envahissent",
+    "invasion arabe", "invasion noir", "invasion immigrée", "submersion migratoire",
+    "sale race", "sous race", "race de merde",
+    "race arabe", "race noir", "race blanche supérieure",
+    "priorité aux français", "d abord les français",
+    "les français d abord", "france d abord",
+    "casse toi arabe", "casse toi noir", "casse toi immigré",
+    "rentre chez toi arabe", "rentre chez toi noir", "rentre chez toi immigré",
+    "on est chez nous", "chez nous pas chez eux",
+    "les arabes nous envahissent", "les noirs nous envahissent",
+    "tous des arabes", "tous des noirs", "tous des étrangers",
+    "je suis pas raciste mais", "pas raciste mais les",
+    "je n aime pas les arabes", "je n aime pas les noirs",
+    "j aime pas les arabes", "j aime pas les noirs",
+    "les arabes en France", "les noirs en France",
+    "cassez vous", "cassecouille",
+    "les arabes nous envahissent", "les noirs nous envahissent",
+    "les arabes immigrés", "les noirs immigrés"
   ],
   "antisemitism": [
     "sale juif", "sale juive", "youpin", "sale youpin", "youpine",
@@ -19,7 +39,16 @@
     "sioniste de merde", "finance juive", "complot juif",
     "juiverie", "enjuivé", "sale feuj", "feuj",
     "grand remplacement", "théorie du grand remplacement",
-    "protocole de sion"
+    "protocole de sion",
+    "les juifs controlent", "les juifs dirigent",
+    "les juifs sont", "les juifs veulent",
+    "juif de merde",
+    "complot juif international",
+    "les juifs et l argent",
+    "banque juive", "média juif",
+    "juifs et les arabes",
+    "sioniste",
+    "antisémite", "antisioniste"
   ],
   "xenophobia": [
     "sale immigré", "sale étranger", "dehors les étrangers",
@@ -27,7 +56,18 @@
     "pas chez nous", "dehors les arabes", "dehors les noirs",
     "préférence nationale", "france d'abord",
     "invasion migratoire", "submersion migratoire",
-    "anti-français", "sauf qu'il est pas français"
+    "anti-français", "sauf qu'il est pas français",
+    "les étrangers dehors", "les immigrés dehors",
+    "fermer les frontières", "plus d immigrés",
+    "stop à l immigration", "contrôle de l immigration",
+    "immigration choisie", "immigration subie",
+    "migrants dehors", "pas de migrants",
+    "réfugiés dehors", "faux réfugié",
+    "l immigration est un problème",
+    "les immigrés sont", "les migrants sont",
+    "tous des immigrés",
+    "patrie en danger",
+    "sauver la france"
   ],
   "homophobia": [
     "pédé", "enculé", "sale pédé", "sale tapette", "tapette",
@@ -36,7 +76,11 @@
     "gouine", "sale gouine", "gougat",
     "thérapie de conversion", "guérir de l'homosexualité",
     "contre nature", "perversion", "déviance sexuelle",
-    "lgbt de merde", "trans de merde"
+    "lgbt de merde", "trans de merde",
+    "les homos sont", "les gays sont",
+    "pédéraste", "homosexuel de merde",
+    "mariage pour tous contre",
+    "théorie du genre"
   ],
   "sexism": [
     "sale pute", "sale salope", "sale chienne",
@@ -46,7 +90,10 @@
     "sale féministe", "féminazi", "féminazie",
     "sale meuf", "allumeuse", "sale allumeuse",
     "viol de merde", "elle l'a bien cherché",
-    "soumission de la femme"
+    "soumission de la femme",
+    "les femmes sont toutes",
+    "une femme ça doit",
+    "femme objet", "corps de la femme"
   ],
   "religion": [
     "sale musulman", "sale islam", "sale chrétien",
@@ -56,6 +103,13 @@
     "coran de merde", "bible de merde",
     "terroriste musulman", "islamiste de merde",
     "intégriste", "extrémiste religieux",
-    "tous des"
+    "tous des",
+    "les musulmans sont", "les chrétiens sont",
+    "islam dehors", "dehors l islam",
+    "l islam est une", "l islam c est",
+    "les musulmans veulent",
+    "musulman de merde",
+    "tête de turc",
+    "catho de merde"
   ]
 }

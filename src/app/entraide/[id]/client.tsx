@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IconChevronLeft, IconTag } from "@/components/icons";
 import ReportButton from "@/components/report-button";
+import { UserAvatar } from "@/components/user-avatar";
 
 type Listing = {
   id: number;
@@ -15,6 +16,7 @@ type Listing = {
   authorId: number;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   createdAt: string;
   images: string;
 };
@@ -132,9 +134,10 @@ export default function ListingDetailClient({
 
         <h2 style={{ fontSize: "1.25rem", marginBottom: 8 }}>{listing.title}</h2>
 
-        <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 16 }}>
-          {listing.authorName}{listing.authorFloor ? `, ${listing.authorFloor}e étage` : ""}
-        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: 16 }}>
+          <UserAvatar url={(listing as any).authorAvatar} name={listing.authorName} size={28} />
+          <span>{listing.authorName}{listing.authorFloor ? `, ${listing.authorFloor}e étage` : ""}</span>
+        </div>
 
         <p style={{ fontSize: "0.9375rem", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
           {listing.description}

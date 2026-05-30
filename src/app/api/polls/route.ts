@@ -15,6 +15,7 @@ export async function GET() {
     question: polls.question,
     authorName: users.firstName,
     authorFloor: users.floor,
+    authorAvatar: users.avatarUrl,
     createdAt: polls.createdAt,
     totalVotes: sql<number>`(SELECT COUNT(*) FROM poll_votes WHERE poll_votes.poll_id = polls.id)`.as("totalVotes"),
   }).from(polls).innerJoin(users, eq(polls.authorId, users.id))

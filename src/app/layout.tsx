@@ -108,6 +108,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>
             <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />
             <NavItem href="/mes-annonces" icon={<IconClipboard />} label="Mes annonces" />
+            <NavItem href="/mes-activites" icon={<IconForum />} label="Mes activités" />
             <NavItem href="/messagerie" icon={<IconMessage />} label="Messagerie" />
             {session.role === "admin" && (
               <NavItem href="/admin" icon={<IconShield />} label="Admin" />

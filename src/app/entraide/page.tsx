@@ -15,10 +15,12 @@ export default async function EntraidePage() {
     category: entraideListings.category,
     authorName: users.firstName,
     authorFloor: users.floor,
+    authorAvatar: users.avatarUrl,
+    description: entraideListings.description,
     createdAt: entraideListings.createdAt,
     images: entraideListings.images,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
-    .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings;
+    .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings.map((l) => ({ ...l, authorAvatar: null as string | null, description: l.description || "" }));
 
   return <EntraideClient listings={listings} />;
 }

@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     createdAt: sql`(datetime('now'))`,
   }).run();
 
-  const newId = result.lastInsertRowid as number;
+  const newId = Number(result.lastInsertRowid);
   checkAndFlag(content, "private_message", newId, db).catch(() => {});
 
   return NextResponse.json({ success: true, id: newId });

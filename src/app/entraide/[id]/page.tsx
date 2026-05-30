@@ -31,6 +31,7 @@ export default async function ListingDetailPage({ params }: Props) {
     authorId: entraideListings.authorId,
     authorName: users.firstName,
     authorFloor: users.floor,
+    authorAvatar: users.avatarUrl,
     createdAt: entraideListings.createdAt,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
     .where(eq(entraideListings.id, listingId)).get();

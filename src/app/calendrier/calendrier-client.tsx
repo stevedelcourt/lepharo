@@ -18,7 +18,7 @@ type AlertItem = { id: number; message: string; type: string; createdAt: string 
 function parseDate(dateStr: string): Date | null {
   const parts = dateStr.split(" ");
   const day = parseInt(parts[0]);
-  const monthIdx = months.indexOf(parts[1]?.toLowerCase() || "");
+  const monthIdx = months.findIndex((m) => m.toLowerCase() === parts[1]?.toLowerCase());
   const year = parseInt(parts[2]) || new Date().getFullYear();
   if (isNaN(day) || monthIdx === -1) return null;
   return new Date(year, monthIdx, day);

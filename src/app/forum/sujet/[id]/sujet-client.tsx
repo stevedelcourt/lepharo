@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconForum, IconPin, IconLock, IconSend, IconChevronLeft, IconMessage } from "@/components/icons";
 import ReportButton from "@/components/report-button";
 import { formatDate } from "@/lib/utils";
+import { UserAvatar } from "@/components/user-avatar";
 
 const rubriqueNames: Record<string, string> = {
   "vie-quotidienne": "Vie quotidienne",
@@ -22,6 +23,7 @@ type Topic = {
   rubrique: string;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   pinned: boolean;
   locked: boolean;
   createdAt: string;
@@ -32,6 +34,7 @@ type Reply = {
   content: string;
   authorName: string;
   authorFloor: number | null;
+  authorAvatar: string | null;
   createdAt: string;
 };
 
@@ -99,9 +102,10 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
 
         <h1 style={{ margin: 0, marginBottom: 8, fontSize: "1.75rem" }}>{topic.title}</h1>
 
-        <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>
-          Par {topic.authorName}{topic.authorFloor ? ` (${topic.authorFloor}e étage)` : ""} · {formatDate(topic.createdAt)}
-        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 0, fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
+          <UserAvatar url={(topic as any).authorAvatar} name={topic.authorName} size={28} />
+          <span>Par {topic.authorName}{topic.authorFloor ? ` (${topic.authorFloor}e étage)` : ""} · {formatDate(topic.createdAt)}</span>
+        </div>
       </div>
 
       <div
@@ -138,11 +142,13 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
                   borderLeft: "3px solid var(--color-primary)",
                 }}
               >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: "0.8125rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, fontSize: "0.8125rem" }}>
+                <UserAvatar url={(r as any).authorAvatar} name={r.authorName} size={26} />
                 <span style={{ fontWeight: 600 }}>
                   {r.authorName}{r.authorFloor ? ` (${r.authorFloor}e)` : ""}
                 </span>
-                <span style={{ color: "var(--color-text-tertiary)" }}>{formatDate(r.createdAt)}</span>
+                <span style={{ color: "var(--color-text-tertiary)", marginLeft: "auto" }}>{formatDate(r.createdAt)}</span>
+                <ReportButton targetType="forum_reply" targetId={r.id} />
               </div>
               <p style={{ margin: 0, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{r.content}</p>
             </div>

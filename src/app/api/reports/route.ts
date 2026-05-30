@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { reports, users } from "@/lib/schema";
+import { reports, moderationFlags } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
@@ -25,23 +25,55 @@ export async function GET() {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Indisponible" }, { status: 503 });
 
-  const rows = await db.select({
-    id: reports.id,
-    targetType: reports.targetType,
-    targetId: reports.targetId,
-    reason: reports.reason,
-    autoFlagged: reports.autoFlagged,
-    score: reports.score,
-    categories: reports.categories,
-    matchedRules: reports.matchedRules,
-    resolved: reports.resolved,
-    createdAt: reports.createdAt,
-  }).from(reports).orderBy(desc(reports.createdAt)).all();
+  // User reports
+  let userReports: any[] = [];
+  try {
+    userReports = await db.select({
+      id: reports.id,
+      targetType: reports.targetType,
+      targetId: reports.targetId,
+      reason: reports.reason,
+      score: reports.score,
+      categories: reports.categories,
+      matchedRules: reports.matchedRules,
+      resolved: reports.resolved,
+      createdAt: reports.createdAt,
+    }).from(reports).orderBy(desc(reports.createdAt)).all();
+  } catch {}
 
-  const mapped = rows.map((r: any) => ({
+  // Auto-flagged from moderation_flags
+  let autoFlags: any[] = [];
+  try {
+    const flags = await db.select({
+      id: moderationFlags.id,
+      targetType: moderationFlags.targetType,
+      targetId: moderationFlags.targetId,
+      reason: moderationFlags.reason,
+      score: moderationFlags.score,
+      categories: moderationFlags.categories,
+      matchedRules: moderationFlags.matchedRules,
+      resolved: moderationFlags.resolved,
+      createdAt: moderationFlags.createdAt,
+    }).from(moderationFlags).orderBy(desc(moderationFlags.createdAt)).all();
+
+    autoFlags = flags.map((f: any) => ({
+      ...f,
+      autoFlagged: true,
+      entityType: "flag",
+      reporterName: "🤖 Auto",
+    }));
+  } catch {}
+
+  const mapped = userReports.map((r: any) => ({
     ...r,
-    reporterName: r.autoFlagged ? "🤖 Auto" : "Utilisateur",
+    autoFlagged: r.autoFlagged || false,
+    entityType: "report",
+    reporterName: "👤 Signalé",
   }));
 
-  return NextResponse.json(mapped);
+  const combined = [...autoFlags, ...mapped].sort((a, b) => {
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  });
+
+  return NextResponse.json(combined);
 }
