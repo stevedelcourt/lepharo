@@ -44,7 +44,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTab, activeCat, sortBy]);
 
@@ -101,7 +101,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
             <option value="type">Type</option>
           </select>
         </div>
-        <div className="input-group" style={{ gap: 2, marginLeft: 4 }}>
+        <div className="input-group hide-mobile" style={{ gap: 2, marginLeft: 4 }}>
           <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
           <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
         </div>

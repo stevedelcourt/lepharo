@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Work_Sans } from "next/font/google";
-import { NavItem } from "@/components/SidebarNav";
+import { NavItem, MessagerieNavItem } from "@/components/SidebarNav";
 import { getSession } from "@/lib/auth";
 import NotifBell from "@/components/notif-bell";
 import ThemeToggle from "@/components/theme-toggle";
@@ -59,7 +59,9 @@ function TopBar() {
   return (
     <div className="top-bar">
       <div className="top-bar-left">
-        <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={100} height={32} className="top-bar-logo" />
+        <a href="/">
+          <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={100} height={32} className="top-bar-logo" />
+        </a>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }}>
         <NotifBell />
@@ -109,7 +111,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />
             <NavItem href="/mes-annonces" icon={<IconClipboard />} label="Mes annonces" />
             <NavItem href="/mes-activites" icon={<IconForum />} label="Mes activités" />
-            <NavItem href="/messagerie" icon={<IconMessage />} label="Messagerie" />
+            <MessagerieNavItem href="/messagerie" icon={<IconMessage />} label="Messagerie" />
             {session.role === "admin" && (
               <NavItem href="/admin" icon={<IconShield />} label="Admin" />
             )}

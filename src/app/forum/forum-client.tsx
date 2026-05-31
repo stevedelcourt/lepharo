@@ -94,8 +94,8 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32, alignItems: "start" }}>
-        <div>
+      <div className="forum-grid">
+        <div className="forum-rubriques">
           <h3 style={{ fontSize: "1.125rem", marginBottom: 16 }}>Rubriques</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {rubriques.map((r) => (
@@ -128,7 +128,7 @@ export default function ForumClient({ topics }: { topics: Topic[] }) {
           </div>
         </div>
 
-        <div>
+        <div className="forum-hot-topics">
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <IconStar size={20} />
             <h3 style={{ fontSize: "1.125rem", margin: 0 }}>Sujets chauds</h3>

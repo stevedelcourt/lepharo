@@ -83,12 +83,12 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
         Découvrez vos voisins. Chacun choisit ce qu&apos;il partage.
       </p>
 
-      <div className="input-group" style={{ marginBottom: 24 }}>
+      <div className="input-group" style={{ marginBottom: 12 }}>
         <div className="annuaire-search" style={{ position: "relative", flex: 1, maxWidth: 320 }}>
           <IconSearch size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)" }} />
           <input type="search" autoComplete="off" placeholder="Rechercher…" value={search} onChange={(e) => setSearch(e.target.value)} className="input" style={{ paddingLeft: 40, width: "100%" }} />
         </div>
-        <select value={filterFloor ?? ""} onChange={(e) => setFilterFloor(e.target.value ? Number(e.target.value) : null)} className="input" style={{ padding: "8px 12px", width: "auto" }}>
+        <select value={filterFloor ?? ""} onChange={(e) => setFilterFloor(e.target.value ? Number(e.target.value) : null)} className="input hide-mobile" style={{ padding: "8px 12px", width: "auto" }}>
           <option value="">Tous les étages</option>
           {Array.from({ length: 19 }, (_, i) => (<option key={i} value={i + 1}>{i + 1}e étage</option>))}
         </select>
@@ -104,6 +104,22 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
           <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
           <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
         </div>
+      </div>
+
+      <div className="hide-desktop" style={{ display: "flex", gap: 6, marginBottom: 24, flexWrap: "wrap" }}>
+        <button onClick={() => setFilterFloor(null)} className={`btn btn-sm ${filterFloor === null ? "btn-primary" : "btn-ghost"}`} style={{ fontSize: "0.8125rem" }}>
+          Tous les étages
+        </button>
+        {Array.from({ length: 19 }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setFilterFloor(filterFloor === i + 1 ? null : i + 1)}
+            className={`btn btn-sm ${filterFloor === i + 1 ? "btn-primary" : "btn-ghost"}`}
+            style={{ padding: "4px 10px", fontSize: "0.8125rem" }}
+          >
+            {i + 1}e
+          </button>
+        ))}
       </div>
 
       {viewMode === "grid" ? (
