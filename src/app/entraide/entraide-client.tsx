@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   IconHandshake, IconBaby, IconUsersHeart, IconCart, IconMonitor,
   IconWrench, IconBox, IconCar, IconDots, IconTag,
-  IconChevronRight, IconSort, IconStar, IconGrid, IconList,
+  IconChevronRight, IconSort, IconStar, IconGrid, IconList, IconSearch,
 } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
@@ -45,6 +45,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
   const [sortBy, setSortBy] = useState<"date" | "category" | "type">("date");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [search, setSearch] = useState("");
 
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTab, activeCat, sortBy]);
 
@@ -56,7 +57,8 @@ export default function EntraideClient({ listings: initialListings }: { listings
 
   const filtered = sorted
     .filter((l) => activeTab === "all" || l.type === activeTab)
-    .filter((l) => !activeCat || l.category === activeCat);
+    .filter((l) => !activeCat || l.category === activeCat)
+    .filter((l) => !search || l.title.toLowerCase().includes(search.toLowerCase()) || l.description?.toLowerCase().includes(search.toLowerCase()));
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -104,6 +106,10 @@ export default function EntraideClient({ listings: initialListings }: { listings
         <div className="input-group hide-mobile" style={{ gap: 2, marginLeft: 4 }}>
           <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
           <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
+        </div>
+        <div style={{ position: "relative" }}>
+          <IconSearch size={16} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-tertiary)", pointerEvents: "none" }} />
+          <input type="search" autoComplete="off" placeholder="Rechercher…" value={search} onChange={(e) => setSearch(e.target.value)} className="input" style={{ padding: "6px 10px 6px 32px", fontSize: "0.8125rem", width: 180 }} />
         </div>
       </div>
 
