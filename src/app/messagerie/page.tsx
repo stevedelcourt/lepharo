@@ -202,17 +202,6 @@ export default function MessageriePage() {
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
             <input type="search" autoComplete="off" placeholder="Rechercher…" className="input" value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%" }} />
           </div>
-          {isMobile && current && showMobileConvList && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", background: "var(--color-primary-light)", borderBottom: "1px solid var(--color-border-light)" }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--color-border)", overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 600, color: "var(--color-text-secondary)" }}>
-                {current.avatarUrl ? <img src={current.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : current.name.charAt(0)}
-              </div>
-              <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--color-text)", flex: 1 }}>{current.name}</span>
-              <button onClick={() => setShowMobileConvList(false)} type="button" style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "var(--color-primary)", fontWeight: 600, fontSize: "0.8125rem", fontFamily: "inherit" }}>
-                Voir
-              </button>
-            </div>
-          )}
           <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "12px 18px 4px", margin: 0 }}>
             Mes conversations
           </p>
