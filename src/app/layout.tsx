@@ -84,7 +84,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
     <aside className="sidebar">
       <div className="sidebar-mobile-header">
         <a href="/" className="sidebar-mobile-logo-link">
-          <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={120} height={38} />
+          <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={100} height={32} />
         </a>
         <button className="sidebar-close-btn" id="sidebar-close-btn" type="button" aria-label="Fermer le menu">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
