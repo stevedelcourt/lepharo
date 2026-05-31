@@ -2,9 +2,9 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { users, forumTopics, entraideListings, documents, events, alerts, reports, moderationFlags } from "@/lib/schema";
+import { users, forumTopics, entraideListings, documents, events, alerts, reports, moderationFlags, polls } from "@/lib/schema";
 import { count, eq, desc } from "drizzle-orm";
-import { IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconHome, IconWarning } from "@/components/icons";
+import { IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconHome, IconWarning, IconPoll } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminDashboard() {
@@ -22,6 +22,7 @@ export default async function AdminDashboard() {
     const l = (await db.select({ value: count() }).from(entraideListings).get())!;
     const d = (await db.select({ value: count() }).from(documents).get())!;
     const e = (await db.select({ value: count() }).from(events).get())!;
+    const p = (await db.select({ value: count() }).from(polls).get())!;
     const a = (await db.select({ value: count() }).from(alerts).get())!;
     let rVal = 0;
     try {
@@ -49,6 +50,7 @@ export default async function AdminDashboard() {
       { label: "Annonces d'entraide", value: l.value, icon: IconHandshake, href: "/admin/entraide" },
       { label: "Documents", value: d.value, icon: IconFolder, href: "/admin/documents" },
       { label: "Événements", value: e.value, icon: IconCalendar, href: "/admin/evenements" },
+      { label: "Sondages", value: p.value, icon: IconPoll, href: "/admin/sondages" },
       { label: "Alertes", value: a.value, icon: IconBell, href: "/admin/alertes" },
       { label: "Signalements", value: rVal + unresolvedFlags.length, icon: IconWarning, href: "/admin/signalements" },
     ];
@@ -59,6 +61,7 @@ export default async function AdminDashboard() {
       { label: "Annonces d'entraide", value: 6, icon: IconHandshake, href: "/admin/entraide" },
       { label: "Documents", value: 8, icon: IconFolder, href: "/admin/documents" },
       { label: "Événements", value: 4, icon: IconCalendar, href: "/admin/evenements" },
+      { label: "Sondages", value: 0, icon: IconPoll, href: "/admin/sondages" },
       { label: "Alertes", value: 2, icon: IconBell, href: "/admin/alertes" },
       { label: "Signalements", value: 0, icon: IconWarning, href: "/admin/signalements" },
     ];

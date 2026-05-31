@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout, IconBook, IconStar, IconShield, IconWarning } from "@/components/icons";
+import { IconDashboard, IconUsers, IconForum, IconHandshake, IconFolder, IconCalendar, IconBell, IconLogout, IconBook, IconStar, IconShield, IconWarning, IconPoll } from "@/components/icons";
 import "../admin.css";
 
 const roleHierarchy: Record<string, number> = { superadmin: 3, moderator: 2, editor: 1 };
@@ -14,6 +14,7 @@ const allNavLinks = [
   { href: "/admin/documents", label: "Documents", icon: IconFolder, minRole: "editor" },
   { href: "/admin/evenements", label: "Événements", icon: IconCalendar, minRole: "editor" },
   { href: "/admin/alertes", label: "Alertes", icon: IconBell, minRole: "editor" },
+  { href: "/admin/sondages", label: "Sondages", icon: IconPoll, minRole: "editor" },
   { href: "/admin/articles", label: "Articles", icon: IconStar, minRole: "editor" },
   { href: "/admin/signalements", label: "Signalements", icon: IconWarning, minRole: "moderator" },
 ];

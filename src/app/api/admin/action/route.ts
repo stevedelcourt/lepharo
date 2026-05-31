@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db";
 import {
   users, forumTopics, forumReplies, forumRubriques, entraideListings,
   documents, events, alerts, adminWarnings, reports,
-  listingMessages, privateMessages, moderationFlags,
+  listingMessages, privateMessages, moderationFlags, polls,
 } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       const tableMap: Record<string, any> = {
         users, forum_topics: forumTopics, forum_replies: forumReplies,
         forum_rubriques: forumRubriques,
-        entraide_listings: entraideListings, documents, events, alerts,
+        entraide_listings: entraideListings, documents, events, alerts, polls,
       };
       const tbl = tableMap[table];
       if (!tbl || !id || !data) {
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
         entraide_listings: ["title", "description", "category", "type", "status"],
         documents: ["title", "category", "pages", "date"],
         events: ["title", "description", "date", "type"],
+        polls: ["question"],
         alerts: ["message", "type", "active"],
       };
       const allowedCols = allowed[table] || [];
@@ -150,6 +151,18 @@ export async function POST(request: Request) {
           await db.update(reports).set({ resolved: true, resolvedBy: session.id, resolvedAt: sql`(datetime('now'))` }).where(eq(reports.id, reportId)).run();
         }
       }
+      return NextResponse.json({ success: true });
+    }
+
+    case "create-alert": {
+      const { message, type: alertType } = body;
+      if (!message) return NextResponse.json({ error: "Message requis" }, { status: 400 });
+      await db.insert(alerts).values({
+        message: message.trim(),
+        type: alertType || "info",
+        createdBy: session.id,
+        active: true,
+      }).run();
       return NextResponse.json({ success: true });
     }
 

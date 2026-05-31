@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import {
   users, forumTopics, forumReplies, forumRubriques, entraideListings,
-  privateMessages, listingMessages, polls, pollVotes, adminWarnings, events, alerts, documents,
+  privateMessages, listingMessages,   polls, pollVotes, pollOptions, adminWarnings, events, alerts, documents,
 } from "@/lib/schema";
 
 const tableMap: Record<string, any> = {
@@ -46,6 +46,11 @@ export async function DELETE(request: Request) {
     await db.delete(adminWarnings).where(eq(adminWarnings.createdBy, uid)).run();
     await db.delete(events).where(eq(events.authorId, uid)).run();
     await db.delete(alerts).where(eq(alerts.createdBy, uid)).run();
+  }
+
+  if (table === "polls") {
+    await db.delete(pollVotes).where(eq(pollVotes.pollId, id)).run();
+    await db.delete(pollOptions).where(eq(pollOptions.pollId, id)).run();
   }
 
   await db.delete(tableMap[table]).where(eq(tableMap[table].id, id)).run();
