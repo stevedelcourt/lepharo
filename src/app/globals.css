@@ -589,7 +589,7 @@ button.card:hover,
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .messagerie-show-chat .messagerie-panel-right {
+  .messagerie-panel-right.messagerie-panel-show {
     transform: translateX(0);
   }
 

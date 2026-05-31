@@ -183,7 +183,7 @@ export default function MessageriePage() {
         <h1 style={{ margin: 0 }}>Messagerie</h1>
       </div>
 
-      <div className={`card messagerie-layout ${showMobileConvList ? "messagerie-show-list" : "messagerie-show-chat"}`} style={{ display: "flex", overflow: "hidden", minHeight: "65vh" }}>
+      <div className="card messagerie-layout" style={{ display: "flex", overflow: "hidden", minHeight: "65vh" }}>
         {/* Contact list */}
         <div className="messagerie-panel-left" style={{ width: "340px", borderRight: "1px solid var(--color-border-light)", flexShrink: 0 }}>
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
@@ -250,7 +250,7 @@ export default function MessageriePage() {
         </div>
 
         {/* Chat panel */}
-        <div className="messagerie-panel-right" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div className={`messagerie-panel-right${!showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {current ? (
             <>
               <div style={{ padding: "14px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", alignItems: "center", gap: 12 }}>
