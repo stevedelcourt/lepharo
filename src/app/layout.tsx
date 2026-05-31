@@ -110,6 +110,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <NavItem href="/calendrier" icon={<IconCalendar />} label="Calendrier" />
             <NavItem href="/documents" icon={<IconFolder />} label="Documents" />
             <NavItem href="/sondages" icon={<IconPoll />} label="Sondages" />
+            <NavItem href="/articles" icon={<IconBook />} label="Articles" />
             <NavItem href="/aide" icon={<IconHelp />} label="Aide" />
             <NavItem href="/contact" icon={<IconSend />} label="Contact" />
 

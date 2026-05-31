@@ -25,7 +25,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     <article className="article-detail">
       <div className="container">
         <div className="article-detail-header">
-          <Link href="/" className="article-detail-back">← Retour à l'accueil</Link>
+          <Link href="/articles" className="article-detail-back">← Retour aux articles</Link>
           <h1>{article.title}</h1>
           {article.subtitle && <p className="article-detail-subtitle">{article.subtitle}</p>}
         </div>
