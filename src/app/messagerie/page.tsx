@@ -189,6 +189,9 @@ export default function MessageriePage() {
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
             <input type="search" autoComplete="off" placeholder="Rechercher…" className="input" value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%" }} />
           </div>
+          <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "12px 18px 4px", margin: 0 }}>
+            Mes conversations
+          </p>
           <div style={{ overflow: "auto", maxHeight: "calc(65vh - 60px)" }}>
             {loading && <p style={{ padding: 16, textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "0.9375rem" }}>Chargement…</p>}
             {!loading && filteredConvs.length === 0 && (
@@ -273,6 +276,7 @@ export default function MessageriePage() {
                   </p>
                 </div>
                 <button
+                  className="messagerie-delete-conv"
                   onClick={() => deleteConversation(current.id)}
                   disabled={deleting?.convId === current.id}
                   style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "var(--color-text-tertiary)", opacity: 0.5 }}

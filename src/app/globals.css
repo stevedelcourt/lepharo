@@ -595,6 +595,11 @@ button.card:hover,
 
   .messagerie-back {
     display: flex !important;
+    padding: 12px !important;
+  }
+
+  .messagerie-delete-conv {
+    display: none !important;
   }
 }
 
