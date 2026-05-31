@@ -93,7 +93,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
 
       <div className="sidebar-logo">
         <a href="/">
-          <Image src="/lepharo.svg" alt="Le Pharo" width={223} height={273} className="sidebar-building-icon" />
+          <Image src="/lepharo.svg" alt="Le Pharo" width={156} height={191} className="sidebar-building-icon" />
           <Image src="/lepharo-text-logo.svg" alt="Le Pharo" width={140} height={44} className="sidebar-text-icon" />
         </a>
       </div>
