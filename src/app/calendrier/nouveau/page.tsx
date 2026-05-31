@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCalendar, IconChevronLeft, IconSend } from "@/components/icons";
+import { IconCalendar, IconChevronLeft, IconSend, IconMessage } from "@/components/icons";
 
 export default function NewEventPage() {
   const router = useRouter();
@@ -10,6 +10,7 @@ export default function NewEventPage() {
   const [date, setDate] = useState("");
   const [type, setType] = useState("convivial");
   const [description, setDescription] = useState("");
+  const [allowComments, setAllowComments] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +23,10 @@ export default function NewEventPage() {
       const res = await fetch("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: title.trim(), date: date.trim(), type, description: description.trim() }),
+        body: JSON.stringify({
+          title: title.trim(), date: date.trim(), type,
+          description: description.trim(), allowComments,
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -73,6 +77,29 @@ export default function NewEventPage() {
             <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 600, marginBottom: 6, color: "var(--color-text-secondary)" }}>Description</label>
             <textarea className="input" rows={4} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Détails de l'événement…" style={{ width: "100%", resize: "vertical" }} />
           </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0" }}>
+            <button
+              type="button"
+              onClick={() => setAllowComments(!allowComments)}
+              style={{
+                width: 44, height: 24, borderRadius: 12, border: "none", cursor: "pointer",
+                background: allowComments ? "var(--color-primary)" : "var(--color-border)",
+                position: "relative", transition: "background 0.2s", flexShrink: 0,
+              }}
+            >
+              <span style={{
+                position: "absolute", top: 2, width: 20, height: 20, borderRadius: "50%",
+                background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                left: allowComments ? 22 : 2,
+              }} />
+            </button>
+            <label style={{ fontSize: "0.9375rem", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+              <IconMessage size={18} />
+              Autoriser les commentaires
+            </label>
+          </div>
+
           <button type="submit" disabled={saving || !title.trim() || !date.trim()} className="btn btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 6, alignSelf: "flex-start" }}>
             <IconSend size={16} />
             {saving ? "Envoi…" : "Proposer l'événement"}

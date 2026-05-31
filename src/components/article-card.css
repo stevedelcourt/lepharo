@@ -10,7 +10,7 @@
 }
 
 .article-card:hover {
-  background: #eaeff4;
+  background: var(--color-bg-alt);
   box-shadow: var(--shadow-md);
 }
 
@@ -77,7 +77,7 @@
 }
 
 .article-small-card:hover {
-  background: #eaeff4;
+  background: var(--color-bg-alt);
   box-shadow: var(--shadow-sm);
 }
 

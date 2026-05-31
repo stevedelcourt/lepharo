@@ -14,6 +14,7 @@ export type SessionUser = {
   lastName: string;
   role: string;
   adminRole?: string | null;
+  coproprietaire?: boolean;
 };
 
 export async function createSession(user: SessionUser) {

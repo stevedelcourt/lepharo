@@ -19,6 +19,7 @@ export const users = sqliteTable("users", {
   senior: integer("senior", { mode: "boolean" }).notNull().default(false),
   kids: integer("kids", { mode: "boolean" }).notNull().default(false),
   showFullName: integer("show_full_name", { mode: "boolean" }).notNull().default(false),
+  coproprietaire: integer("coproprietaire", { mode: "boolean" }).notNull().default(false),
   verificationToken: text("verification_token"),
   verificationTokenExpires: text("verification_token_expires"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
@@ -40,6 +41,7 @@ export const forumTopics = sqliteTable("forum_topics", {
   authorId: integer("author_id").notNull().references(() => users.id),
   pinned: integer("pinned", { mode: "boolean" }).notNull().default(false),
   locked: integer("locked", { mode: "boolean" }).notNull().default(false),
+  images: text("images").notNull().default("[]"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
@@ -48,6 +50,7 @@ export const forumReplies = sqliteTable("forum_replies", {
   topicId: integer("topic_id").notNull().references(() => forumTopics.id),
   authorId: integer("author_id").notNull().references(() => users.id),
   content: text("content").notNull(),
+  images: text("images").notNull().default("[]"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
@@ -187,5 +190,23 @@ export const eventComments = sqliteTable("event_comments", {
   eventId: integer("event_id").notNull().references(() => events.id),
   authorId: integer("author_id").notNull().references(() => users.id),
   content: text("content").notNull(),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const proofRequests = sqliteTable("proof_requests", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id").notNull().references(() => users.id),
+  fileUrl: text("file_url").notNull(),
+  message: text("message"),
+  status: text("status").notNull().default("pending"),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const contactMessages = sqliteTable("contact_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });

@@ -30,12 +30,12 @@ export async function POST(request: Request) {
     user = await db.select({
       id: users.id, firstName: users.firstName, lastName: users.lastName,
       email: users.email, role: users.role, adminRole: users.adminRole,
-      passwordHash: users.passwordHash,
+      coproprietaire: users.coproprietaire, passwordHash: users.passwordHash,
     }).from(users).where(or(...conditions)).get();
   } catch {
     user = await db.select({
       id: users.id, firstName: users.firstName, lastName: users.lastName,
-      email: users.email, role: users.role,
+      email: users.email, role: users.role, coproprietaire: users.coproprietaire,
       passwordHash: users.passwordHash,
     }).from(users).where(or(...conditions)).get();
   }
@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     lastName: user.lastName,
     role: user.role,
     adminRole: (user as any).adminRole || null,
+    coproprietaire: !!(user as any).coproprietaire,
   });
 
   return NextResponse.json({ success: true, role: user.role });

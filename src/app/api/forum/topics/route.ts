@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    const { title, content, rubrique } = await req.json();
+    const { title, content, rubrique, images } = await req.json();
     if (!title || !content || !rubrique) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
       content,
       rubrique,
       authorId: session.id,
+      images: JSON.stringify(images || []),
       createdAt: sql`(datetime('now'))`,
     }).run();
 

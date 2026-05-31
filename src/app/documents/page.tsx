@@ -1,9 +1,11 @@
 import { getDb } from "@/lib/db";
-import { documents } from "@/lib/schema";
-import { desc } from "drizzle-orm";
+import { documents, users } from "@/lib/schema";
+import { eq, desc } from "drizzle-orm";
 import { fallbackDocuments } from "@/lib/fallback-data";
-import { IconFolder, IconDownload } from "@/components/icons";
+import { IconFolder, IconDownload, IconLock } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import { getSession } from "@/lib/auth";
+import ProofForm from "./proof-form";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,48 @@ const categoryMeta: Record<string, { name: string }> = {
 };
 
 export default async function DocumentsPage() {
+  const session = await getSession();
   const db = getDb();
+
+  let isCoproprietaire = false;
+  if (session && db) {
+    try {
+      const row = await db.select({ coproprietaire: users.coproprietaire })
+        .from(users).where(eq(users.id, session.id)).get();
+      isCoproprietaire = !!(row as any)?.coproprietaire;
+    } catch {}
+  }
+
+  if (!isCoproprietaire) {
+    return (
+      <div className="container page-padding" style={{ maxWidth: 700 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+          <IconLock size={28} />
+          <h1 style={{ margin: 0 }}>Espace documents</h1>
+        </div>
+
+        <div className="card" style={{ padding: "32px 24px", marginBottom: 32, background: "#fef3c7", border: "1px solid #fde68a" }}>
+          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 12, color: "#92400e" }}>
+            Accès restreint
+          </p>
+          <p style={{ fontSize: "0.9375rem", color: "#92400e", marginBottom: 0, lineHeight: 1.6 }}>
+            Cet espace est strictement réservé aux copropriétaires. Envoyez ici la convocation à l&apos;assemblée générale ou une autre preuve pour accéder à cet espace.
+          </p>
+        </div>
+
+        {session ? (
+          <ProofForm />
+        ) : (
+          <div className="card" style={{ padding: "24px", textAlign: "center" }}>
+            <p style={{ color: "var(--color-text-secondary)", marginBottom: 16 }}>
+              <a href="/connexion" style={{ color: "var(--color-primary)", fontWeight: 600 }}>Connectez-vous</a> pour envoyer un justificatif.
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   let allDocs = fallbackDocuments;
   if (db) {
     try {

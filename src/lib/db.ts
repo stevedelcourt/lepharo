@@ -40,6 +40,15 @@ const MIGRATIONS: { id: string; sql: string }[] = [
   { id: "025f_reports_resolved_by", sql: `ALTER TABLE reports ADD COLUMN resolved_by integer REFERENCES users(id)` },
   { id: "025g_reports_resolved_at", sql: `ALTER TABLE reports ADD COLUMN resolved_at text` },
   { id: "026_moderation_flags", sql: `CREATE TABLE IF NOT EXISTS moderation_flags (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, target_type text NOT NULL, target_id integer NOT NULL, reason text NOT NULL, score integer DEFAULT 0, categories text DEFAULT '[]', matched_rules text DEFAULT '[]', resolved integer DEFAULT 0 NOT NULL, created_at text DEFAULT (datetime('now')) NOT NULL)` },
+  { id: "027_verification", sql: `ALTER TABLE users ADD COLUMN verification_token text DEFAULT NULL` },
+  { id: "028_verification_expires", sql: `ALTER TABLE users ADD COLUMN verification_token_expires text DEFAULT NULL` },
+  { id: "029_event_comments", sql: `CREATE TABLE IF NOT EXISTS event_comments (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, event_id integer NOT NULL REFERENCES events(id), author_id integer NOT NULL REFERENCES users(id), content text NOT NULL, created_at text DEFAULT (datetime('now')) NOT NULL)` },
+  { id: "030_allow_comments", sql: `ALTER TABLE events ADD COLUMN allow_comments integer DEFAULT 1 NOT NULL` },
+  { id: "031_forum_topics_images", sql: `ALTER TABLE forum_topics ADD COLUMN images text DEFAULT '[]' NOT NULL` },
+  { id: "032_forum_replies_images", sql: `ALTER TABLE forum_replies ADD COLUMN images text DEFAULT '[]' NOT NULL` },
+  { id: "033_coproprietaire", sql: `ALTER TABLE users ADD COLUMN coproprietaire integer DEFAULT 0 NOT NULL` },
+  { id: "034_proof_requests", sql: `CREATE TABLE IF NOT EXISTS proof_requests (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, user_id integer NOT NULL REFERENCES users(id), file_url text NOT NULL, message text, status text NOT NULL DEFAULT 'pending', created_at text DEFAULT (datetime('now')) NOT NULL)` },
+  { id: "035_contact_messages", sql: `CREATE TABLE IF NOT EXISTS contact_messages (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, name text NOT NULL, email text NOT NULL, subject text NOT NULL, message text NOT NULL, created_at text DEFAULT (datetime('now')) NOT NULL)` },
 ];
 
 function migrateBetterSqlite(sqlite: any) {

@@ -8,14 +8,14 @@ import SujetClient from "./sujet-client";
 
 export const dynamic = "force-dynamic";
 
-type Reply = { id: number; content: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; createdAt: string };
+type Reply = { id: number; content: string; images: string[]; authorName: string; authorFloor: number | null; authorAvatar: string | null; authorCopro: boolean; createdAt: string };
 
 export default async function SujetPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const topicId = parseInt(id, 10);
   const session = await getSession();
   const db = getDb();
-  let topic: { id: number; title: string; content: string; rubrique: string; authorName: string; authorFloor: number | null; authorAvatar: string | null; pinned: boolean; locked: boolean; createdAt: string } | null = null;
+  let topic: { id: number; title: string; content: string; rubrique: string; images: string[]; authorName: string; authorFloor: number | null; authorAvatar: string | null; authorCopro: boolean; pinned: boolean; locked: boolean; createdAt: string } | null = null;
   let replies: Reply[] = [];
 
   if (db) {
@@ -24,9 +24,11 @@ export default async function SujetPage({ params }: { params: Promise<{ id: stri
       title: forumTopics.title,
       content: forumTopics.content,
       rubrique: forumTopics.rubrique,
+      images: forumTopics.images,
       authorName: users.firstName,
       authorFloor: users.floor,
       authorAvatar: users.avatarUrl,
+      authorCopro: users.coproprietaire,
       pinned: forumTopics.pinned,
       locked: forumTopics.locked,
       createdAt: forumTopics.createdAt,
@@ -34,26 +36,37 @@ export default async function SujetPage({ params }: { params: Promise<{ id: stri
       .where(eq(forumTopics.id, topicId)).get();
 
     if (row) {
-      topic = row;
-      replies = await db.select({
+      topic = { ...row, images: parseImages(row.images) };
+      const rows = await db.select({
         id: forumReplies.id,
         content: forumReplies.content,
+        images: forumReplies.images,
         authorName: users.firstName,
         authorFloor: users.floor,
         authorAvatar: users.avatarUrl,
+        authorCopro: users.coproprietaire,
         createdAt: forumReplies.createdAt,
       }).from(forumReplies).innerJoin(users, eq(forumReplies.authorId, users.id))
         .where(eq(forumReplies.topicId, topicId)).orderBy(asc(forumReplies.createdAt)).all();
+      replies = rows.map((r) => ({ ...r, images: parseImages(r.images) }));
     }
   } else {
     const ft = fallbackForumTopics.find((t) => t.id === topicId);
     if (ft) {
-      topic = { ...ft, pinned: false, locked: false, authorAvatar: null };
+      topic = { ...ft, pinned: false, locked: false, images: [], authorAvatar: null, authorCopro: false };
     }
-    replies = fallbackForumReplies.filter((r) => r.topicId === topicId).map((r) => ({ ...r, authorAvatar: null as string | null }));
+    replies = fallbackForumReplies.filter((r) => r.topicId === topicId).map((r) => ({ ...r, images: [], authorAvatar: null as string | null, authorCopro: false }));
   }
 
   if (!topic) notFound();
 
   return <SujetClient topic={topic} replies={replies} userId={session?.id ?? null} />;
+}
+
+function parseImages(val: unknown): string[] {
+  if (Array.isArray(val)) return val;
+  if (typeof val === "string") {
+    try { return JSON.parse(val); } catch { return []; }
+  }
+  return [];
 }

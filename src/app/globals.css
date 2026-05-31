@@ -576,21 +576,17 @@ button.card:hover,
     width: 100% !important;
     flex-shrink: 0 !important;
     flex: none !important;
+    display: none !important;
   }
 
-  .messagerie-panel-right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    z-index: 2;
-    background: var(--color-bg-card);
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .messagerie-panel-left.messagerie-panel-show {
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .messagerie-panel-right.messagerie-panel-show {
-    transform: translateX(0);
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .messagerie-back {

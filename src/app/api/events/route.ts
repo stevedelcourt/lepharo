@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    const { title, date, description, type } = await request.json();
+    const { title, date, description, type, allowComments } = await request.json();
     if (!title || !date || !type) {
       return NextResponse.json({ error: "Champs obligatoires manquants" }, { status: 400 });
     }
@@ -20,13 +20,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Base de données non disponible" }, { status: 503 });
     }
 
-    await db.insert(events).values({
-      title: title.trim(),
-      date: date.trim(),
-      description: description?.trim() || "",
-      type: type.trim(),
-      authorId: session.id,
-    }).run();
+    try {
+      await db.insert(events).values({
+        title: title.trim(),
+        date: date.trim(),
+        description: description?.trim() || "",
+        type: type.trim(),
+        authorId: session.id,
+        allowComments: allowComments !== false,
+      }).run();
+    } catch (e: any) {
+      if (e?.message?.includes("no such column") && e?.message?.includes("allow_comments")) {
+        const { createClient } = require("@libsql/client/web");
+        const c = createClient({ url: process.env.TURSO_DB_URL!, authToken: process.env.TURSO_DB_TOKEN! });
+        await c.execute({ sql: `ALTER TABLE events ADD COLUMN allow_comments integer DEFAULT 1 NOT NULL` }).catch(() => {});
+        await db.insert(events).values({
+          title: title.trim(), date: date.trim(), description: description?.trim() || "",
+          type: type.trim(), authorId: session.id, allowComments: allowComments !== false,
+        }).run();
+      } else {
+        throw e;
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

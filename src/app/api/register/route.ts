@@ -5,6 +5,8 @@ import { createSession } from "@/lib/auth";
 import { hashSync } from "bcryptjs";
 import { eq, or } from "drizzle-orm";
 import { normalizePhone } from "@/lib/phone";
+import { sendVerificationEmail } from "@/lib/email";
+import crypto from "crypto";
 
 export async function POST(request: Request) {
   try {
@@ -41,16 +43,42 @@ export async function POST(request: Request) {
     const finalEmail = email || (phone ? `tel-${phone}@lepharo.local` : "");
     const phoneForDb = phone || null;
 
-    await db.insert(users).values({
-      firstName,
-      lastName,
-      email: finalEmail,
-      phone: phoneForDb,
-      floor: floor ? Number(floor) : null,
-      passwordHash,
-      role: "resident",
-      verified: false,
-    }).run();
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+    try {
+      await db.insert(users).values({
+        firstName,
+        lastName,
+        email: finalEmail,
+        phone: phoneForDb,
+        floor: floor ? Number(floor) : null,
+        passwordHash,
+        role: "resident",
+        verified: false,
+        verificationToken,
+        verificationTokenExpires,
+      }).run();
+    } catch (insertErr: any) {
+      // If columns missing, add them and retry once
+      if (insertErr?.message?.includes("no such column") && insertErr?.message?.includes("verification")) {
+        const { createClient } = require("@libsql/client/web");
+        const client = createClient({
+          url: process.env.TURSO_DB_URL!,
+          authToken: process.env.TURSO_DB_TOKEN!,
+        });
+        await client.execute({ sql: `ALTER TABLE users ADD COLUMN verification_token text DEFAULT NULL` }).catch(() => {});
+        await client.execute({ sql: `ALTER TABLE users ADD COLUMN verification_token_expires text DEFAULT NULL` }).catch(() => {});
+        await db.insert(users).values({
+          firstName, lastName, email: finalEmail, phone: phoneForDb,
+          floor: floor ? Number(floor) : null, passwordHash,
+          role: "resident", verified: false,
+          verificationToken, verificationTokenExpires,
+        }).run();
+      } else {
+        throw insertErr;
+      }
+    }
 
     const newUser = await db.select({
       id: users.id, firstName: users.firstName, lastName: users.lastName,
@@ -59,6 +87,13 @@ export async function POST(request: Request) {
 
     if (!newUser) {
       return NextResponse.json({ error: "Erreur lors de la création du compte" }, { status: 500 });
+    }
+
+    // Send verification email (fire-and-forget)
+    if (email) {
+      sendVerificationEmail({ to: email, firstName, token: verificationToken })
+        .then(() => console.log("Verification email sent to", email))
+        .catch((e) => console.error("Failed to send verification email:", e));
     }
 
     await createSession({

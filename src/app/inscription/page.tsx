@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { IconCheck, IconMail } from "@/components/icons";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -23,6 +24,9 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resentMsg, setResentMsg] = useState("");
   const router = useRouter();
 
   const isPhone = phone.length > 0;
@@ -48,8 +52,12 @@ export default function RegisterPage() {
         setError(data.error || "Erreur lors de l'inscription");
         return;
       }
-      router.push("/dashboard");
-      router.refresh();
+      if (email) {
+        setShowVerifyModal(true);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
+      }
     } catch {
       setError("Erreur réseau — veuillez réessayer");
     } finally {
@@ -184,6 +192,54 @@ export default function RegisterPage() {
           <a href="/connexion">Se connecter</a>
         </p>
       </form>
+
+      {showVerifyModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div style={{ background: "var(--color-bg-card)", borderRadius: 16, padding: "40px 36px", maxWidth: 420, textAlign: "center", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
+            <div style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--color-primary-light)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+              <IconMail size={32} style={{ color: "var(--color-primary)" }} />
+            </div>
+            <h2 style={{ fontSize: "1.25rem", marginBottom: 8 }}>Vérifiez votre adresse email</h2>
+            <p style={{ fontSize: "0.9375rem", color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: 8 }}>
+              Un email de vérification vous a été envoyé à <strong>{email}</strong>.
+              Cliquez sur le lien qu&apos;il contient pour activer votre compte.
+            </p>
+            <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", marginBottom: 20 }}>
+              Vérifiez vos spams si vous ne le trouvez pas dans votre boîte de réception.
+            </p>
+            {resentMsg && (
+              <p style={{ fontSize: "0.875rem", color: resentMsg.includes("success") ? "var(--color-success)" : "var(--color-error)", marginBottom: 12 }}>
+                {resentMsg}
+              </p>
+            )}
+            <button
+              onClick={async () => {
+                setResending(true);
+                setResentMsg("");
+                try {
+                  const res = await fetch("/api/verify/resend", { method: "POST" });
+                  const data = await res.json();
+                  if (data.success) setResentMsg("Email renvoyé avec succès !");
+                  else setResentMsg("Erreur: " + (data.error || ""));
+                } catch { setResentMsg("Erreur réseau"); }
+                setResending(false);
+              }}
+              disabled={resending}
+              className="btn btn-ghost btn-sm"
+              style={{ marginBottom: 16, fontSize: "0.8125rem" }}
+            >
+              {resending ? "Envoi…" : "Renvoyer l'email"}
+            </button>
+            <button
+              onClick={() => { setShowVerifyModal(false); router.push("/dashboard"); router.refresh(); }}
+              className="btn btn-primary"
+              style={{ width: "100%" }}
+            >
+              Accéder au site
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

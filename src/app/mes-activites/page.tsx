@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils";
 type Topic = { id: number; title: string; rubrique: string; createdAt: string; locked: boolean; pinned: boolean };
 type Reply = { id: number; content: string; topicId: number; createdAt: string };
 type PollItem = { id: number; question: string; createdAt: string };
-type EventItem = { id: number; title: string; date: string; type: string; createdAt: string };
+type EventItem = { id: number; title: string; date: string; type: string; description?: string; createdAt: string };
 
 export default function MesActivitesPage() {
   const [tab, setTab] = useState<"topics" | "replies" | "polls" | "events">("topics");
@@ -19,7 +19,8 @@ export default function MesActivitesPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
-  const [editType, setEditType] = useState<"forum_topic" | "forum_reply">("forum_topic");
+  const [editDate, setEditDate] = useState("");
+  const [editType, setEditType] = useState<"forum_topic" | "forum_reply" | "poll" | "event">("forum_topic");
   const [saving, setSaving] = useState(false);
   const [showReplies, setShowReplies] = useState<Record<number, boolean>>({});
 
@@ -44,16 +45,18 @@ export default function MesActivitesPage() {
       if (type === "forum_topic") setTopics((p) => p.filter((t) => t.id !== id));
       else if (type === "forum_reply") setReplies((p) => p.filter((r) => r.id !== id));
       else if (type === "poll") setPolls((p) => p.filter((pl) => pl.id !== id));
+      else if (type === "event") setEvents((p) => p.filter((ev) => ev.id !== id));
     } else {
       alert(data.error || "Erreur");
     }
   }
 
-  function startEdit(type: "forum_topic" | "forum_reply", item: any) {
+  function startEdit(type: "forum_topic" | "forum_reply" | "poll" | "event", item: any) {
     setEditType(type);
     setEditingId(item.id);
-    setEditTitle(item.title || "");
-    setEditContent(item.content || item.title || "");
+    setEditTitle(item.title || item.question || "");
+    setEditContent(item.content || item.description || item.title || "");
+    setEditDate(item.date || "");
   }
 
   function cancelEdit() {
@@ -69,6 +72,9 @@ export default function MesActivitesPage() {
       const body: Record<string, any> = { type: editType, id: editingId };
       if (editTitle.trim()) body.title = editTitle.trim();
       if (editContent.trim()) body.content = editContent.trim();
+      if (editDate.trim()) body.date = editDate.trim();
+      if (editType === "poll") { body.question = editTitle.trim(); delete body.title; }
+      if (editType === "event") body.description = editContent.trim();
       const res = await fetch("/api/user/content", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -78,8 +84,12 @@ export default function MesActivitesPage() {
       if (data.success) {
         if (editType === "forum_topic") {
           setTopics((prev) => prev.map((t) => t.id === editingId ? { ...t, title: editTitle.trim(), content: editContent.trim() } : t));
-        } else {
+        } else if (editType === "forum_reply") {
           setReplies((prev) => prev.map((r) => r.id === editingId ? { ...r, content: editContent.trim() } : r));
+        } else if (editType === "poll") {
+          setPolls((prev) => prev.map((p) => p.id === editingId ? { ...p, question: editTitle.trim() } : p));
+        } else if (editType === "event") {
+          setEvents((prev) => prev.map((ev) => ev.id === editingId ? { ...ev, title: editTitle.trim(), description: editContent.trim(), date: editDate.trim() } : ev));
         }
         setEditingId(null);
       } else {
@@ -206,28 +216,73 @@ export default function MesActivitesPage() {
 
           {tab === "polls" && polls.map((p) => (
             <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden" }}>
-              <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-                <a href={`/sondages/${p.id}`} style={{ textDecoration: "none", color: "var(--color-text)", flex: 1, minWidth: 0 }}>
-                  <p style={{ marginBottom: 2, fontWeight: 500 }}>{p.question}</p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>{formatDate(p.createdAt)}</p>
-                </a>
-                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-                  <button onClick={() => deleteItem("poll", p.id)} className="btn-ghost btn-sm" style={{ padding: "6px 8px", lineHeight: 1, color: "var(--color-error)" }} title="Supprimer">
-                    <IconTrash size={16} />
-                  </button>
+              {editingId === p.id && editType === "poll" ? (
+                <div style={{ padding: "16px 20px" }}>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, marginBottom: 4 }}>Question</label>
+                    <input className="input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={{ width: "100%" }} />
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="btn btn-primary btn-sm" onClick={saveEdit} disabled={saving}>Enregistrer</button>
+                    <button className="btn btn-ghost btn-sm" onClick={cancelEdit}>Annuler</button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                  <a href={`/sondages/${p.id}`} style={{ textDecoration: "none", color: "var(--color-text)", flex: 1, minWidth: 0 }}>
+                    <p style={{ marginBottom: 2, fontWeight: 500 }}>{p.question}</p>
+                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>{formatDate(p.createdAt)}</p>
+                  </a>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button onClick={() => startEdit("poll", p)} className="btn-ghost btn-sm" style={{ padding: "6px 8px", lineHeight: 1 }} title="Modifier">
+                      <IconEdit size={16} />
+                    </button>
+                    <button onClick={() => deleteItem("poll", p.id)} className="btn-ghost btn-sm" style={{ padding: "6px 8px", lineHeight: 1, color: "var(--color-error)" }} title="Supprimer">
+                      <IconTrash size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 
           {tab === "events" && events.map((ev) => (
             <div key={ev.id} className="card" style={{ padding: 0, overflow: "hidden" }}>
-              <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-                <a href="/calendrier" style={{ textDecoration: "none", color: "var(--color-text)", flex: 1, minWidth: 0 }}>
-                  <p style={{ marginBottom: 2, fontWeight: 500 }}>{ev.title}</p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>{ev.date} · {ev.type} · {formatDate(ev.createdAt)}</p>
-                </a>
-              </div>
+              {editingId === ev.id && editType === "event" ? (
+                <div style={{ padding: "16px 20px" }}>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, marginBottom: 4 }}>Titre</label>
+                    <input className="input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={{ width: "100%" }} />
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, marginBottom: 4 }}>Date</label>
+                    <input className="input" value={editDate} onChange={(e) => setEditDate(e.target.value)} placeholder="Ex: 15 Juin 2026" style={{ width: "100%" }} />
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, marginBottom: 4 }}>Description</label>
+                    <textarea className="input" value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3} style={{ width: "100%", resize: "vertical" }} />
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="btn btn-primary btn-sm" onClick={saveEdit} disabled={saving}>Enregistrer</button>
+                    <button className="btn btn-ghost btn-sm" onClick={cancelEdit}>Annuler</button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                  <a href="/calendrier" style={{ textDecoration: "none", color: "var(--color-text)", flex: 1, minWidth: 0 }}>
+                    <p style={{ marginBottom: 2, fontWeight: 500 }}>{ev.title}</p>
+                    <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)" }}>{ev.date} · {ev.type} · {formatDate(ev.createdAt)}</p>
+                  </a>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <button onClick={() => startEdit("event", ev)} className="btn-ghost btn-sm" style={{ padding: "6px 8px", lineHeight: 1 }} title="Modifier">
+                      <IconEdit size={16} />
+                    </button>
+                    <button onClick={() => deleteItem("event", ev.id)} className="btn-ghost btn-sm" style={{ padding: "6px 8px", lineHeight: 1, color: "var(--color-error)" }} title="Supprimer">
+                      <IconTrash size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

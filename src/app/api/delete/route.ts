@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import {
   users, forumTopics, forumReplies, forumRubriques, entraideListings,
   privateMessages, listingMessages,   polls, pollVotes, pollOptions, adminWarnings, events, alerts, documents,
+  proofRequests, contactMessages,
 } from "@/lib/schema";
 
 const tableMap: Record<string, any> = {
@@ -12,7 +13,8 @@ const tableMap: Record<string, any> = {
   forum_rubriques: forumRubriques, entraide_listings: entraideListings,
   documents, events, alerts, private_messages: privateMessages,
   listing_messages: listingMessages, polls, poll_votes: pollVotes,
-  admin_warnings: adminWarnings,
+  admin_warnings: adminWarnings, proof_requests: proofRequests,
+  contact_messages: contactMessages,
 };
 
 export async function DELETE(request: Request) {

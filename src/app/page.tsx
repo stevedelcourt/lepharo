@@ -105,13 +105,7 @@ export default async function Home() {
 
   return (
     <HomeClientWrapper isLoggedIn={isLoggedIn}>
-      {isLoggedIn ? (
-        <div className="home-logged-header">
-          <div className="container">
-            <span className="home-logged-badge">La communauté</span>
-          </div>
-        </div>
-      ) : (
+      {isLoggedIn ? null : (
         <section className="hero">
           <div className="hero-bg">
             <Image

@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
-import { events, alerts } from "@/lib/schema";
-import { desc, asc, eq } from "drizzle-orm";
+import { events, alerts, eventComments, users } from "@/lib/schema";
+import { desc, asc, eq, sql } from "drizzle-orm";
 import CalendrierClient from "./calendrier-client";
 import { fallbackEvents, fallbackAlerts } from "@/lib/fallback-data";
 
@@ -12,10 +12,14 @@ export default async function CalendrierPage() {
   let activeAlerts: any[] = fallbackAlerts.filter((a) => a.active);
   if (db) {
     try {
-      allEvents = await db.select({
+      const rows = await db.select({
         id: events.id, title: events.title, description: events.description,
-        date: events.date, type: events.type,
-      }).from(events).orderBy(asc(events.date)).all();
+        date: events.date, type: events.type, allowComments: events.allowComments,
+        authorName: users.firstName,
+        authorAvatar: users.avatarUrl,
+        commentCount: sql<number>`(SELECT COUNT(*) FROM ${eventComments} WHERE ${eq(eventComments.eventId, events.id)})`.as("commentCount"),
+      }).from(events).innerJoin(users, eq(events.authorId, users.id)).orderBy(asc(events.date)).all();
+      allEvents = rows;
     } catch {}
     try {
       activeAlerts = await db.select({

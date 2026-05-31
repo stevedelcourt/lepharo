@@ -6,7 +6,7 @@ import { users } from "@/lib/schema";
 import { asc, desc } from "drizzle-orm";
 import { fallbackAdminUsers } from "@/lib/fallback-data";
 import { IconUsers, IconShield } from "@/components/icons";
-import { DeleteButton, EditButton, WarnButton, VerifiedBadge, ResetPasswordButton, EditUserModal } from "../admin-actions";
+import { DeleteButton, EditButton, WarnButton, VerifiedBadge, CoproprietaireBadge, ResetPasswordButton, EditUserModal } from "../admin-actions";
 import { PromoteAdminButton } from "../promote-admin";
 import { CreateUserButton } from "../create-user";
 
@@ -62,6 +62,7 @@ export default async function AdminUsersPage({
     senior: users.senior,
     kids: users.kids,
     showFullName: users.showFullName,
+    coproprietaire: users.coproprietaire,
   }).from(users).orderBy(orderBy).all() : fallbackAdminUsers;
 
   function toggle(col: string) {
@@ -106,6 +107,7 @@ export default async function AdminUsersPage({
             <Th col="floor" />
             <Th col="role" />
             <Th col="verified" />
+            <th>Copropriétaire</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -131,6 +133,7 @@ export default async function AdminUsersPage({
                   )}
                 </td>
                 <td><VerifiedBadge id={user.id} verified={user.verified} /></td>
+                <td><CoproprietaireBadge id={user.id} coproprietaire={!!(user as any).coproprietaire} /></td>
                 <td>
                   <div className="input-group" style={{ gap: 4 }}>
                     <EditUserModal user={{
@@ -140,6 +143,7 @@ export default async function AdminUsersPage({
                       bio: (user as any).bio, tagline: (user as any).tagline,
                       senior: (user as any).senior, kids: (user as any).kids,
                       showFullName: (user as any).showFullName,
+                      coproprietaire: !!(user as any).coproprietaire,
                     }} />
                     <ResetPasswordButton userId={user.id} />
                     {isSuper && <PromoteAdminButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} currentRole={adminRole} />}

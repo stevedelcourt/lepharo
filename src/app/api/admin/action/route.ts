@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         "first_name": "firstName", "last_name": "lastName", "admin_role": "adminRole", "show_full_name": "showFullName",
       };
       const allowed: Record<string, string[]> = {
-        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "tagline", "senior", "kids", "show_full_name", "admin_role"],
+        users: ["first_name", "last_name", "email", "floor", "role", "verified", "phone", "bio", "tagline", "senior", "kids", "show_full_name", "admin_role", "coproprietaire"],
         forum_topics: ["title", "content", "rubrique", "pinned", "locked"],
         forum_replies: ["content"],
         forum_rubriques: ["name", "slug", "description"],
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Aucune colonne valide à mettre à jour" }, { status: 400 });
       }
       if (table === "users") {
-        for (const boolCol of ["verified", "senior", "kids", "showFullName"]) {
+        for (const boolCol of ["verified", "senior", "kids", "showFullName", "coproprietaire"]) {
           if (boolCol in cleanData) {
             cleanData[boolCol] = cleanData[boolCol] === true || cleanData[boolCol] === 1 || cleanData[boolCol] === "1" ? 1 : 0;
           }
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       if (!tbl || !id || !field) {
         return NextResponse.json({ error: "Paramètres invalides" }, { status: 400 });
       }
-      const safeFields = ["pinned", "locked", "status", "verified", "active"];
+      const safeFields = ["pinned", "locked", "status", "verified", "active", "coproprietaire"];
       if (!safeFields.includes(field)) {
         return NextResponse.json({ error: "Champ non autorisé" }, { status: 400 });
       }

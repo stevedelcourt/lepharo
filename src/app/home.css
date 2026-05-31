@@ -1,5 +1,6 @@
 .home-logged-header {
   background: var(--color-primary);
+  padding: 8px 0;
 }
 
 .home-logged-badge {
@@ -95,13 +96,36 @@
 .hero {
   position: relative;
   width: 100%;
-  min-height: 321px;
+  min-height: 200px;
   overflow: hidden;
+  user-select: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 200px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  color: #fff;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
+  pointer-events: none;
 }
 
 .hero-bg-img {
@@ -129,16 +153,14 @@
 
 .hero-inner h1 span {
   display: inline;
-  background: rgba(0,0,0,0.75);
+  background: none;
   color: #fff;
-  padding: 4px 8px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+  padding: 0;
 }
 
 .hero-inner h1 em {
   font-style: normal;
-  color: var(--color-accent);
+  color: #fff;
 }
 
 .hero-subtitle {
@@ -151,10 +173,10 @@
 }
 
 .hero-subtitle mark {
-  background: var(--color-primary);
+  background: none;
   color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 0;
+  border-radius: 0;
 }
 
 .hero-actions {
@@ -260,7 +282,7 @@
 }
 
 .content-feed .feed-item:hover {
-  background: #eaeff4;
+  background: var(--color-bg-alt);
   border-color: var(--color-accent);
 }
 
@@ -353,14 +375,18 @@
   padding: 16px 20px;
   border-radius: var(--radius-lg);
   text-decoration: none;
-  transition: background 0.15s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
   position: relative;
-  background: #f7f3ee;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
   aspect-ratio: 3 / 1;
 }
 
 .prehome-info-card:hover {
-  background: #dedbd7;
+  background: var(--color-bg-alt);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 .prehome-info-card-title {
@@ -386,6 +412,16 @@
 
 .prehome-info-card:hover .prehome-info-card-arrow {
   transform: translateX(3px);
+}
+
+.dark .prehome-info-card {
+  background: var(--color-bg-card);
+  border-color: var(--color-border-light);
+}
+
+.dark .prehome-info-card:hover {
+  background: var(--color-bg-alt);
+  border-color: var(--color-primary);
 }
 
 .cta-section {

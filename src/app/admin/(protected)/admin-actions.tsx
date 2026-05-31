@@ -197,6 +197,41 @@ export function VerifiedBadge({ id, verified }: { id: number; verified: boolean 
   );
 }
 
+/* ───── CoproprietaireBadge (clickable toggle) ───── */
+export function CoproprietaireBadge({ id, coproprietaire }: { id: number; coproprietaire: boolean }) {
+  const [working, setWorking] = useState(false);
+
+  async function toggle() {
+    if (!confirm(coproprietaire ? "Retirer le statut copropriétaire ?" : "Marquer comme copropriétaire ?")) return;
+    setWorking(true);
+    await fetch("/api/admin/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "moderate", table: "users", id, field: "coproprietaire", value: coproprietaire ? 0 : 1 }),
+    });
+    setWorking(false);
+    window.location.reload();
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      disabled={working}
+      type="button"
+      className="tag"
+      style={{
+        cursor: "pointer",
+        border: "none",
+        background: coproprietaire ? "#fef3c7" : "var(--color-border)",
+        color: coproprietaire ? "#92400e" : "var(--color-text-tertiary)",
+        fontWeight: 600,
+      }}
+    >
+      {coproprietaire ? "C" : "—"}
+    </button>
+  );
+}
+
 /* ───── ResetPassword ───── */
 export function ResetPasswordButton({ userId }: { userId: number }) {
   const [open, setOpen] = useState(false);
@@ -256,7 +291,7 @@ export function ResetPasswordButton({ userId }: { userId: number }) {
 }
 
 /* ───── EditUserModal (profile-style) ───── */
-export function EditUserModal({ user: u }: { user: { id: number; firstName: string; lastName: string; email: string; floor: number | null; role: string; verified: boolean; phone: string | null; bio: string | null; tagline: string | null; senior: boolean; kids: boolean; showFullName: boolean } }) {
+export function EditUserModal({ user: u }: { user: { id: number; firstName: string; lastName: string; email: string; floor: number | null; role: string; verified: boolean; phone: string | null; bio: string | null; tagline: string | null; senior: boolean; kids: boolean; showFullName: boolean; coproprietaire?: boolean } }) {
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState(u.firstName);
   const [lastName, setLastName] = useState(u.lastName);
@@ -270,6 +305,7 @@ export function EditUserModal({ user: u }: { user: { id: number; firstName: stri
   const [kids, setKids] = useState(u.kids);
   const [verified, setVerified] = useState(u.verified);
   const [showFullName, setShowFullName] = useState(u.showFullName);
+  const [coproprietaire, setCoproprietaire] = useState(u.coproprietaire || false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -282,6 +318,7 @@ export function EditUserModal({ user: u }: { user: { id: number; firstName: stri
         floor: floor ? parseInt(floor, 10) : null, phone, role,
         tagline, bio, senior: senior ? 1 : 0, verified: verified ? 1 : 0,
         show_full_name: showFullName ? 1 : 0, kids: kids ? 1 : 0,
+        coproprietaire: coproprietaire ? 1 : 0,
       };
       const res = await fetch("/api/admin/action", {
         method: "POST",
@@ -369,6 +406,7 @@ export function EditUserModal({ user: u }: { user: { id: number; firstName: stri
             <section style={{ marginBottom: 20, paddingTop: 16, borderTop: "1px solid var(--color-border-light)" }}>
               <h4 style={{ fontSize: "0.9375rem", marginBottom: 4, color: "var(--color-text-secondary)" }}>Préférences</h4>
               <Toggle value={verified} onChange={setVerified} label="Vérifié" desc="Compte vérifié par l'administration" />
+              <Toggle value={coproprietaire} onChange={setCoproprietaire} label="Copropriétaire" desc="Accès à l'espace documents" activeColor="#92400e" />
               <Toggle value={senior} onChange={setSenior} label="Senior" />
               <Toggle value={kids} onChange={setKids} label="Kids" activeColor="#401f7f" />
               <Toggle value={showFullName} onChange={setShowFullName} label="Afficher le nom complet" desc="Le nom complet apparaît dans l'annuaire" />

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    const { topicId, content } = await req.json();
+    const { topicId, content, images } = await req.json();
     if (!topicId || !content) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       topicId,
       content,
       authorId: session.id,
+      images: JSON.stringify(images || []),
       createdAt: sql`(datetime('now'))`,
     }).run();
 

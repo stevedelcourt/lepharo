@@ -4,8 +4,8 @@ import { getDb } from "@/lib/db";
 import { alerts, users } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 import { fallbackAdminAlerts } from "@/lib/fallback-data";
-import { IconBell } from "@/components/icons";
 import { DeleteButton, EditButton, ModerateButton } from "../admin-actions";
+import AdminAlertsClient from "./alertes-client";
 
 export default async function AdminAlertsPage() {
   const session = await getSession();
@@ -23,8 +23,7 @@ export default async function AdminAlertsPage() {
     .orderBy(desc(alerts.createdAt)).all() : fallbackAdminAlerts;
 
   return (
-    <>
-      <h1><IconBell size={24} /> Alertes ({allAlerts.length})</h1>
+    <AdminAlertsClient count={allAlerts.length}>
       <table className="admin-table">
         <thead>
           <tr>
@@ -63,6 +62,6 @@ export default async function AdminAlertsPage() {
           ))}
         </tbody>
       </table>
-    </>
+    </AdminAlertsClient>
   );
 }

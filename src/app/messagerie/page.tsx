@@ -198,7 +198,7 @@ export default function MessageriePage() {
 
       <div className="card messagerie-layout" style={{ display: "flex", overflow: "hidden", minHeight: "65vh" }}>
         {/* Contact list */}
-        <div className="messagerie-panel-left" style={{ width: "340px", borderRight: "1px solid var(--color-border-light)", flexShrink: 0 }}>
+        <div className={`messagerie-panel-left${showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ width: "340px", borderRight: "1px solid var(--color-border-light)", flexShrink: 0 }}>
           <div style={{ padding: 16, borderBottom: "1px solid var(--color-border-light)" }}>
             <input type="search" autoComplete="off" placeholder="Rechercher…" className="input" value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%" }} />
           </div>
@@ -263,7 +263,7 @@ export default function MessageriePage() {
         </div>
 
         {/* Chat panel */}
-        <div className={`messagerie-panel-right${!showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ flex: 1, display: "flex", flexDirection: "column", ...(isMobile ? { transform: showMobileConvList ? 'translateX(100%)' : 'translateX(0)' } : {}) }}>
+        <div className={`messagerie-panel-right${!showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {current ? (
             <>
               <div style={{ padding: "14px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", alignItems: "center", gap: 12 }}>

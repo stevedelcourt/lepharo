@@ -21,6 +21,7 @@ type Resident = {
   kids: boolean;
   showFullName: boolean;
   verified: boolean;
+  coproprietaire: boolean;
 };
 
 
@@ -125,6 +126,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                       </button>
                     </div>
                     <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
+                      {r.coproprietaire && <span className="tag" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.75rem", fontWeight: 600 }}>C</span>}
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.75rem" }}>Senior</span>}
                       {r.kids && <span className="tag" style={{ background: "#401f7f", color: "#fff", fontSize: "0.75rem" }}>Kids</span>}
                       <span className="tag">{r.floor ? `${r.floor}e` : "?"}</span>
@@ -166,6 +168,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                           </svg>
                         )}
                       </button>
+                      {r.coproprietaire && <span className="tag" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.7rem", fontWeight: 600 }}>C</span>}
                       {r.senior && <span className="tag" style={{ background: "var(--color-accent)", color: "#fff", fontSize: "0.7rem" }}>Senior</span>}
                       {r.kids && <span className="tag" style={{ background: "#401f7f", color: "#fff", fontSize: "0.7rem" }}>Kids</span>}
                       <span className="tag" style={{ fontSize: "0.7rem" }}>{r.floor ? `${r.floor}e` : "?"}</span>
