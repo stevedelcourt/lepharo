@@ -177,7 +177,7 @@ export default function MessageriePage() {
   );
 
   return (
-    <div className="container page-padding">
+    <div className="container page-padding messagerie-page">
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
         <IconMail size={28} />
         <h1 style={{ margin: 0 }}>Messagerie</h1>
@@ -276,7 +276,6 @@ export default function MessageriePage() {
                   </p>
                 </div>
                 <button
-                  className="messagerie-delete-conv"
                   onClick={() => deleteConversation(current.id)}
                   disabled={deleting?.convId === current.id}
                   style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "var(--color-text-tertiary)", opacity: 0.5 }}
