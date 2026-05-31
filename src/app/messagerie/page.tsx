@@ -71,32 +71,34 @@ export default function MessageriePage() {
 
   useEffect(() => {
     if (toParam) setShowMobileConvList(false);
-    fetch("/api/messagerie/conversations")
-      .then((r) => r.json())
-      .then((data) => {
-        setConversations(data);
-        const target = toParam ? parseInt(toParam, 10) : null;
-        if (target && data.some((c: Conversation) => c.id === target)) {
-          setActiveConv(target);
-        } else if (target) {
-          setActiveConv(target);
-        } else if (data.length > 0) {
-          setActiveConv(data[0].id);
-        } else if (target) {
-          setActiveConv(target);
-        }
-        setLoading(false);
-      });
-    if (toParam) {
-      const target = parseInt(toParam, 10);
-      if (!isNaN(target)) {
-        fetch(`/api/users/${target}`).then((r) => r.json()).then((u) => {
-          if (u.firstName && !conversations.some((c) => c.id === target)) {
-            setConversations((prev) => [...prev, { id: target, name: `${u.firstName} ${(u.lastName || "").charAt(0)}.`, floor: u.floor ?? null, avatarUrl: u.avatarUrl ?? null, lastMessage: "", time: "", unread: 0, type: "private" }]);
-          }
-        }).catch(() => {});
+    const target = toParam ? parseInt(toParam, 10) : null;
+
+    const loadConvs = fetch("/api/messagerie/conversations").then((r) => r.json());
+    const loadUser = target && !isNaN(target)
+      ? fetch(`/api/users/${target}`).then((r) => r.json()).catch(() => null)
+      : Promise.resolve(null);
+
+    Promise.all([loadConvs, loadUser]).then(([data, user]) => {
+      setConversations(data);
+
+      if (target && data.some((c: Conversation) => c.id === target)) {
+        setActiveConv(target);
+      } else if (target && user?.firstName) {
+        const name = `${user.firstName} ${(user.lastName || "").charAt(0)}.`;
+        setConversations((prev) => [...prev, {
+          id: target, name, floor: user.floor ?? null,
+          avatarUrl: user.avatarUrl ?? null,
+          lastMessage: "", time: "", unread: 0, type: "private",
+        }]);
+        setActiveConv(target);
+      } else if (target) {
+        setActiveConv(target);
+      } else if (data.length > 0) {
+        setActiveConv(data[0].id);
       }
-    }
+
+      setLoading(false);
+    });
   }, [toParam]);
 
   useEffect(() => {
