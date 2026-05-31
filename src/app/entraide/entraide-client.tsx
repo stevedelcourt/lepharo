@@ -213,12 +213,6 @@ export default function EntraideClient({ listings: initialListings }: { listings
         </div>
       )}
 
-      <div className="card" style={{ marginTop: 32, padding: 16, background: "var(--color-warning-light)", borderLeft: "4px solid var(--color-warning)" }}>
-        <p style={{ fontSize: "0.875rem", color: "var(--color-text)", margin: 0 }}>
-          Les services proposés ici le sont à titre gracieux et ponctuel.
-          Toute rémunération régulière doit faire l&apos;objet d&apos;une déclaration (CESU, auto-entrepreneur…).
-        </p>
-      </div>
     </div>
   );
 }

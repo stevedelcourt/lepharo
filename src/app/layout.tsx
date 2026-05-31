@@ -160,7 +160,6 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
 function FooterBar() {
   return (
     <div className="footer-bar">
-      <a href="/a-propos" className="footer-bar-link">A propos</a>
       <a href="/histoire" className="footer-bar-link">Histoire</a>
       <a href="/charte" className="footer-bar-link">Charte</a>
       <a href="/confidentialite" className="footer-bar-link">Confidentialité</a>

@@ -52,12 +52,6 @@ export default function CharterPage() {
       </p>
 
       <h2 style={{ marginBottom: 8, marginTop: 32 }}>Services entre voisins</h2>
-      <p>
-        Les services proposés sur la plateforme le sont à titre gracieux et
-        ponctuel. Toute rémunération régulière engage la responsabilité des
-        parties et doit faire l&apos;objet d&apos;une déclaration (CESU,
-        auto-entrepreneur, etc.).
-      </p>
 
       <h2 style={{ marginBottom: 8, marginTop: 32 }}>Modération</h2>
       <p>
