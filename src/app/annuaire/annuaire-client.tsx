@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconUsers, IconSearch, IconSort, IconSend, IconGrid, IconList } from "@/components/icons";
+import { IconUsers, IconSearch, IconSort, IconSend } from "@/components/icons";
 import ResidentModal from "@/components/resident-modal";
 
 const PHOTO_SIZE = 80;
@@ -55,7 +55,7 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
   const [search, setSearch] = useState("");
   const [filterFloor, setFilterFloor] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<"floor" | "name" | "name-desc">("floor");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode] = useState<"grid" | "list">("list");
   const [modalUserId, setModalUserId] = useState<number | null>(null);
 
   const sorted = [...residents].sort((a, b) => {
@@ -100,27 +100,10 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
             <option value="name-desc">Nom (Z-A)</option>
           </select>
         </div>
-        <div className="input-group" style={{ gap: 2, marginLeft: 4 }}>
-          <button onClick={() => setViewMode("grid")} className={`btn btn-sm ${viewMode === "grid" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue grille"><IconGrid size={18} /></button>
-          <button onClick={() => setViewMode("list")} className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`} style={{ padding: "6px 8px" }} title="Vue liste"><IconList size={18} /></button>
-        </div>
+
       </div>
 
-      <div className="hide-desktop" style={{ display: "flex", gap: 6, marginBottom: 24, flexWrap: "wrap" }}>
-        <button onClick={() => setFilterFloor(null)} className={`btn btn-sm ${filterFloor === null ? "btn-primary" : "btn-ghost"}`} style={{ fontSize: "0.8125rem" }}>
-          Tous les étages
-        </button>
-        {Array.from({ length: 19 }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setFilterFloor(filterFloor === i + 1 ? null : i + 1)}
-            className={`btn btn-sm ${filterFloor === i + 1 ? "btn-primary" : "btn-ghost"}`}
-            style={{ padding: "4px 10px", fontSize: "0.8125rem" }}
-          >
-            {i + 1}e
-          </button>
-        ))}
-      </div>
+
 
       {viewMode === "grid" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
