@@ -576,19 +576,21 @@ button.card:hover,
     width: 100% !important;
     flex-shrink: 0 !important;
     flex: none !important;
-    transition: opacity 0.2s;
   }
 
-  .messagerie-show-list .messagerie-panel-right {
-    display: none;
-  }
-
-  .messagerie-show-chat .messagerie-panel-left {
-    display: none;
+  .messagerie-panel-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 2;
+    background: var(--color-bg-card);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .messagerie-show-chat .messagerie-panel-right {
-    display: flex;
+    transform: translateX(0);
   }
 
   .messagerie-back {
