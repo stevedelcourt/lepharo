@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconForum, IconPin, IconLock, IconSend, IconChevronLeft, IconMessage, IconUpload, IconClose } from "@/components/icons";
 import ReportButton from "@/components/report-button";
+import ResidentModal from "@/components/resident-modal";
 import { formatDate } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 
@@ -22,6 +23,7 @@ type Topic = {
   content: string;
   rubrique: string;
   images: string[];
+  authorId: number;
   authorName: string;
   authorFloor: number | null;
   authorAvatar: string | null;
@@ -35,6 +37,7 @@ type Reply = {
   id: number;
   content: string;
   images: string[];
+  authorId: number;
   authorName: string;
   authorFloor: number | null;
   authorAvatar: string | null;
@@ -131,6 +134,7 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
   const [sending, setSending] = useState(false);
   const [replyImages, setReplyImages] = useState<File[]>([]);
   const [replyPreviews, setReplyPreviews] = useState<string[]>([]);
+  const [modalUserId, setModalUserId] = useState<number | null>(null);
 
   function handleReplyImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
@@ -228,8 +232,12 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
         <h1 style={{ margin: 0, marginBottom: 8, fontSize: "1.75rem" }}>{topic.title}</h1>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 0, fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-          <UserAvatar url={topic.authorAvatar} name={topic.authorName} size={28} />
-          <span>Par {topic.authorName}{topic.authorFloor ? ` (${topic.authorFloor}e étage)` : ""}{topic.authorCopro ? <span className="tag" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.7rem", fontWeight: 600, marginLeft: 6, verticalAlign: "middle" }}>C</span> : ""} · {formatDate(topic.createdAt)}</span>
+          <button type="button" onClick={() => setModalUserId(topic.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <UserAvatar url={topic.authorAvatar} name={topic.authorName} size={28} />
+          </button>
+          <button type="button" onClick={() => setModalUserId(topic.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "inherit", color: "inherit" }}>
+            Par {topic.authorName}{topic.authorFloor ? ` (${topic.authorFloor}e étage)` : ""}{topic.authorCopro ? <span className="tag" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.7rem", fontWeight: 600, marginLeft: 6, verticalAlign: "middle" }}>C</span> : ""} · {formatDate(topic.createdAt)}
+          </button>
         </div>
       </div>
 
@@ -269,10 +277,12 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, fontSize: "0.8125rem" }}>
-                <UserAvatar url={r.authorAvatar} name={r.authorName} size={26} />
-                <span style={{ fontWeight: 600 }}>
+                <button type="button" onClick={() => setModalUserId(r.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                  <UserAvatar url={r.authorAvatar} name={r.authorName} size={26} />
+                </button>
+                <button type="button" onClick={() => setModalUserId(r.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "inherit", color: "inherit", fontWeight: 600 }}>
                   {r.authorName}{r.authorFloor ? ` (${r.authorFloor}e)` : ""}{r.authorCopro ? <span className="tag" style={{ background: "#fef3c7", color: "#92400e", fontSize: "0.65rem", fontWeight: 600, marginLeft: 4, verticalAlign: "middle" }}>C</span> : ""}
-                </span>
+                </button>
                 <span style={{ color: "var(--color-text-tertiary)", marginLeft: "auto" }}>{formatDate(r.createdAt)}</span>
                 <ReportButton targetType="forum_reply" targetId={r.id} />
               </div>
@@ -324,6 +334,8 @@ export default function SujetClient({ topic, replies, userId }: { topic: Topic; 
           <a href="/connexion" className="btn btn-primary btn-sm">Connectez-vous pour répondre</a>
         </div>
       )}
+
+      {modalUserId !== null && <ResidentModal userId={modalUserId} onClose={() => setModalUserId(null)} />}
     </div>
   );
 }

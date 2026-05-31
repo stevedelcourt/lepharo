@@ -13,6 +13,7 @@ export default async function EntraidePage() {
     type: entraideListings.type,
     title: entraideListings.title,
     category: entraideListings.category,
+    authorId: entraideListings.authorId,
     authorName: users.firstName,
     authorFloor: users.floor,
     authorAvatar: users.avatarUrl,
@@ -20,7 +21,7 @@ export default async function EntraidePage() {
     createdAt: entraideListings.createdAt,
     images: entraideListings.images,
   }).from(entraideListings).innerJoin(users, eq(entraideListings.authorId, users.id))
-    .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings.map((l) => ({ ...l, authorAvatar: null as string | null, description: l.description || "" }));
+    .orderBy(desc(entraideListings.createdAt)).all() : fallbackListings.map((l) => ({ ...l, authorId: 0, authorAvatar: null as string | null, description: l.description || "" }));
 
   return <EntraideClient listings={listings} />;
 }

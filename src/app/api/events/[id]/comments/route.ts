@@ -15,6 +15,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const comments = await db.select({
     id: eventComments.id,
     content: eventComments.content,
+    authorId: eventComments.authorId,
     authorName: users.firstName,
     authorAvatar: users.avatarUrl,
     createdAt: eventComments.createdAt,

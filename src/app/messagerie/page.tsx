@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconSend, IconMail, IconChevronLeft, IconTrash } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
+import ResidentModal from "@/components/resident-modal";
 
 const EMOJIS = ["😀","😃","😄","😁","😊","😍","🥰","😘","😎","🤗","🤩","🙂","😉","😛","😜","😂","🤣","😅","🥲","😢","😭","😤","😠","🤬","🥺","😱","🤔","🤷","🙄","😴","🥱","😈","👋","✋","💪","👍","👎","👏","🙏","🤝","❤️","💔","🔥","⭐","💯","🎉","🎊","✅","❌","👀","💀","☕","🍕","🍻","🎂","🚀","🏠","📍","📌","💡","🎯","🏆","💪","🤞","🫶","✨","🌈","🌊","☀️","🌙"];
 
@@ -57,6 +58,7 @@ export default function MessageriePage() {
   const [search, setSearch] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [profileUserId, setProfileUserId] = useState<number | null>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
 
@@ -275,19 +277,39 @@ export default function MessageriePage() {
                 >
                   <IconChevronLeft size={20} />
                 </button>
-                <div style={{
-                  width: 44, height: 44, borderRadius: 999, background: "var(--color-bg-alt)",
-                  overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "1rem", fontWeight: 600, color: "var(--color-text-secondary)",
-                }}>
-                  {current.avatarUrl ? <img src={current.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : current.name.charAt(0)}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 1, color: "var(--color-text)" }}>{current.name}</p>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
-                    {current.floor ? `${current.floor}e étage` : "Résident"}
-                  </p>
-                </div>
+                {current.type === "private" ? (
+                  <button type="button" onClick={() => setProfileUserId(current.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 999, background: "var(--color-bg-alt)",
+                      overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "1rem", fontWeight: 600, color: "var(--color-text-secondary)",
+                    }}>
+                      {current.avatarUrl ? <img src={current.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : current.name.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1, textAlign: "left" }}>
+                      <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 1, color: "var(--color-text)" }}>{current.name}</p>
+                      <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
+                        {current.floor ? `${current.floor}e étage` : "Résident"}
+                      </p>
+                    </div>
+                  </button>
+                ) : (
+                  <>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 999, background: "var(--color-bg-alt)",
+                      overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "1rem", fontWeight: 600, color: "var(--color-text-secondary)",
+                    }}>
+                      {current.avatarUrl ? <img src={current.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : current.name.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 1, color: "var(--color-text)" }}>{current.name}</p>
+                      <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>
+                        {current.floor ? `${current.floor}e étage` : "Résident"}
+                      </p>
+                    </div>
+                  </>
+                )}
                 <button
                   onClick={() => deleteConversation(current.id)}
                   disabled={deleting?.convId === current.id}
@@ -391,6 +413,8 @@ export default function MessageriePage() {
           )}
         </div>
       </div>
+
+      {profileUserId !== null && <ResidentModal userId={profileUserId} onClose={() => setProfileUserId(null)} />}
     </div>
   );
 }

@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1.5rem;
-  background: #FF6B00;
+  background: #e43205;
   color: #fff;
 }
 
@@ -46,8 +46,8 @@
 }
 
 .admin-sidebar a.active {
-  background: rgba(255, 107, 0, 0.08);
-  color: #FF6B00;
+  background: rgba(228, 50, 5, 0.08);
+  color: #e43205;
 }
 
 .admin-main {

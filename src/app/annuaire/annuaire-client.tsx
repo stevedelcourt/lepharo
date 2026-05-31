@@ -137,10 +137,10 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                 <div style={{ textAlign: "right" }}>
                   <a
                     href={`/messagerie?to=${r.id}`}
+                    className="annuaire-msg-btn"
                     style={{
                       display: "inline-flex", alignItems: "center", gap: 4,
                       padding: "6px 16px", borderRadius: 999,
-                      background: "var(--color-primary)", color: "#000",
                       fontSize: "0.8125rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
                     }}
                   >
@@ -177,10 +177,10 @@ export default function AnnuaireClient({ residents: initialResidents }: { reside
                 </div>
                 <a
                   href={`/messagerie?to=${r.id}`}
+                  className="annuaire-msg-btn"
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 3, flexShrink: 0,
                     padding: "4px 12px", borderRadius: 999,
-                    background: "var(--color-primary)", color: "#000",
                     fontSize: "0.75rem", fontWeight: 600, textDecoration: "none", lineHeight: 1,
                   }}
                 >

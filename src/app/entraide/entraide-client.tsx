@@ -9,6 +9,7 @@ import {
 import { formatDate } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import ReportButton from "@/components/report-button";
+import ResidentModal from "@/components/resident-modal";
 
 const categories = [
   { id: "garde", label: "Garde d'enfants", icon: IconBaby },
@@ -29,6 +30,7 @@ type Listing = {
   title: string;
   category: string;
   description: string;
+  authorId: number;
   authorName: string;
   authorFloor: number | null;
   authorAvatar: string | null;
@@ -46,6 +48,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [search, setSearch] = useState("");
+  const [modalUserId, setModalUserId] = useState<number | null>(null);
 
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTab, activeCat, sortBy]);
 
@@ -159,10 +162,12 @@ export default function EntraideClient({ listings: initialListings }: { listings
                     {item.description?.slice(0, 80)}{item.description?.length > 80 ? "…" : ""}
                   </p>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: "auto" }}>
-                    <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
-                    <span style={{ fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>
+                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setModalUserId(item.authorId); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                      <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
+                    </button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setModalUserId(item.authorId); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>
                       {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""}
-                    </span>
+                    </button>
                     <ReportButton targetType="listing" targetId={item.id} />
                   </div>
                 </div>
@@ -195,10 +200,12 @@ export default function EntraideClient({ listings: initialListings }: { listings
                     {item.description?.slice(0, 120)}{item.description?.length > 120 ? "…" : ""}
                   </p>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
-                    <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
+                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setModalUserId(item.authorId); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                      <UserAvatar url={item.authorAvatar} name={item.authorName} size={22} />
+                    </button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setModalUserId(item.authorId); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
                       {item.authorName}{item.authorFloor ? `, ${item.authorFloor}e` : ""} · {formatDate(item.createdAt)}
-                    </span>
+                    </button>
                     <ReportButton targetType="listing" targetId={item.id} />
                   </div>
                 </div>
@@ -219,6 +226,7 @@ export default function EntraideClient({ listings: initialListings }: { listings
         </div>
       )}
 
+      {modalUserId !== null && <ResidentModal userId={modalUserId} onClose={() => setModalUserId(null)} />}
     </div>
   );
 }

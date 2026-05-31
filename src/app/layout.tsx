@@ -24,6 +24,9 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   title: "La communauté de La Tour du Pharo",
   description: "Le site privé des résidents du 75 boulevard Charles Livon, Marseille",
+  icons: {
+    icon: "/phar-icon.webp",
+  },
 };
 
 export const viewport = {

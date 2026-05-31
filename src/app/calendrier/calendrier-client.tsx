@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { IconCalendar, IconBuilding, IconWrench, IconParty, IconInfo, IconPlus, IconBell, IconSend, IconMessage } from "@/components/icons";
 import { UserAvatar } from "@/components/user-avatar";
+import ResidentModal from "@/components/resident-modal";
 import { formatDate } from "@/lib/utils";
 
 const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -14,9 +15,9 @@ const typeMeta: Record<string, { label: string; icon: React.ComponentType<{ size
   info: { label: "Info", icon: IconInfo, tagClass: "tag-info" },
 };
 
-type EventItem = { id: number; title: string; description: string; date: string; type: string; allowComments?: boolean; authorName?: string; authorAvatar?: string | null; commentCount?: number };
+type EventItem = { id: number; title: string; description: string; date: string; type: string; allowComments?: boolean; authorId?: number; authorName?: string; authorAvatar?: string | null; commentCount?: number };
 type AlertItem = { id: number; message: string; type: string; createdAt: string };
-type Comment = { id: number; content: string; authorName: string; authorAvatar: string | null; createdAt: string };
+type Comment = { id: number; content: string; authorId: number; authorName: string; authorAvatar: string | null; createdAt: string };
 
 function parseDate(dateStr: string): Date | null {
   const parts = dateStr.split(" ");
@@ -30,11 +31,12 @@ function parseDate(dateStr: string): Date | null {
 export default function CalendrierClient({ events: initialEvents, alerts: initialAlerts }: { events: EventItem[]; alerts: AlertItem[] }) {
   const [events] = useState(initialEvents);
   const [alerts] = useState(initialAlerts);
-  const [modalEvent, setModalEvent] = useState<EventItem | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [commentInput, setCommentInput] = useState("");
-  const [sending, setSending] = useState(false);
-  const [loadingComments, setLoadingComments] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [comments, setComments] = useState<Record<number, Comment[]>>({});
+  const [commentInputs, setCommentInputs] = useState<Record<number, string>>({});
+  const [sending, setSending] = useState<number | null>(null);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [profileUserId, setProfileUserId] = useState<number | null>(null);
 
   const now = useMemo(() => new Date(), []);
 
@@ -66,32 +68,41 @@ export default function CalendrierClient({ events: initialEvents, alerts: initia
   cutoffDate.setMonth(cutoffDate.getMonth() + 2);
   const cutoffFormatted = months[cutoffDate.getMonth()] + " " + cutoffDate.getFullYear();
 
-  async function openComments(ev: EventItem) {
-    setModalEvent(ev);
-    setLoadingComments(true);
-    try {
-      const res = await fetch(`/api/events/${ev.id}/comments`);
-      setComments(await res.json());
-    } catch {}
-    setLoadingComments(false);
+  async function toggleComments(ev: EventItem) {
+    if (expandedId === ev.id) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(ev.id);
+    if (!comments[ev.id]) {
+      setLoadingId(ev.id);
+      try {
+        const res = await fetch(`/api/events/${ev.id}/comments`);
+        const data = await res.json();
+        setComments((prev) => ({ ...prev, [ev.id]: data }));
+      } catch {}
+      setLoadingId(null);
+    }
   }
 
-  async function sendComment() {
-    if (!commentInput.trim() || !modalEvent || sending) return;
-    setSending(true);
+  async function sendComment(eventId: number) {
+    const input = (commentInputs[eventId] || "").trim();
+    if (!input || sending === eventId) return;
+    setSending(eventId);
     try {
-      const res = await fetch(`/api/events/${modalEvent.id}/comments`, {
+      const res = await fetch(`/api/events/${eventId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: commentInput.trim() }),
+        body: JSON.stringify({ content: input }),
       });
       if (res.ok) {
-        const res2 = await fetch(`/api/events/${modalEvent.id}/comments`);
-        setComments(await res2.json());
-        setCommentInput("");
+        const res2 = await fetch(`/api/events/${eventId}/comments`);
+        const data = await res2.json();
+        setComments((prev) => ({ ...prev, [eventId]: data }));
+        setCommentInputs((prev) => ({ ...prev, [eventId]: "" }));
       }
     } catch {}
-    setSending(false);
+    setSending(null);
   }
 
   return (
@@ -147,33 +158,93 @@ export default function CalendrierClient({ events: initialEvents, alerts: initia
                 {g.events.map((ev) => {
                   const meta = typeMeta[ev.type] || { label: ev.type, icon: IconInfo, tagClass: "tag-info" };
                   const TagIcon = meta.icon;
+                  const isExpanded = expandedId === ev.id;
+                  const evComments = comments[ev.id] || [];
                   return (
-                    <div key={ev.id} className="card" style={{ padding: "14px 20px", display: "flex", gap: 16, alignItems: "center", borderLeft: "4px solid var(--color-primary)" }}>
-                      <div style={{ minWidth: 100 }}>
-                        <p style={{ fontSize: "0.9375rem" }}>{ev.date}</p>
+                    <div key={ev.id}>
+                      <div
+                        className="card"
+                        style={{
+                          padding: "14px 20px", display: "flex", gap: 16, alignItems: "center",
+                          borderLeft: "4px solid var(--color-primary)",
+                          cursor: ev.allowComments !== false ? "pointer" : "default",
+                          borderBottomLeftRadius: isExpanded ? 0 : undefined,
+                          borderBottomRightRadius: isExpanded ? 0 : undefined,
+                          borderBottom: isExpanded ? "none" : undefined,
+                        }}
+                        onClick={() => ev.allowComments !== false && toggleComments(ev)}
+                      >
+                        <div style={{ minWidth: 100 }}>
+                          <p style={{ fontSize: "0.9375rem" }}>{ev.date}</p>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <p style={{ marginBottom: 2 }}>{ev.title}</p>
+                          <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>{ev.description}</p>
+                          {ev.authorName && (
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                              <button type="button" onClick={(e) => { e.stopPropagation(); setProfileUserId(ev.authorId!); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                                <UserAvatar url={ev.authorAvatar} name={ev.authorName} size={22} />
+                              </button>
+                              <button type="button" onClick={(e) => { e.stopPropagation(); setProfileUserId(ev.authorId!); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
+                                {ev.authorName}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                          <span className={`tag ${meta.tagClass}`}><TagIcon size={14} /> {meta.label}</span>
+                          {ev.allowComments !== false && (
+                            <span style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--color-text-tertiary)", fontSize: "0.8125rem" }}>
+                              <IconMessage size={14} />
+                              {ev.commentCount || 0}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <p style={{ marginBottom: 2 }}>{ev.title}</p>
-                        <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)", margin: 0 }}>{ev.description}</p>
-                        {ev.authorName && (
-                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-                            <UserAvatar url={ev.authorAvatar} name={ev.authorName} size={22} />
-                            <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{ev.authorName}</span>
+
+                      {isExpanded && (
+                        <div className="card" style={{ borderTop: "none", borderTopLeftRadius: 0, borderTopRightRadius: 0, padding: "16px 20px" }}>
+                          {loadingId === ev.id ? (
+                            <p style={{ textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "0.875rem", padding: 12 }}>Chargement…</p>
+                          ) : evComments.length === 0 ? (
+                            <p style={{ textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "0.875rem", padding: 12 }}>Aucun commentaire. Soyez le premier !</p>
+                          ) : (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+                              {evComments.map((c) => (
+                                <div key={c.id} style={{ display: "flex", gap: 10 }}>
+                                  <button type="button" onClick={() => setProfileUserId(c.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>
+                                    <UserAvatar url={c.authorAvatar} name={c.authorName} size={32} />
+                                  </button>
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+                                      <button type="button" onClick={() => setProfileUserId(c.authorId)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", fontSize: "0.8125rem", fontWeight: 600, color: "var(--color-text)" }}>
+                                        {c.authorName}
+                                      </button>
+                                      <span style={{ fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>{formatDate(c.createdAt)}</span>
+                                    </div>
+                                    <p style={{ fontSize: "0.9375rem", margin: 0, whiteSpace: "pre-wrap" }}>{c.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <input
+                              type="text"
+                              placeholder="Écrire un commentaire…"
+                              value={commentInputs[ev.id] || ""}
+                              onChange={(e) => setCommentInputs((prev) => ({ ...prev, [ev.id]: e.target.value }))}
+                              onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); sendComment(ev.id); } }}
+                              onClick={(e) => e.stopPropagation()}
+                              className="input"
+                              style={{ flex: 1, fontSize: "0.9375rem" }}
+                            />
+                            <button className="btn btn-primary btn-sm" onClick={(e) => { e.stopPropagation(); sendComment(ev.id); }} disabled={sending === ev.id || !(commentInputs[ev.id] || "").trim()}>
+                              <IconSend size={16} />
+                            </button>
                           </div>
-                        )}
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                        <span className={`tag ${meta.tagClass}`}><TagIcon size={14} /> {meta.label}</span>
-                        {ev.allowComments !== false && (
-                          <button
-                            onClick={() => openComments(ev)}
-                            style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, color: "var(--color-text-tertiary)", fontSize: "0.8125rem", padding: "4px 8px", borderRadius: 6 }}
-                          >
-                            <IconMessage size={14} />
-                            {ev.commentCount || 0} commentaire{(ev.commentCount || 0) > 1 ? "s" : ""}
-                          </button>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -193,76 +264,7 @@ export default function CalendrierClient({ events: initialEvents, alerts: initia
         </div>
       </>)}
 
-      {/* Comment thread slide-out */}
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 1000, pointerEvents: modalEvent ? "auto" : "none",
-        transition: "opacity 0.25s ease", opacity: modalEvent ? 1 : 0,
-      }}>
-        {/* Overlay */}
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)" }}
-          onClick={() => { setModalEvent(null); setComments([]); }} />
-        {/* Slide-out panel */}
-        <div style={{
-          position: "absolute", top: 0, right: 0, bottom: 0,
-          width: 420, maxWidth: "100vw",
-          background: "var(--color-bg-card)",
-          boxShadow: "-4px 0 24px rgba(0,0,0,0.12)",
-          display: "flex", flexDirection: "column",
-          transform: modalEvent ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}>
-          {modalEvent && (
-            <>
-              <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <h3 style={{ fontSize: "1.125rem", marginBottom: 2 }}>{modalEvent.title}</h3>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-tertiary)", margin: 0 }}>{modalEvent.date} · {modalEvent.type}</p>
-                </div>
-                <button onClick={() => { setModalEvent(null); setComments([]); }}
-                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.25rem", color: "var(--color-text-tertiary)", padding: 4, lineHeight: 1 }}>
-                  &times;
-                </button>
-              </div>
-
-              <div style={{ flex: 1, overflow: "auto", padding: "16px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
-                {loadingComments ? (
-                  <p style={{ textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "0.875rem", padding: 20 }}>Chargement…</p>
-                ) : comments.length === 0 ? (
-                  <p style={{ textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "0.875rem", padding: 20 }}>Aucun commentaire. Soyez le premier !</p>
-                ) : (
-                  comments.map((c) => (
-                    <div key={c.id} style={{ display: "flex", gap: 10 }}>
-                      <UserAvatar url={c.authorAvatar} name={c.authorName} size={32} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                          <span style={{ fontSize: "0.8125rem", fontWeight: 600 }}>{c.authorName}</span>
-                          <span style={{ fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>{formatDate(c.createdAt)}</span>
-                        </div>
-                        <p style={{ fontSize: "0.9375rem", margin: 0, whiteSpace: "pre-wrap" }}>{c.content}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <div style={{ padding: "16px 24px", borderTop: "1px solid var(--color-border-light)", display: "flex", gap: 8 }}>
-                <input
-                  type="text"
-                  placeholder="Écrire un commentaire…"
-                  value={commentInput}
-                  onChange={(e) => setCommentInput(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") sendComment(); }}
-                  className="input"
-                  style={{ flex: 1, fontSize: "0.9375rem" }}
-                />
-                <button className="btn btn-primary btn-sm" onClick={sendComment} disabled={sending || !commentInput.trim()}>
-                  <IconSend size={16} />
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      {profileUserId !== null && <ResidentModal userId={profileUserId} onClose={() => setProfileUserId(null)} />}
     </div>
   );
 }

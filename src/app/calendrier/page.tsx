@@ -15,6 +15,7 @@ export default async function CalendrierPage() {
       const rows = await db.select({
         id: events.id, title: events.title, description: events.description,
         date: events.date, type: events.type, allowComments: events.allowComments,
+        authorId: events.authorId,
         authorName: users.firstName,
         authorAvatar: users.avatarUrl,
         commentCount: sql<number>`(SELECT COUNT(*) FROM ${eventComments} WHERE ${eq(eventComments.eventId, events.id)})`.as("commentCount"),
