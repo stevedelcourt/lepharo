@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -560,6 +564,10 @@ button.card:hover,
 
 .messagerie-layout {
   position: relative;
+}
+
+.messagerie-back {
+  display: none;
 }
 
 @media (max-width: 768px) {

@@ -255,7 +255,7 @@ export default function MessageriePage() {
                   className="messagerie-back"
                   onClick={() => setShowMobileConvList(true)}
                   type="button"
-                  style={{ display: "none", background: "none", border: "none", cursor: "pointer", padding: 4, color: "var(--color-text-secondary)" }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "var(--color-text-secondary)" }}
                 >
                   <IconChevronLeft size={20} />
                 </button>

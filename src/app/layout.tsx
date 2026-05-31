@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   description: "Le site privé des résidents du 75 boulevard Charles Livon, Marseille",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
