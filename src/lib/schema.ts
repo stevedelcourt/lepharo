@@ -19,6 +19,8 @@ export const users = sqliteTable("users", {
   senior: integer("senior", { mode: "boolean" }).notNull().default(false),
   kids: integer("kids", { mode: "boolean" }).notNull().default(false),
   showFullName: integer("show_full_name", { mode: "boolean" }).notNull().default(false),
+  verificationToken: text("verification_token"),
+  verificationTokenExpires: text("verification_token_expires"),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
 
@@ -86,6 +88,7 @@ export const events = sqliteTable("events", {
   description: text("description").notNull(),
   date: text("date").notNull(),
   type: text("type").notNull(),
+  allowComments: integer("allow_comments", { mode: "boolean" }).notNull().default(true),
   authorId: integer("author_id").notNull().references(() => users.id),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -176,5 +179,13 @@ export const moderationFlags = sqliteTable("moderation_flags", {
   categories: text("categories").default("[]"),
   matchedRules: text("matched_rules").default("[]"),
   resolved: integer("resolved", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
+export const eventComments = sqliteTable("event_comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  eventId: integer("event_id").notNull().references(() => events.id),
+  authorId: integer("author_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
