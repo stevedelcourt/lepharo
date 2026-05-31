@@ -56,12 +56,21 @@ export default function MessageriePage() {
   const [deleting, setDeleting] = useState<{ msgId?: number; convId?: number } | null>(null);
   const [search, setSearch] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const chatEnd = useRef<HTMLDivElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
 
   const toParam = searchParams.get("to");
 
   useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  useEffect(() => {
+    if (toParam) setShowMobileConvList(false);
     fetch("/api/messagerie/conversations")
       .then((r) => r.json())
       .then((data) => {
@@ -250,7 +259,7 @@ export default function MessageriePage() {
         </div>
 
         {/* Chat panel */}
-        <div className={`messagerie-panel-right${!showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div className={`messagerie-panel-right${!showMobileConvList ? ' messagerie-panel-show' : ''}`} style={{ flex: 1, display: "flex", flexDirection: "column", ...(isMobile ? { transform: showMobileConvList ? 'translateX(100%)' : 'translateX(0)' } : {}) }}>
           {current ? (
             <>
               <div style={{ padding: "14px 24px", borderBottom: "1px solid var(--color-border-light)", display: "flex", alignItems: "center", gap: 12 }}>
