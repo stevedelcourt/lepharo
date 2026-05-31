@@ -69,3 +69,33 @@ Marketing site for Mentivis (cabinet d'ingénierie pédagogique et de stratégie
 - Vercel CLI for deploy, no GitHub auto-deploy
 - Login resilience: `compareSync` wrapped in `try/catch` — prevents crash 500 when stored password hash is invalid (e.g. seed placeholder hashes)
 - Turso API token (for `turso db shell`, `turso db tokens create`): export `TURSO_API_TOKEN`
+
+## Admin Roles & Permissions
+
+Three roles: **superadmin** (3), **moderator** (2), **editor** (1). Defined in `site/src/app/admin/(protected)/layout.tsx`.
+
+### Page access
+
+| Page | superadmin | moderator | editor |
+|------|:----------:|:---------:|:------:|
+| Utilisateurs, Rubriques | ✅ | — | — |
+| Forum, Entraide, Signalements | ✅ | ✅ | — |
+| Documents, Événements, Sondages, Alertes, Articles | ✅ | ✅ | ✅ |
+
+### Actions per page
+
+| Page | superadmin | moderator | editor |
+|------|:----------:|:---------:|:------:|
+| **Utilisateurs** | full CRUD, promote, warn, reset password, create user | — | — |
+| **Forum** | edit, pin/lock toggle, delete | edit, pin/lock toggle, delete | — |
+| **Entraide** | edit, open/close, delete | edit, open/close, delete | — |
+| **Signalements** | view, ignore, delete content | view, ignore, delete content | — |
+| **Rubriques** | edit, delete | — | — |
+| **Documents** | edit, upload, delete | edit, upload, delete | edit, upload, delete |
+| **Événements** | edit, delete | edit, delete | edit, delete |
+| **Sondages** | edit question, delete (cascade) | edit question, delete (cascade) | edit question, delete (cascade) |
+| **Alertes** | edit, activate/deactivate, delete | edit, activate/deactivate, delete | edit, activate/deactivate, delete |
+| **Articles** | create, edit, publish/draft, delete | create, edit, publish/draft, delete | create, edit, publish/draft, delete |
+
+### Delete cascade for polls
+`DELETE /api/delete?table=polls&id=X` deletes `poll_votes` → `poll_options` → `polls`
