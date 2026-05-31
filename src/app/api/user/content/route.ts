@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { forumTopics, forumReplies, polls, pollOptions, users, events } from "@/lib/schema";
+import { forumTopics, forumReplies, polls, pollOptions, pollVotes, users, events } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 
 export async function GET() {
@@ -25,7 +25,7 @@ export async function GET() {
     }).from(polls).where(eq(polls.authorId, session.id)).orderBy(desc(polls.createdAt)).all(),
     db.select({
       id: events.id, title: events.title, date: events.date, type: events.type,
-      createdAt: events.createdAt,
+      description: events.description, createdAt: events.createdAt,
     }).from(events).where(eq(events.authorId, session.id)).orderBy(desc(events.createdAt)).all(),
   ]);
 
@@ -57,8 +57,13 @@ export async function DELETE(request: Request) {
     } else if (type === "poll") {
       const poll = await db.select({ authorId: polls.authorId }).from(polls).where(eq(polls.id, id)).get();
       if (!poll || poll.authorId !== session.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+      await db.delete(pollVotes).where(eq(pollVotes.pollId, id)).run();
       await db.delete(pollOptions).where(eq(pollOptions.pollId, id)).run();
       await db.delete(polls).where(eq(polls.id, id)).run();
+    } else if (type === "event") {
+      const ev = await db.select({ authorId: events.authorId }).from(events).where(eq(events.id, id)).get();
+      if (!ev || ev.authorId !== session.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+      await db.delete(events).where(eq(events.id, id)).run();
     } else {
       return NextResponse.json({ error: "Type invalide" }, { status: 400 });
     }
@@ -76,7 +81,8 @@ export async function PATCH(request: Request) {
   if (!db) return NextResponse.json({ error: "Indisponible" }, { status: 503 });
 
   try {
-    const { type, id, title, content } = await request.json();
+    const body = await request.json();
+    const { type, id, title, content, question, date, description, eventType } = body;
     if (!type || !id) return NextResponse.json({ error: "Paramètres manquants" }, { status: 400 });
 
     if (type === "forum_topic") {
@@ -90,6 +96,19 @@ export async function PATCH(request: Request) {
       const reply = await db.select({ authorId: forumReplies.authorId }).from(forumReplies).where(eq(forumReplies.id, id)).get();
       if (!reply || reply.authorId !== session.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
       await db.update(forumReplies).set({ content }).where(eq(forumReplies.id, id)).run();
+    } else if (type === "poll") {
+      const poll = await db.select({ authorId: polls.authorId }).from(polls).where(eq(polls.id, id)).get();
+      if (!poll || poll.authorId !== session.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+      await db.update(polls).set({ question }).where(eq(polls.id, id)).run();
+    } else if (type === "event") {
+      const ev = await db.select({ authorId: events.authorId }).from(events).where(eq(events.id, id)).get();
+      if (!ev || ev.authorId !== session.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+      const updates: Record<string, any> = {};
+      if (title !== undefined) updates.title = title;
+      if (date !== undefined) updates.date = date;
+      if (description !== undefined) updates.description = description;
+      if (eventType !== undefined) updates.type = eventType;
+      await db.update(events).set(updates).where(eq(events.id, id)).run();
     } else {
       return NextResponse.json({ error: "Type invalide" }, { status: 400 });
     }
