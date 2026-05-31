@@ -111,6 +111,7 @@ function Sidebar({ session }: { session: { id: number; email: string; role: stri
             <NavItem href="/documents" icon={<IconFolder />} label="Documents" />
             <NavItem href="/sondages" icon={<IconPoll />} label="Sondages" />
             <NavItem href="/aide" icon={<IconHelp />} label="Aide" />
+            <NavItem href="/contact" icon={<IconSend />} label="Contact" />
 
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Compte</div>
             <NavItem href="/profil" icon={<IconUser />} label="Mon profil" />
@@ -164,8 +165,6 @@ function FooterBar() {
       <a href="/charte" className="footer-bar-link">Charte</a>
       <a href="/confidentialite" className="footer-bar-link">Confidentialité</a>
       <a href="/mentions-legales" className="footer-bar-link">Mentions légales</a>
-      <a href="/contact" className="footer-bar-link">Contact</a>
-      <span className="footer-bar-copyright">&copy; 2026 L&rsquo;amicale du Pharo</span>
     </div>
   );
 }
