@@ -78,6 +78,8 @@ export default function MessageriePage() {
         const target = toParam ? parseInt(toParam, 10) : null;
         if (target && data.some((c: Conversation) => c.id === target)) {
           setActiveConv(target);
+        } else if (target) {
+          setActiveConv(target);
         } else if (data.length > 0) {
           setActiveConv(data[0].id);
         } else if (target) {
